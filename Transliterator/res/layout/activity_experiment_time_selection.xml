@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background_wild"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/initial_activity_background"
+    android:backgroundTint="#A59D9D">
+
+    <Button
+        android:id="@+id/btn_confirmed"
+        android:layout_width="176dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginBottom="158dp"
+        android:backgroundTint="#AB8CE1"
+        android:text="DONE"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="266dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="175dp"
+        android:layout_marginBottom="57dp"
+        android:onClick="onRadioButtonClicked"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnknownId">
+
+        <RadioButton
+            android:id="@+id/id_runNow"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/runNow"
+            android:textAlignment="textStart"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/id_postpone"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:text="@string/postpone"
+            android:textAlignment="textStart"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner_postponeTime"
+        android:layout_width="149dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="250dp"
+        android:foregroundTint="#F8F5F5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.979" />
+
+    <TextView
+        android:id="@+id/id_selcttime_view"
+        android:layout_width="276dp"
+        android:layout_height="68dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="23dp"
+        android:text="Are you Ready to do the Experiment ?"
+        android:textAlignment="center"
+        android:textColor="#E6031827"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="165dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="250dp"
+        android:text="Select A Time Slot"
+        android:textAlignment="viewStart"
+        android:textColor="#E84646"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/spinner_postponeTime"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+</androidx.constraintlayout.widget.ConstraintLayout>
