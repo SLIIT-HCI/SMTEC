@@ -1,6 +1,9 @@
 package com.example.smtec;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.nfc.cardemulation.CardEmulation;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +34,15 @@ public class InitialExperimentActivity extends AppCompatActivity {
     Integer count1 = 0;
     Integer count2 ,totalCha ;
     long timeleft;
-    String enteredText;
-    String store_array[] = new String[5];
+    String phrase_array[] = new String[5];
+    String text_input_array[] = new String[5];
+
+    int characterTyped = 0;
+    String text_input,index;
+    char phrase_displyed_array[] = new char[phrase_array.length];
+    char char_input_array[] = new char[text_input_array.length];
+    char typedCharacter;
+    int errors;
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -86,8 +97,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                 phrase.setText("");
             }
         }.start();
-        // calculate wpm
-        input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        /*input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -107,11 +117,10 @@ public class InitialExperimentActivity extends AppCompatActivity {
                     System.out.println(wpm);
                 }
             }
-        });
+        });*/
     }
 
     public void setPhrase(Integer count){
-        String phrase_array[] = new String[5];
 
         phrase_array[0] = "You are ready to learn and do your best, but you are also nervous.";
         phrase_array[1] = "Sometimes the most difficult questions have the simplest solutions";
@@ -129,5 +138,52 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
         setPhrase(clickCount);
         input_phrase.setText("");
+    }
+    public void processCurrentText() {
+
+
+        /*for(int i =0; i<5; i++){
+            text_input = input_phrase.getText().toString();
+            text_input_array[i] = text_input;
+          //  char_input_array[i] ;
+        }
+
+        // increment total characters typed
+        characterTyped++;
+        errors = 0;
+
+        //text_displayed_array = phrase.;
+        for(int i =0;i<5;i++) {
+            index = phrase_array[i];
+        }
+        char num;
+        for(char element : num) {
+            char value_character = text_input_array[num];
+
+            if (typedCharacter == null) {
+
+            } else if (typedCharacter ==  char.innerText) {
+
+            } else {
+
+                errors++;
+            }
+        }
+
+        char correctCharacters = (characterTyped - (total_errors + errors));
+      //  char accuracyVal = ((correctCharacters / characterTyped) * 100);
+       // accuracy_text
+
+
+
+        /*if (curr_input.length == current_quote.length) {
+            updateQuote();
+
+            // update total errors
+            total_errors += errors;
+
+            // clear the input area
+            input_area.value = "";
+        }*/
     }
 }
