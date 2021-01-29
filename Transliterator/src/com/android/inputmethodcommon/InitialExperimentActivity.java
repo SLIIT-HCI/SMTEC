@@ -142,7 +142,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
     public void processCurrentText() {
 
 
-        /*for(int i =0; i<5; i++){
+        for(int i =0; i<5; i++){
             text_input = input_phrase.getText().toString();
             text_input_array[i] = text_input;
           //  char_input_array[i] ;
@@ -184,6 +184,6 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
             // clear the input area
             input_area.value = "";
-        }*/
+        }
     }
 }
