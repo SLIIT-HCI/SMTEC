@@ -138,8 +138,11 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
         setPhrase(clickCount);
         input_phrase.setText("");
+		if(clickCount == 4){
+            endTime = LocalTime.now().toNanoOfDay();
+        }
     }
-    public void processCurrentText() {
+    /*public void processCurrentText() {
 
 
         for(int i =0; i<5; i++){
@@ -185,5 +188,41 @@ public class InitialExperimentActivity extends AppCompatActivity {
             // clear the input area
             input_area.value = "";
         }
+    }*/
+	
+	public void saveInputPhrase(){
+
+        // get current input text and split it into character array
+        current_input = input_phrase.toString();
+        for(int i =0;i<text_input_array.length;i++){
+            text_input_array[i] = current_input;
+            input_character_array = text_input_array[i].toCharArray();
+        }
+        // increment total characters typed
+        for(char c : input_character_array){
+            characterTyped = characterTyped + c;
+        }
     }
+
+    public void calculateWordsPerMinute(){
+
+        double duration = endTime - startTime;
+        double seconds = duration/1000000000.0;
+
+        int wpm = (int) (duration/seconds);
+        System.out.println(wpm);
+    }
+    public void calculateErrorRate(){
+        String difference;
+        for(int i =0;i<5;i++){
+           char[] actualPhrase = phrase_array[i].toCharArray();
+           if(actualPhrase[i] == input_character_array[i]){
+
+           }
+        }
+    }
+	
+	
+	
+	
 }
