@@ -7,16 +7,7 @@
     android:layout_margin="16dp">
 
 
-    <TextView
-        android:id="@+id/label_gyroscope"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="36dp"
-        android:text="Gyroscope Sensor: %1$.2f"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
-
-    <TextView
+        <TextView
         android:id="@+id/label_accelerometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,5 +20,44 @@
         app:layout_constraintTop_toBottomOf="label_gyroscope"
         app:layout_constraintVertical_bias="0.473"
         tools:ignore="MissingConstraints" />
+		
+		<TextView
+        android:id="@+id/label_linear_acceleration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="572dp"
+        android:text="Linear Accelerometer Sensor: %1$.2f"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="label_gyroscope"
+        app:layout_constraintVertical_bias="0.473"
+        tools:ignore="MissingConstraints" />
+		
+		<TextView
+        android:id="@+id/label_gyroscope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:text="Gyroscope Sensor: %1$.2f"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+		
+		<TextView
+        android:id="@+id/label_proximity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="472dp"
+        android:text="Proximity Sensor: %1$.2f"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="label_gyroscope"
+        app:layout_constraintVertical_bias="0.473"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
