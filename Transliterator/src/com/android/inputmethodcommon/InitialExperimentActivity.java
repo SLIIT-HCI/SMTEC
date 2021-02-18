@@ -14,11 +14,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
@@ -27,22 +30,17 @@ import java.util.concurrent.TimeUnit;
 public class InitialExperimentActivity extends AppCompatActivity {
 
     TextView timer,phrase;
-    Button btn_next;
+    Button btn_next ,btn_start,btn_cancel;
     EditText input_phrase;
     Boolean clicked = false;
     Integer clickCount = 0;
-    Integer count1 = 0;
-    Integer count2 ,totalCha ;
+    int noOfErrors = 0;
     long timeleft;
-    String phrase_array[] = new String[5];
-    String text_input_array[] = new String[5];
+    String [] phrase_array = new String[5];
+    String [] save_phrase_array = new String[phrase_array.length];
+    char [] charctersTyped_array = new char[phrase_array.length];
 
-    int characterTyped = 0;
-    String text_input,index;
-    char phrase_displyed_array[] = new char[phrase_array.length];
-    char char_input_array[] = new char[text_input_array.length];
-    char typedCharacter;
-    int errors;
+    double startTime,endTime;
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -64,23 +62,20 @@ public class InitialExperimentActivity extends AppCompatActivity {
         return output;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_experiment);
 
         timer = findViewById(R.id.timer_view);
         phrase = findViewById(R.id.id_sentence);
-        btn_next = findViewById(R.id.next_view);
+        btn_next = findViewById(R.id.btn_next);
         input_phrase = findViewById(R.id.text_enter);
+        btn_start = findViewById(R.id.btn_start);
+        btn_cancel = findViewById(R.id.btn_cancel);
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                clicked = true;
-                savePhrase();
-            }
-        });
-
-        new CountDownTimer(60000, 1000)
+        final CountDownTimer countDown = new CountDownTimer(60000, 1000)
         {
             public void onTick(long millisUntilFinished)
             {
@@ -93,31 +88,55 @@ public class InitialExperimentActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onFinish()
             {
+                endTime = LocalTime.now().toNanoOfDay();
                 timer.setText("Your Time is over !");
                 phrase.setText("");
+                input_phrase.setText("");
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(InitialExperimentActivity.this, ExperimentSummary.class);
+                startActivity(intent);
             }
-        }.start();
-        /*input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        };
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                countDown.start();
+                startTime = LocalTime.now().toNanoOfDay();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                endTime = LocalTime.now().toNanoOfDay();
+                countDown.cancel();
+            }
+        });
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void onClick(View v) {
+               clicked = true;
+               phraseArray_Iterator();
+               calculateError();
+            }
+        });
+        input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    double startTime = LocalTime.now().toNanoOfDay();
-                    while(btn_next.isPressed()){
-                        store_array[count1] = input_phrase.getText().toString();
-                        count1++;
+                    while(btn_next.isPressed() && timeleft!=0){
+                        saveInputPhrase();
                     }
-                    double endtime = LocalTime.now().toNanoOfDay();
-                    double duration = endtime - startTime;
-                    double seconds = duration/1000000000.0;
-                    for(count2 =0; count2<store_array.length; count2++){
-                        totalCha =store_array[count2].length();
-                    }
-                    int wpm = (int) ((((double) totalCha/5) / seconds) * 60);
-                    System.out.println(wpm);
                 }
             }
-        });*/
+        });
+        calculateWordsPerMinute();
     }
 
     public void setPhrase(Integer count){
@@ -130,7 +149,8 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
         phrase.setText(phrase_array[count]);
     }
-    public void savePhrase(){
+
+    public void phraseArray_Iterator(){
 
         clickCount = clickCount + 1;
         if(clickCount > 4){
@@ -138,91 +158,68 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
         setPhrase(clickCount);
         input_phrase.setText("");
-		if(clickCount == 4){
-            endTime = LocalTime.now().toNanoOfDay();
-        }
     }
-    /*public void processCurrentText() {
+    public void saveInputPhrase(){
 
-
-        for(int i =0; i<5; i++){
-            text_input = input_phrase.getText().toString();
-            text_input_array[i] = text_input;
-          //  char_input_array[i] ;
-        }
-
-        // increment total characters typed
-        characterTyped++;
-        errors = 0;
-
-        //text_displayed_array = phrase.;
-        for(int i =0;i<5;i++) {
-            index = phrase_array[i];
-        }
-        char num;
-        for(char element : num) {
-            char value_character = text_input_array[num];
-
-            if (typedCharacter == null) {
-
-            } else if (typedCharacter ==  char.innerText) {
-
-            } else {
-
-                errors++;
-            }
-        }
-
-        char correctCharacters = (characterTyped - (total_errors + errors));
-      //  char accuracyVal = ((correctCharacters / characterTyped) * 100);
-       // accuracy_text
-
-
-
-        /*if (curr_input.length == current_quote.length) {
-            updateQuote();
-
-            // update total errors
-            total_errors += errors;
-
-            // clear the input area
-            input_area.value = "";
-        }
-    }*/
-	
-	public void saveInputPhrase(){
-
-        // get current input text and split it into character array
-        current_input = input_phrase.toString();
-        for(int i =0;i<text_input_array.length;i++){
-            text_input_array[i] = current_input;
-            input_character_array = text_input_array[i].toCharArray();
-        }
-        // increment total characters typed
-        for(char c : input_character_array){
-            characterTyped = characterTyped + c;
+        //Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String inputText = input_phrase.getText().toString();
+        for(int i=0;i<phrase_array.length;i++){
+            save_phrase_array[i] = inputText;
+            charctersTyped_array[i] = save_phrase_array[i].charAt(i);
         }
     }
 
-    public void calculateWordsPerMinute(){
+    public int calculateError(){
 
+        String phrase1, phrase2;
+
+        phrase1 = input_phrase.getText().toString();
+        phrase2 = phrase.getText().toString();
+        noOfErrors += levenshteinDistance(phrase1,phrase2);
+
+        return noOfErrors;
+    }
+
+    public int calculateWordsPerMinute(){
+
+        // x (characters / 5) / 1min = y wpm
+        int wordCount = 0;
+        int wpm;
         double duration = endTime - startTime;
         double seconds = duration/1000000000.0;
 
-        int wpm = (int) (duration/seconds);
-        System.out.println(wpm);
-    }
-    public void calculateErrorRate(){
-        String difference;
-        for(int i =0;i<5;i++){
-           char[] actualPhrase = phrase_array[i].toCharArray();
-           if(actualPhrase[i] == input_character_array[i]){
-
-           }
+        for(int i=0;i<charctersTyped_array.length;i++){
+            wordCount += 1;
         }
+        wpm = (int)((((double)wordCount / 5)/ seconds)* 60 );
+        return wpm;
     }
-	
-	
-	
-	
+
+    // calculating edit distance
+    public static int levenshteinDistance( String s1, String s2 ) {
+        return dist( s1.toCharArray(), s2.toCharArray() );
+    }
+
+    public static int dist( char[] s1, char[] s2 ) {
+
+        int[][] d = new int[ s1.length + 1 ][ s2.length + 1 ];
+        for( int i = 0; i < s1.length + 1; i++ ) {
+            d[ i ][ 0 ] = i;
+        }
+        for(int j = 0; j < s2.length + 1; j++) {
+            d[ 0 ][ j ] = j;
+        }
+        for( int i = 1; i < s1.length + 1; i++ ) {
+            for( int j = 1; j < s2.length + 1; j++ ) {
+                int d1 = d[ i - 1 ][ j ] + 1;
+                int d2 = d[ i ][ j - 1 ] + 1;
+                int d3 = d[ i - 1 ][ j - 1 ];
+                if ( s1[ i - 1 ] != s2[ j - 1 ] ) {
+                    d3 += 1;
+                }
+                d[ i ][ j ] = Math.min( Math.min( d1, d2 ), d3 );
+            }
+        }
+        return d[ s1.length ][ s2.length ];
+    }
 }
