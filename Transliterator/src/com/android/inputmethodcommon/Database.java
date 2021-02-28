@@ -36,4 +36,28 @@ public class Database {
         }
         return txtsToBeReturned;
     }
+
+   public static void setInputTexts(String[] txtArray) {
+
+        String url = "jdbc:mysql://localhost:3306/testdb?useSSL=false";
+        String user = "root";
+        String password = "abc123";
+
+        String sql = "INSERT INTO TextStorage (Text)" +
+                "VALUES (?)";
+
+
+        try (Connection con = DriverManager.getConnection(url, user, password);
+             PreparedStatement preparedStatement = con.prepareStatement(sql);){
+
+               for(Integer index = 0; index <txtArray.length ; index++) {
+                   preparedStatement.setString(1, txtArray[index]);
+                   preparedStatement.executeUpdate();
+               }
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(JdbcMySQLVersion.class.getName());
+            // lgr.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }
+
 }
