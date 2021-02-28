@@ -59,5 +59,28 @@ public class Database {
             // lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
+  
+    public static void setWpmValue(int wpm) {
+
+        String url = "jdbc:mysql://localhost:3306/testdb?useSSL=false";
+        String user = "root";
+        String password = "abc123";
+
+        String sql = "INSERT INTO ExperimentResults (Text)" +
+                "VALUES (?)";
+
+
+        try (Connection con = DriverManager.getConnection(url, user, password);
+             PreparedStatement preparedStatement = con.prepareStatement(sql);){
+
+
+                preparedStatement.setString(1, String.valueOf(wpm));
+                preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(JdbcMySQLVersion.class.getName());
+            // lgr.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }
 
 }

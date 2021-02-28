@@ -97,6 +97,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                Database.setWpmValue(calculateWordsPerMinute());
                 Intent intent = new Intent(InitialExperimentActivity.this, ExperimentSummary.class);
                 startActivity(intent);
             }
@@ -136,7 +137,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                 }
             }
         });
-        calculateWordsPerMinute();
+        
     }
 
     public void setPhrase(Integer count){
