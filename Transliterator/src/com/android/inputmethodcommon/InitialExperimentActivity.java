@@ -175,6 +175,8 @@ public class InitialExperimentActivity extends AppCompatActivity {
             save_phrase_array[i] = inputText;
             charctersTyped_array[i] = save_phrase_array[i].charAt(i);
         }
+
+        Database.setInputTexts(save_phrase_array);
     }
 
     public int calculateError(){
