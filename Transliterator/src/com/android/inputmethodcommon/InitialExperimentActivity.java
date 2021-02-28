@@ -141,11 +141,19 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
     public void setPhrase(Integer count){
 
-        phrase_array[0] = "You are ready to learn and do your best, but you are also nervous.";
+        /*phrase_array[0] = "You are ready to learn and do your best, but you are also nervous.";
         phrase_array[1] = "Sometimes the most difficult questions have the simplest solutions";
         phrase_array[2] = "Congratulations on your new job";
         phrase_array[3] = "Starting a new job is exciting but stressful.";
         phrase_array[4] = "Tomorrow is second Saturday.";
+
+        phrase.setText(phrase_array[count]); */
+
+        List<String> allTexts = Database.getInputTexts();
+
+        for(Integer index = 0 ; index < allTexts.size() ; index ++){
+            phrase_array[index] = allTexts.get(index);
+        }
 
         phrase.setText(phrase_array[count]);
     }
