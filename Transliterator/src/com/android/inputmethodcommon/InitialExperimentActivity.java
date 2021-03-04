@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class InitialExperimentActivity extends AppCompatActivity {
+	
+	DatabaseHelper db ;
 
     TextView timer,phrase;
     Button btn_next ,btn_start,btn_cancel;
@@ -41,6 +43,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
     char [] charctersTyped_array = new char[phrase_array.length];
 
     double startTime,endTime;
+    ArrayList phrases = new ArrayList<String>();
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -67,6 +70,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_experiment);
+		db = new DatabaseHelper(this);
 
         timer = findViewById(R.id.timer_view);
         phrase = findViewById(R.id.id_sentence);
@@ -148,7 +152,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
         phrase_array[3] = "Starting a new job is exciting but stressful.";
         phrase_array[4] = "Tomorrow is second Saturday.";
 
-        phrase.setText(phrase_array[count]); */
+        phrase.setText(phrase_array[count]); 
 
         List<String> allTexts = Database.getInputTexts();
 
@@ -156,7 +160,9 @@ public class InitialExperimentActivity extends AppCompatActivity {
             phrase_array[index] = allTexts.get(index);
         }
 
-        phrase.setText(phrase_array[count]);
+        phrase.setText(phrase_array[count]);*/
+		phrases = db.getPhrases();
+        phrase.setText(phrases.get(count).toString());
     }
 
     public void phraseArray_Iterator(){
@@ -171,16 +177,18 @@ public class InitialExperimentActivity extends AppCompatActivity {
     public void saveInputPhrase(){
 
         //Timestamp ts = new Timestamp(System.currentTimeMillis());
-        String inputText = input_phrase.getText().toString();
+        /*String inputText = input_phrase.getText().toString();
         for(int i=0;i<phrase_array.length;i++){
             save_phrase_array[i] = inputText;
             charctersTyped_array[i] = save_phrase_array[i].charAt(i);
         }
 
-        Database.setInputTexts(save_phrase_array);
+        Database.setInputTexts(save_phrase_array);*/
+		String inputText = input_phrase.getText().toString();
+        db.insertData_Experiment(inputText);
     }
 
-    public int calculateError(){
+   /* public int calculateError(){
 
         String phrase1, phrase2;
 
@@ -204,7 +212,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
         wpm = (int)((((double)wordCount / 5)/ seconds)* 60 );
         return wpm;
-    }
+    }*/
 
     // calculating edit distance
     public static int levenshteinDistance( String s1, String s2 ) {
