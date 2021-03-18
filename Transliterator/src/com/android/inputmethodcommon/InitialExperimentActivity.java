@@ -36,6 +36,10 @@ import java.util.concurrent.TimeUnit;
 public class InitialExperimentActivity extends AppCompatActivity {
 
     DatabaseHelper dbHelper;
+    RecyclerView recyclerview;
+    RecyclerView.LayoutManager layoutManager;
+    RecyclerAdapter adapter;
+    ArrayList<Experiment> list = new ArrayList<>();
 
     TextView timer;
     static TextView phrase;
@@ -89,6 +93,13 @@ public class InitialExperimentActivity extends AppCompatActivity {
         btn_stop = findViewById(R.id.btn_stop);
         btn_stop.setEnabled(false);
         input_phrase = findViewById(R.id.text_enter);
+
+        layoutManager = new LinearLayoutManager(this);
+        recyclerview.setLayoutManager(layoutManager);
+        recyclerview.setHasFixedSize(true);
+        adapter = new RecyclerAdapter(list);
+
+        readFromLocalStorage();
 
 
         timer.setText("         Let's start !");
@@ -179,6 +190,52 @@ public class InitialExperimentActivity extends AppCompatActivity {
         String inputText = input_phrase.getText().toString();
         db.insertData_Experiment(inputText);
     }*/
+	
+	/* save to local database*/
+    public void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id){
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        if(checkNetworkConnection()){
+
+        }else{
+           dbHelper.saveToLocalDatabase(userId,email,duration,s1,s2,editDistance,id,dbHelper.SYNC_STATUS_FAILED,database);
+        }
+        readFromLocalStorage();
+        dbHelper.close();
+    }
+
+    /* read data from the local database*/
+    private void readFromLocalStorage(){
+
+        list.clear();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor cursor = dbHelper.readFromLocalDatabase(database);
+        while (cursor.moveToNext()){
+            int userId = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN1_userID));
+            String email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN1_email));
+            String duration = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN2_Duration));
+            String s1 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN3_S1));
+            String s2 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN4_S2));
+            int editDistance = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN5_EditDistance));
+            int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN6_ID));
+            int sync_status = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN7_SYNC_STATUS));
+
+            list.add(new Experiment(userId,email,duration,s1,s2,editDistance,id,sync_status));
+        }
+        adapter.notifyDataSetChanged();
+        cursor.close();
+        dbHelper.close();
+    }
+
+
+    /* checking Internet connection */
+    public boolean checkNetworkConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();
+        return (networkinfo != null && networkinfo.isConnected());
+    }
+	
 
     // calculating edit distance
     public static int levenshteinDistance( String s1, String s2 ) {
