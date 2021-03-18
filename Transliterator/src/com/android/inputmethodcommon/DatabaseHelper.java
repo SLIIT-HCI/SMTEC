@@ -31,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN4_S2 = "inputPhrase";
     private static final String COLUMN5_EditDistance = "distance";
     private static final String COLUMN6_ID = "sensorID";
+	public static final String COLUMN7_SYNC_STATUS = "Sync_Status";
 
     private static final String TABLE3_NAME = "Sensor";
     private static final String COLUMN1_ID = "sensorID";
@@ -65,7 +66,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN3_S1 + " TEXT NOT NULL,"
                     + COLUMN4_S2 + " TEXT NOT NULL,"
                     + COLUMN5_EditDistance + " INTEGER NOT NULL,"
-                    + COLUMN6_ID  + " INTEGER NOT NULL)";
+                    + COLUMN6_ID  + " INTEGER NOT NULL,"
+                    + COLUMN7_SYNC_STATUS + "INTEGER NOT NULL)";
 
             sqLiteDatabase.execSQL(TABLE_EXPERIMENT);
 
@@ -203,4 +205,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return true;
     }*/
+	public boolean saveToLocalDatabase(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status,SQLiteDatabase database){
+
+       // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        try {
+            contentValues.put(COLUMN1_userID,userId);
+            contentValues.put(COLUMN1_email,email);
+            contentValues.put(COLUMN2_Duration,duration);
+            contentValues.put(COLUMN3_S1,s1);
+            contentValues.put(COLUMN4_S2,s2);
+            contentValues.put(COLUMN5_EditDistance,editDistance);
+            contentValues.put(COLUMN6_ID,id);
+            contentValues.put(COLUMN7_SYNC_STATUS,sync_status);
+
+            database.insert(TABLE2_NAME, null, contentValues);
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+	
+	public void updateNameStatus(String email, int status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN7_SYNC_STATUS, status);
+        db.update(TABLE2_NAME, contentValues, COLUMN1_email + "=" + email, null);
+        db.close();
+    }
+
+    public Cursor readFromLocalDatabase(SQLiteDatabase database) {
+
+        String [] projection = {COLUMN1_userID,COLUMN1_email,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance,COLUMN6_ID,COLUMN7_SYNC_STATUS};
+        return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
+    }
 }
+
+
+
