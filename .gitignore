@@ -29,3 +29,5 @@ local.properties
 
 #NDK
 obj/
+# Ignore Gradle build output directory
+build
