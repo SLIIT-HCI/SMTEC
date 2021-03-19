@@ -17,6 +17,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 42;
 
+    public static final int SYNC_STATUS_OK = 0;
+    public static final int SYNC_STATUS_FAILED = 1;
+    public static final String SERVER_URL = Dbcontract.URL;
+
     // Database Name
     private static final String DATABASE_NAME = "smtecMobileApp.db";
     private static final String TABLE1_NAME = "PhraseSet";

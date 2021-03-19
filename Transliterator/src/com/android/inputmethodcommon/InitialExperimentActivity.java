@@ -192,7 +192,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
     }*/
 	
 	/* save to local database*/
-    public void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id){
+   /* public void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id){
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
@@ -203,6 +203,56 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
         readFromLocalStorage();
         dbHelper.close();
+    }*/
+	
+	public void saveToAppServer(final int userId, final String email, final String duration, final String s1, final String s2, final int editDistance, final int id){
+
+        if(checkNetworkConnection()){
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, DatabaseHelper.SERVER_URL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                String Response = jsonObject.getString("response");
+                                if(response.equals("OK")){
+                                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_OK);
+                                }
+                                else{
+                                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener(){
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String,String> params = new HashMap<>();
+                    params.put("userId","userId");
+                    params.put("email","email");
+                    params.put("duration","duration");
+                    params.put("s1","s1");
+                    params.put("s2","s2");
+                    params.put("editDistance","editDistance");
+                    params.put("id","id");
+
+                    return params;
+                }
+            };
+                MySingleton.getInstance(InitialExperimentActivity.this).addToRequestQueue(stringRequest);
+
+        }else{
+            saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+        }
+
     }
 
     /* read data from the local database*/
@@ -236,6 +286,14 @@ public class InitialExperimentActivity extends AppCompatActivity {
         return (networkinfo != null && networkinfo.isConnected());
     }
 	
+	private void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status){
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        dbHelper.saveToLocalDatabase(userId,email,duration,s1,s2,editDistance,id,sync_status,database);
+        readFromLocalStorage();
+        dbHelper.close();
+    }
 
     // calculating edit distance
     public static int levenshteinDistance( String s1, String s2 ) {
