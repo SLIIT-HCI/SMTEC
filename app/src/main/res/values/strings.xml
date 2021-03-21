@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">wildUsers</string>
+
+    <!-- alert screen-->
+    <string name="alertMsg">When Do You Wish To Start The Experiment?</string>
+    <string name="startRB">Start Now</string>
+    <string name="OneMin">1 minute</string>
+    <string name="TwoMin">2 minute</string>
+    <string name="FiveMin">5 minute</string>
+
+    <!-- main screen-->
+    <string name="getStartedBtn">Get Started</string>
+
+    <!-- Questionnaire -->
+    <string name="Questionnaire">Questionnaire</string>
+    <string name="Q1">I was mostly on the move when most requests arrived </string>
+    <string name="Q2">I kept on walking while responding to requests and didn\'t stop  </string>
+    <string name="Q3">I was busy or distracted during typing </string>
+    <string name="Q4">I was tired or exhausted during typing </string>
+    <string name="QsubmitBtn">Submit</string>
+
+    <!-- Rating -->
+    <string name="Rating">Rate Yourself</string>
+    <string name="R1">How Fast do you think your typing speed is?</string>
+    <string name="R2">How Accurate do you think you are?</string>
+    <string name="R3">What is your Preference?</string>
+    <string name="R3_1">STK</string>
+    <string name="R3_2">SGK</string>
+    <string name="R4">How Ease of use of the currently used text entry method?</string>
+    <string name="R5">What is your Preferred Hand Posture?</string>
+    <string name="R5_1">Single Finger</string>
+    <string name="R5_2">Single Thumb</string>
+    <string name="R5_3">Double Thumbs</string>
+    <string name="R6">Open Comment</string>
+
+    <!-- sample Text-->
+    <string name="sample1_1">Sample 01/01</string>
+    <string name="sample1_2">Sample 01/02</string>
+    <string name="sample1_3">Sample 01/03</string>
+    <string name="sample2_1">Sample 02/01</string>
+    <string name="sample2_2">Sample 02/02</string>
+    <string name="sample2_3">Sample 02/03</string>
+    <string name="sample3_1">Sample 03/01</string>
+    <string name="sample3_2">Sample 03/02</string>
+    <string name="sample3_3">Sample 03/03</string>
+
+    <!-- startup -->
+    <string name="startBtn">Start</string>
+</resources>

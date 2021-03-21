@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".questionnaire"
+    android:background="@drawable/back10">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="118dp"
+        android:layout_marginTop="91dp"
+        android:text="@string/Questionnaire"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/q2"
+        android:layout_width="268dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="237dp"
+        android:hint="@string/Q2"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/q1"
+        android:layout_width="272dp"
+        android:layout_height="38dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="136dp"
+        android:hint="@string/Q1"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/q4"
+        android:layout_width="269dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="419dp"
+        android:hint="@string/Q4"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/q3"
+        android:layout_width="278dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="335dp"
+        android:hint="@string/Q3"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/QsubmitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="28dp"
+        android:text="@string/QsubmitBtn"
+        app:backgroundTint="#3F51B5" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="340dp"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="175dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar2"
+        android:layout_width="340dp"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="273dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar3"
+        android:layout_width="340dp"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="355dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar4"
+        android:layout_width="340dp"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="437dp" />
+
+
+</RelativeLayout>
