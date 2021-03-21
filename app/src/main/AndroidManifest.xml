@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.wildusers">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WildUsers">
+        <activity android:name=".rating2"></activity>
+        <activity android:name=".activity_sample_text3_3" />
+        <activity android:name=".activity_sample_text3_2" />
+        <activity android:name=".activity_sample_text2_3" />
+        <activity android:name=".activity_sample_text2_2" />
+        <activity android:name=".activity_sample_text2_1" />
+        <activity android:name=".activity_sample_text1_3" />
+        <activity android:name=".activity_sample_text1_2" />
+        <activity android:name=".activity_sample_text1_1" />
+        <activity android:name=".activity_sample_text3_1" />
+        <activity android:name=".alertScreen" />
+        <activity android:name=".questionnaire" />
+        <activity android:name=".rating" />
+        <activity android:name=".StartUp" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
