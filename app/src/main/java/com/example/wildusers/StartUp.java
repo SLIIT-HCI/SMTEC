@@ -20,7 +20,7 @@ public class StartUp extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), SampleText.class);
+                Intent i = new Intent(getApplicationContext(), activity_sample_text1_1.class);
                 startActivity(i);
             }
         });
