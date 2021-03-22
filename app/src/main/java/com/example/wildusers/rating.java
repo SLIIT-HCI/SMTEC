@@ -21,7 +21,7 @@ public class rating extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), LeaveComment.class);
+                Intent i = new Intent(getApplicationContext(), rating2.class);
                 startActivity(i);
             }
         });
