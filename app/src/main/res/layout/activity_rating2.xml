@@ -105,8 +105,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="34dp"
-        android:layout_marginTop="236dp"
-        android:layout_marginEnd="176dp">
+        android:layout_marginTop="248dp"
+        android:layout_marginEnd="174dp">
 
         <RadioButton
             android:id="@+id/radioButton5"
@@ -125,7 +125,7 @@
         <RadioButton
             android:id="@+id/radioButton6"
             android:layout_width="match_parent"
-            android:layout_height="23dp"
+            android:layout_height="26dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="11dp"
             android:text="@string/R5_3" />
