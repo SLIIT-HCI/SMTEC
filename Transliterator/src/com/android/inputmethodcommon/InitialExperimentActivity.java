@@ -48,13 +48,11 @@ public class InitialExperimentActivity extends AppCompatActivity {
     Boolean clicked = false;
     int clickCount = 0;
     long timeleft;
-    String [] phrase_array = new String[5];
-    String [] save_phrase_array = new String[phrase_array.length];
-    char [] charctersTyped_array = new char[phrase_array.length];
     int editDistance;
-
-    double startTime,endTime;
-    static String phrase1 , phrase2;
+    BroadcastReceiver broadcastReceiver;
+    double endTime;
+    String email;
+    int session;
     ArrayList phrases = new ArrayList<String>();
 
     public String formatTime(long millis) {
@@ -93,6 +91,9 @@ public class InitialExperimentActivity extends AppCompatActivity {
         btn_stop = findViewById(R.id.btn_stop);
         btn_stop.setEnabled(false);
         input_phrase = findViewById(R.id.text_enter);
+		
+		email = getIntent().getStringExtra("email");
+        session = getIntent().getIntExtra("session",0);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(layoutManager);
@@ -161,7 +162,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                     while(btn_next.isPressed() && timeleft!=0){
                        // saveInputPhrase();
                         editDistance = levenshteinDistance(phrase.toString(),input_phrase.toString());
-                   //     db.insertData_Experiment(phrase.toString(),input_phrase.toString(),editDistance);
+                        saveToAppServer(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance,id);
                     }
                 }
             }

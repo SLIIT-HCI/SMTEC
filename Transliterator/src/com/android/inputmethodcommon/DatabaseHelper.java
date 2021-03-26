@@ -245,6 +245,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String [] projection = {COLUMN1_userID,COLUMN1_email,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance,COLUMN6_ID,COLUMN7_SYNC_STATUS};
         return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
     }
+	
+	public boolean saveSensorDataToLocalDatabase(int sensorId,String name,double x_value,double y_value,double z_value,SQLiteDatabase database){
+
+        ContentValues contentValues = new ContentValues();
+
+        try {
+            contentValues.put(COLUMN1_ID,sensorId);
+            contentValues.put(COLUMN2_SENSOR_NAME,name);
+            contentValues.put(COLUMN3_X,x_value);
+            contentValues.put(COLUMN4_Y,y_value);
+            contentValues.put(COLUMN5_Z,z_value);
+
+            database.insert(TABLE3_NAME, null, contentValues);
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }
 
 

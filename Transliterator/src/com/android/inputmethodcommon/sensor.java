@@ -1,67 +1,46 @@
 package com.example.smtec;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorAdditionalInfo;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class sensor extends AppCompatActivity implements SensorEventListener {
 
+    ArrayList<String> list_Sensors = new ArrayList<>();
+    List<Sensor> deviceSensors;
+    DatabaseHelper db;
+
     private SensorManager sensorManager;
+    private Sensor linearAccelerometer, gyroscope,proximity,gravity,temperature,light,humidity,pressure,magField;
 
-    private Sensor accelerometer, gyroscope,proximity,gravity,temperature,light,humidity,pressure,magField;
-
-    //private TextView SensorGyroscope,SensorAccelerometer,SensorLinearAcceleration,SensorProximity;
 
     public void onCreate(Bundle savedInstance) {
 
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_sensor);
 
+        db = new DatabaseHelper(this);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
         getAvailableSensors();
-		
-    /*  SensorGyroscope = (TextView) findViewById(R.id.label_gyroscope);
-        SensorAccelerometer = (TextView) findViewById(R.id.label_accelerometer);
-		SensorLinearAcceleration = (TextView)findViewById(R.id.label_linear_acceleration);
-        SensorProximity = (TextView)findViewById(R.id.label_proximity);
 
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-	 	linearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
-        String sensor_error = getResources().getString(R.string.error_no_sensor);
-        if (gyroscope == null) {
-            SensorGyroscope.setText(sensor_error);
-        }
-        if (accelerometer == null) {
-            SensorAccelerometer.setText(sensor_error);
-        }
-		if (linearAcceleration == null) {
-            SensorLinearAcceleration.setText(sensor_error);
-        }
-        if (proximity == null) {
-            SensorProximity.setText(sensor_error);
-        }
-       */
     }
-	public void getAvailableSensors(){
+   public void getAvailableSensors(){
 
        for(Sensor sensor : deviceSensors) {
           // Log.d("Sensor","" + sensor.getName());
-           if(sensor == sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)){
-               accelerometer = sensor;
-               list_Sensors.add(accelerometer.getName());
+           if(sensor == sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)){
+               linearAccelerometer = sensor;
+               list_Sensors.add(linearAccelerometer.getName());
            }
            else if(sensor == sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)){
                gravity =sensor;
@@ -99,48 +78,33 @@ public class sensor extends AppCompatActivity implements SensorEventListener {
 
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+   @SuppressLint("ResourceType")
+   @Override
+   public void onSensorChanged(SensorEvent sensorEvent) {
 
        int sensorType = sensorEvent.sensor.getType();
-    // float currentValue = sensorEvent.values[0];
+       switch (sensorType) {
 
-        switch (sensorType) {
-
-          /*  case Sensor.TYPE_ACCELEROMETER:
-                SensorAccelerometer.setText(getResources().getString(R.id.label_accelerometer, currentValue));
-                break;
-            case Sensor.TYPE_GYROSCOPE:
-                SensorGyroscope.setText(getResources().getString(R.id.label_gyroscope, currentValue));
-                break;
-            case Sensor.TYPE_LINEAR_ACCELERATION:
-                SensorLinearAcceleration.setText(getResources().getString(R.id.label_linear_acceleration, currentValue));
-                break;
-            case Sensor.TYPE_PROXIMITY:
-                SensorProximity.setText(getResources().getString(R.id.label_proximity, currentValue));
-                break;
-			*/	
-			
-			case Sensor.TYPE_ACCELEROMETER:
+           case Sensor.TYPE_LINEAR_ACCELERATION:
                getAccelerometer(sensorEvent);
-            case Sensor.TYPE_GRAVITY:
+           case Sensor.TYPE_GRAVITY:
                getGravity(sensorEvent);
-            case Sensor.TYPE_GYROSCOPE:
+           case Sensor.TYPE_GYROSCOPE:
                getGyroscope(sensorEvent);
-            case Sensor.TYPE_AMBIENT_TEMPERATURE:
+           case Sensor.TYPE_AMBIENT_TEMPERATURE:
                getTemperature(sensorEvent);
-            case Sensor.TYPE_PRESSURE:
+           case Sensor.TYPE_PRESSURE:
                getPressure(sensorEvent);
-            case Sensor.TYPE_LIGHT:
+           case Sensor.TYPE_LIGHT:
                getLight(sensorEvent);
-            case Sensor.TYPE_RELATIVE_HUMIDITY:
+           case Sensor.TYPE_RELATIVE_HUMIDITY:
                getHumidity(sensorEvent);
-            case Sensor.TYPE_PROXIMITY:
+           case Sensor.TYPE_PROXIMITY:
                getProximity(sensorEvent);
-            case Sensor.TYPE_MAGNETIC_FIELD:
+           case Sensor.TYPE_MAGNETIC_FIELD:
                getMagneticField(sensorEvent);
-        }
-    }
+       }
+   }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -148,32 +112,14 @@ public class sensor extends AppCompatActivity implements SensorEventListener {
     }
     @Override
     protected void onResume() {
-        super.onStart();
+        super.onResume();
 
-      /*  if (gyroscope != null) {
+        if (gyroscope != null) {
             sensorManager.registerListener(this, gyroscope,
                     SensorManager.SENSOR_DELAY_NORMAL);
         }
-        if (accelerometer != null) {
-            sensorManager.registerListener(this, accelerometer,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-		if (linearAcceleration != null) {
-            sensorManager.registerListener(this, linearAcceleration,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-        if (proximity != null) {
-            sensorManager.registerListener(this, proximity,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-	   */	
-	   
-	   if (gyroscope != null) {
-            sensorManager.registerListener(this, gyroscope,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-        if (accelerometer != null) {
-            sensorManager.registerListener(this, accelerometer,
+        if (linearAccelerometer != null) {
+            sensorManager.registerListener(this, linearAccelerometer,
                     SensorManager.SENSOR_DELAY_NORMAL);
         }
         if (gravity != null) {
@@ -207,50 +153,63 @@ public class sensor extends AppCompatActivity implements SensorEventListener {
     }
     @Override
     protected void onPause() {
-        super.onStop();
+        super.onPause();
         sensorManager.unregisterListener(this);
     }
-	private void getAccelerometer(SensorEvent event) {
-      float[] values = event.values;
+    public float[] getAccelerometer(SensorEvent event) {
+        float[] sensorData = new float[3];
 
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
-    }
-    private void getGravity(SensorEvent event) {
-        float[] values = event.values;
+        sensorData[0] = event.values[0];
+        sensorData[1] = event.values[1];
+        sensorData[2] = event.values[2];
 
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
+        return sensorData;
     }
-    private void getGyroscope(SensorEvent event) {
-        float[] values = event.values;
+    public float[] getGravity(SensorEvent event) {
+        float[] sensorData = new float[3];
 
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
-    }
-    private void getTemperature(SensorEvent event) {
-         float value = event.values[0];
-    }
-    private void getPressure(SensorEvent event) {
-         float value = event.values[0];
-    }
-    private void getLight(SensorEvent event) {
-         float value = event.values[0];
-    }
-    private void getHumidity(SensorEvent event) {
-         float value = event.values[0];
-    }
-    private void getProximity(SensorEvent event) {
-         float value = event.values[0];
-    }
-    private void getMagneticField(SensorEvent event) {
-        float[] values = event.values;
+        sensorData[0] = event.values[0];
+        sensorData[1] = event.values[1];
+        sensorData[2] = event.values[2];
 
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
+        return sensorData;
+    }
+    public float[] getGyroscope(SensorEvent event) {
+        float[] sensorData = new float[3];
+
+        sensorData[0] = event.values[0];
+        sensorData[1] = event.values[1];
+        sensorData[2] = event.values[2];
+
+        return sensorData;
+    }
+    public float getTemperature(SensorEvent event) {
+         float data = event.values[0];
+         return data;
+    }
+    public float getPressure(SensorEvent event) {
+        float data = event.values[0];
+        return data;
+    }
+    public float getLight(SensorEvent event) {
+        float data = event.values[0];
+        return data;
+    }
+    public float getHumidity(SensorEvent event) {
+        float data = event.values[0];
+        return data;
+    }
+    public float getProximity(SensorEvent event) {
+        float data = event.values[0];
+        return data;
+    }
+    public float[] getMagneticField(SensorEvent event) {
+        float[] sensorData = new float[3];
+
+        sensorData[0] = event.values[0];
+        sensorData[1] = event.values[1];
+        sensorData[2] = event.values[2];
+
+        return sensorData;
     }
 }
