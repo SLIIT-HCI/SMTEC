@@ -6,8 +6,8 @@ on:
 jobs:
 
   # A job to gradle build with stacktrace
-  apk:
-      name: Generate APK
+  build:
+      name: gradle build
       runs-on: ubuntu-18.04
 
       steps:
