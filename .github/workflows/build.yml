@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches: [ ayeshka1 ]
+
+jobs:
+
+  # A job to gradle build with stacktrace
+  apk:
+      name: Generate APK
+      runs-on: ubuntu-18.04
+
+      steps:
+        - uses: actions/checkout@v1
+        - name: set up JDK
+          uses: actions/setup-java@v1
+          with:
+            java-version: 11.0.3
+
+        - name: Grant Permission to Execute
+          run: chmod +x gradlew
+
+        - name: gradle build
+          run: gradle build --stacktrace
