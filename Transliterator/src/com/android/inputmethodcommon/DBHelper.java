@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecLabMobileApp.db";
@@ -20,8 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN2_NAME = "ActualPhrase";
 
     public static final String TABLE2_NAME = "LabExperiment";
-    public static final String COLUMN1_userID = "user_id";
     public static final String COLUMN1_email = "email";
+    public static final String COLUMN1_session = "session";
     public static final String COLUMN2_Duration = "duration";
     public static final String COLUMN3_S1 = "actualPhrase";
     public static final String COLUMN4_S2 = "inputPhrase";
@@ -46,8 +46,8 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_PHRASE);
 
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
-                    + COLUMN1_userID + "INTEGER PRIMARY KEY ,"
-                    + COLUMN1_email + " TEXT NOT NULL,"
+                    + COLUMN1_email + " TEXT NOT NULL PRIMARY KEY,"
+                    + COLUMN1_session + "INTEGER NOT NULL,"
                     + COLUMN2_Duration + " TEXT NOT NULL,"
                     + COLUMN3_S1 + " TEXT NOT NULL,"
                     + COLUMN4_S2 + " TEXT NOT NULL,"
@@ -163,14 +163,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return texts;
      }
 
-    public boolean saveToLocalDatabase(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status,SQLiteDatabase database){
+    public boolean saveToLocalDatabase(String email,int session,double duration,String s1,String s2,int editDistance,SQLiteDatabase database){
 
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         try {
-            contentValues.put(COLUMN1_userID,userId);
             contentValues.put(COLUMN1_email,email);
+            contentValues.put(COLUMN1_session,session);
             contentValues.put(COLUMN2_Duration,duration);
             contentValues.put(COLUMN3_S1,s1);
             contentValues.put(COLUMN4_S2,s2);
@@ -186,7 +186,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor readFromLocalDatabase(SQLiteDatabase database) {
 
-        String [] projection = {COLUMN1_userID,COLUMN1_email,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance};
+        String [] projection = {COLUMN1_email,COLUMN1_session,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance};
         return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
     }
 }
