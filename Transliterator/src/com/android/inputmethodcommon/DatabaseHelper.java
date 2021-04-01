@@ -15,7 +15,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 
-    private static final int DATABASE_VERSION = 42;
+    private static final int DATABASE_VERSION = 45;
 
     public static final int SYNC_STATUS_OK = 0;
     public static final int SYNC_STATUS_FAILED = 1;
@@ -27,22 +27,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN1_NAME = "Phrase_ID";
     private static final String COLUMN2_NAME = "Phrase";
 
-    private static final String TABLE2_NAME = "Experiment";
-    private static final String COLUMN1_userID = "ID";
-    private static final String COLUMN1_email = "email";
-    private static final String COLUMN2_Duration = "duration";
-    private static final String COLUMN3_S1 = "actualPhrase";
-    private static final String COLUMN4_S2 = "inputPhrase";
-    private static final String COLUMN5_EditDistance = "distance";
-    private static final String COLUMN6_ID = "sensorID";
-	public static final String COLUMN7_SYNC_STATUS = "Sync_Status";
+    public static final String TABLE2_NAME = "Experiment";
+    public static final String COLUMN1_session = "session";
+    public static final String COLUMN1_email = "email";
+    public static final String COLUMN2_Duration = "duration";
+    public static final String COLUMN3_S1 = "actualPhrase";
+    public static final String COLUMN4_S2 = "inputPhrase";
+    public static final String COLUMN5_EditDistance = "distance";
+    public static final String COLUMN6_SYNC_STATUS = "Sync_Status";
+    public static final String COLUMN7_SENSOR_NAME = "sensorName";
+    public static final String COLUMN8_X = "x_value";
+    public static final String COLUMN9_Y = "y_value";
+    public static final String COLUMN10_Z = "Z_value";
 
-    private static final String TABLE3_NAME = "Sensor";
+   /* private static final String TABLE3_NAME = "Sensor";
     private static final String COLUMN1_ID = "sensorID";
     private static final String COLUMN2_SENSOR_NAME = "sensorName";
     private static final String COLUMN3_X = "x_value";
     private static final String COLUMN4_Y = "y_value";
-    private static final String COLUMN5_Z = "Z_value";
+    private static final String COLUMN5_Z = "Z_value";  */
 
     private static final String TABLE4_NAME = "User";
     private static final String COLUMN1_userEmail = "Email";
@@ -64,25 +67,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_PHRASE);
 
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
-                    + COLUMN1_userID + "INTEGER PRIMARY KEY ,"
+                    + COLUMN1_session + "INTEGER PRIMARY KEY ,"
                     + COLUMN1_email + " TEXT NOT NULL,"
                     + COLUMN2_Duration + " TEXT NOT NULL,"
                     + COLUMN3_S1 + " TEXT NOT NULL,"
                     + COLUMN4_S2 + " TEXT NOT NULL,"
                     + COLUMN5_EditDistance + " INTEGER NOT NULL,"
-                    + COLUMN6_ID  + " INTEGER NOT NULL,"
-                    + COLUMN7_SYNC_STATUS + "INTEGER NOT NULL)";
+                    + COLUMN6_SYNC_STATUS  + " INTEGER NOT NULL,"
+                    + COLUMN7_SENSOR_NAME  + " TEXT NOT NULL,"
+                    + COLUMN8_X  + " REAL NOT NULL,"
+                    + COLUMN9_Y  + " REAL NOT NULL,"
+                    + COLUMN10_Z + "REAL NOT NULL)";
 
             sqLiteDatabase.execSQL(TABLE_EXPERIMENT);
 
-            String TABLE_SENSOR = "CREATE TABLE " + TABLE3_NAME + "("
+         /*   String TABLE_SENSOR = "CREATE TABLE " + TABLE3_NAME + "("
                     + COLUMN1_ID + " TEXT PRIMARY KEY ,"
                     + COLUMN2_SENSOR_NAME + " TEXT NOT NULL,"
                     + COLUMN3_X + " REAL NOT NULL,"
                     + COLUMN4_Y + " REAL NOT NULL,"
                     + COLUMN5_Z  + " REAL NOT NULL)";
 
-            sqLiteDatabase.execSQL(TABLE_SENSOR);
+            sqLiteDatabase.execSQL(TABLE_SENSOR);    */
 
             String TABLE_USER = "CREATE TABLE " + TABLE4_NAME + "("
                     + COLUMN1_userEmail + " TEXT PRIMARY KEY,"
@@ -209,20 +215,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return true;
     }*/
-	public boolean saveToLocalDatabase(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status,SQLiteDatabase database){
+	public boolean saveToLocalDatabase(String email,int session,String duration,String s1,String s2,int editDistance,String name,double val_x,double val_y,double val_z,int sync_status,SQLiteDatabase database){
 
        // SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         try {
-            contentValues.put(COLUMN1_userID,userId);
+            contentValues.put(COLUMN1_session,session);
             contentValues.put(COLUMN1_email,email);
             contentValues.put(COLUMN2_Duration,duration);
             contentValues.put(COLUMN3_S1,s1);
             contentValues.put(COLUMN4_S2,s2);
             contentValues.put(COLUMN5_EditDistance,editDistance);
-            contentValues.put(COLUMN6_ID,id);
-            contentValues.put(COLUMN7_SYNC_STATUS,sync_status);
+            contentValues.put(COLUMN6_SYNC_STATUS,sync_status);
+            contentValues.put(COLUMN7_SENSOR_NAME,name);
+            contentValues.put(COLUMN8_X,val_x);
+            contentValues.put(COLUMN9_Y,val_y);
+            contentValues.put(COLUMN10_Z,val_z);
 
             database.insert(TABLE2_NAME, null, contentValues);
 
@@ -232,21 +241,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 	
-	public void updateNameStatus(String email, int status) {
+	public void updateUserStatus(String email, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN7_SYNC_STATUS, status);
+        contentValues.put(COLUMN6_SYNC_STATUS, status);
         db.update(TABLE2_NAME, contentValues, COLUMN1_email + "=" + email, null);
         db.close();
     }
 
     public Cursor readFromLocalDatabase(SQLiteDatabase database) {
 
-        String [] projection = {COLUMN1_userID,COLUMN1_email,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance,COLUMN6_ID,COLUMN7_SYNC_STATUS};
+        String [] projection = {COLUMN1_session,COLUMN1_email,COLUMN2_Duration,COLUMN3_S1,COLUMN4_S2,COLUMN5_EditDistance,COLUMN6_SYNC_STATUS,COLUMN7_SENSOR_NAME,COLUMN8_X,COLUMN9_Y,COLUMN10_Z};
         return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
     }
 	
-	public boolean saveSensorDataToLocalDatabase(int sensorId,String name,double x_value,double y_value,double z_value,SQLiteDatabase database){
+	/*  public boolean saveSensorDataToLocalDatabase(int sensorId,String name,double x_value,double y_value,double z_value,SQLiteDatabase database){
 
         ContentValues contentValues = new ContentValues();
 
@@ -263,7 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
         return true;
-    }
+    } */
 }
 
 

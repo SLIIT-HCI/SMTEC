@@ -1,36 +1,40 @@
 package com.example.smtec;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.media.MediaPlayer;
-import android.nfc.cardemulation.CardEmulation;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.sql.Timestamp;
-import java.text.BreakIterator;
-import java.time.Instant;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class InitialExperimentActivity extends AppCompatActivity {
@@ -54,6 +58,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
     String email;
     int session;
     ArrayList phrases = new ArrayList<String>();
+
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -84,26 +89,32 @@ public class InitialExperimentActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         dbHelper.insertData_Phrases();
 
-        timer = findViewById(R.id.timer_view);
-        phrase = findViewById(R.id.id_sentence);
-        btn_next = findViewById(R.id.btn_next);
-        btn_play_pause = findViewById(R.id.btn_play);
-        btn_stop = findViewById(R.id.btn_stop);
+        timer = (TextView) findViewById(R.id.timer_view);
+        phrase = (TextView) findViewById(R.id.id_sentence);
+        btn_next = (Button) findViewById(R.id.btn_next);
+        btn_play_pause = (Button) findViewById(R.id.btn_play);
+        btn_stop = (Button) findViewById(R.id.btn_stop);
         btn_stop.setEnabled(false);
-        input_phrase = findViewById(R.id.text_enter);
-		
-		email = getIntent().getStringExtra("email");
+        input_phrase = (EditText) findViewById(R.id.text_enter);
+        recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+
+        email = getIntent().getStringExtra("email");
         session = getIntent().getIntExtra("session",0);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setHasFixedSize(true);
         adapter = new RecyclerAdapter(list);
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+               readFromLocalStorage();
+            }
+        };
 
         readFromLocalStorage();
 
-
-        timer.setText("         Let's start !");
+        timer.setText("        Let's start !");
 
         final CountDownTimer countDown = new CountDownTimer(60000, 1000)
         {
@@ -119,7 +130,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
             public void onFinish()
             {
-               endTime = LocalTime.now().toNanoOfDay();
+                endTime = LocalTime.now().toNanoOfDay();
                 timer.setText("Your Time is over !");
                 phrase.setText("");
                 input_phrase.setText("");
@@ -162,7 +173,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                     while(btn_next.isPressed() && timeleft!=0){
                        // saveInputPhrase();
                         editDistance = levenshteinDistance(phrase.toString(),input_phrase.toString());
-                        saveToAppServer(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance,id);
+                      //  saveToAppServer(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance,id);
                     }
                 }
             }
@@ -186,27 +197,9 @@ public class InitialExperimentActivity extends AppCompatActivity {
         setPhrase(clickCount);
         input_phrase.setText("");
     }
-    /* public void saveInputPhrase(){
 
-        String inputText = input_phrase.getText().toString();
-        db.insertData_Experiment(inputText);
-    }*/
-	
-	/* save to local database*/
-   /* public void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id){
-
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        if(checkNetworkConnection()){
-
-        }else{
-           dbHelper.saveToLocalDatabase(userId,email,duration,s1,s2,editDistance,id,dbHelper.SYNC_STATUS_FAILED,database);
-        }
-        readFromLocalStorage();
-        dbHelper.close();
-    }*/
-	
-	public void saveToAppServer(final int userId, final String email, final String duration, final String s1, final String s2, final int editDistance, final int id){
+    /* save to local database*/
+    public void saveToAppServer(final String email, final int session, final String duration, final String s1, final String s2, final int editDistance, final int status, final String sensorType, final double val_x, final double val_y, final double val_z){
 
         if(checkNetworkConnection()){
 
@@ -218,10 +211,10 @@ public class InitialExperimentActivity extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(response);
                                 String Response = jsonObject.getString("response");
                                 if(response.equals("OK")){
-                                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_OK);
+                                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_OK,sensorType,val_x,val_y,val_z);
                                 }
                                 else{
-                                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+                                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -231,19 +224,22 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
                 }
             }){
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String,String> params = new HashMap<>();
-                    params.put("userId","userId");
+                    params.put("session","session");
                     params.put("email","email");
                     params.put("duration","duration");
                     params.put("s1","s1");
                     params.put("s2","s2");
                     params.put("editDistance","editDistance");
-                    params.put("id","id");
+                    params.put("sensorType","sensorType");
+                    params.put("value_x","value_x");
+                    params.put("value_y","value_y");
+                    params.put("value_z","value_z");
 
                     return params;
                 }
@@ -251,7 +247,7 @@ public class InitialExperimentActivity extends AppCompatActivity {
                 MySingleton.getInstance(InitialExperimentActivity.this).addToRequestQueue(stringRequest);
 
         }else{
-            saveToLocalStorage(userId,email,duration,s1,s2,editDistance,id,DatabaseHelper.SYNC_STATUS_FAILED);
+            saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
         }
 
     }
@@ -263,22 +259,24 @@ public class InitialExperimentActivity extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         Cursor cursor = dbHelper.readFromLocalDatabase(database);
         while (cursor.moveToNext()){
-            int userId = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN1_userID));
+            int session = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN1_session));
             String email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN1_email));
             String duration = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN2_Duration));
             String s1 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN3_S1));
             String s2 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN4_S2));
             int editDistance = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN5_EditDistance));
-            int id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN6_ID));
-            int sync_status = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN7_SYNC_STATUS));
+            int sync_status = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN6_SYNC_STATUS));
+            String sensorType = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN7_SENSOR_NAME));
+            double value_x = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN8_X));
+            double value_y = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN9_Y));
+            double value_z = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN10_Z));
 
-            list.add(new Experiment(userId,email,duration,s1,s2,editDistance,id,sync_status));
+            list.add(new Experiment(email,session,duration,s1,s2,editDistance,sync_status,sensorType,value_x,value_y,value_z));
         }
         adapter.notifyDataSetChanged();
         cursor.close();
         dbHelper.close();
     }
-
 
     /* checking Internet connection */
     public boolean checkNetworkConnection(){
@@ -286,17 +284,17 @@ public class InitialExperimentActivity extends AppCompatActivity {
         NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();
         return (networkinfo != null && networkinfo.isConnected());
     }
-	
-	private void saveToLocalStorage(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status){
+
+    private void saveToLocalStorage(String email,int session,String duration,String s1,String s2,int editDistance,int sync_status,String sensorName,double val_x,double val_y,double val_z){
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToLocalDatabase(userId,email,duration,s1,s2,editDistance,id,sync_status,database);
+        dbHelper.saveToLocalDatabase(email,session,duration,s1,s2,editDistance,sensorName,val_x,val_y,val_z,sync_status,database);
         readFromLocalStorage();
         dbHelper.close();
     }
 
-    // calculating edit distance
+    /* calculating edit distance */
     public static int levenshteinDistance( String s1, String s2 ) {
         return dist( s1.toCharArray(), s2.toCharArray() );
     }
@@ -321,5 +319,17 @@ public class InitialExperimentActivity extends AppCompatActivity {
             }
         }
         return d[ s1.length ][ s2.length ];
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(Dbcontract.UI_UPDATE_BROADCAST));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
     }
 }

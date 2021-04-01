@@ -2,32 +2,38 @@ package com.example.smtec;
 
 public class Experiment {
 
-    private int userId;
+    private int session;
     private String email;
     private String duration;
     private String s1;
     private String s2;
     private int editDistance;
-    private int id;
     private int sync_status;
+    private String sensorName;
+    private double val_x;
+    private double val_y;
+    private double val_z;
 
-    public Experiment(int userId,String email,String duration,String s1,String s2,int editDistance,int id,int sync_status) {
-        this.userId = userId;
-        this.email = email;
-        this.duration = duration;
-        this.s1 = s1;
-        this.s2 = s2;
-        this.editDistance = editDistance;
-        this.id = id;
-        this.sync_status = sync_status;
+    public Experiment(String email,int session,String duration,String s1,String s2,int editDistance,int sync_status,String sensorName,double val_x,double val_y,double val_z) {
+        this.setEmail(email);
+        this.setSession(session);
+        this.setDuration(duration);
+        this.setS1(s1);
+        this.setS2(s2);
+        this.setEditDistance(editDistance);
+        this.setSync_status(sync_status);
+        this.setSensorName(sensorName);
+        this.setVal_x(val_x);
+        this.setVal_y(val_y);
+        this.setVal_z(val_z);
     }
 
-    public int getUserId() {
-        return userId;
+    public int getSession() {
+        return session;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setSession(int session) {
+        this.session = session;
     }
 
     public String getEmail() {
@@ -44,14 +50,6 @@ public class Experiment {
 
     public void setSync_status(int sync_status) {
         this.sync_status = sync_status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getEditDistance() {
@@ -84,5 +82,37 @@ public class Experiment {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getSensorName() {
+        return sensorName;
+    }
+
+    public void setSensorName(String sensorName) {
+        this.sensorName = sensorName;
+    }
+
+    public double getVal_x() {
+        return val_x;
+    }
+
+    public void setVal_x(double val_x) {
+        this.val_x = val_x;
+    }
+
+    public double getVal_y() {
+        return val_y;
+    }
+
+    public void setVal_y(double val_y) {
+        this.val_y = val_y;
+    }
+
+    public double getVal_z() {
+        return val_z;
+    }
+
+    public void setVal_z(double val_z) {
+        this.val_z = val_z;
     }
 }
