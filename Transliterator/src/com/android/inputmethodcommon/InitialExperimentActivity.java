@@ -182,11 +182,15 @@ public class InitialExperimentActivity extends AppCompatActivity {
 
     public void setPhrase(int count){
 
-      phrases = dbHelper.getPhrases();
+     /* phrases = dbHelper.getPhrases();
       System.out.println("phrases: "+phrases.get(0));
        if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
             phrase.setText(phrases.get(count).toString());
-       }
+       }  */
+	   
+	   phrases = getPhrasesFromAppServer("http://192.168.1.4/smtec/smtec.php");
+      
+       phrase.setText(phrases[count]);
     }
     public void phraseArray_Iterator(){
 
@@ -251,6 +255,71 @@ public class InitialExperimentActivity extends AppCompatActivity {
         }
 
     }
+	
+	private String[] getPhrasesFromAppServer(final String urlWebService) {
+
+        final String[] value = new String[30];
+        class GetJSON extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                try {
+                    for(String text : loadIntoTextView(s)){
+                        for(int i =0;i<value.length;i++){
+                            value[i] = text;
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL(urlWebService);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+                    return sb.toString().trim();
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        GetJSON getJSON = new GetJSON();
+        getJSON.execute();
+
+        return value;
+    }
+
+    private String[] loadIntoTextView(String json) throws JSONException {
+        JSONArray jsonArray = new JSONArray(json);
+        String[] phrases = new String[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            phrases[i] = obj.getString("phrase");
+        }
+      //  ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, phrases);
+       // phrase.setText((CharSequence) arrayAdapter);
+        return phrases;
+    }
+
+	
+	
 
     /* read data from the local database*/
     private void readFromLocalStorage(){
