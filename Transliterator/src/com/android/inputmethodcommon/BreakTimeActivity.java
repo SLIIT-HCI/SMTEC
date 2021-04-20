@@ -1,18 +1,20 @@
-package com.example.smtec;
+package com.example.labexperiment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.concurrent.TimeUnit;
 
 public class BreakTimeActivity extends AppCompatActivity {
 
     TextView brk_timer;
+    long timeleft;
+    int next_run = 1;
+    int run ;
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -39,17 +41,29 @@ public class BreakTimeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_breaktime);
 
         brk_timer = findViewById(R.id.break_timer);
+        run = getIntent().getIntExtra("noOfRuns",0);
+        next_run = next_run + run;
 
         new CountDownTimer(60000, 1000)
         {
             public void onTick(long millisUntilFinished)
             {
                 brk_timer.setText("BreakTime remaining: " + formatTime(millisUntilFinished));
+                timeleft = millisUntilFinished / 1000;
             }
             public void onFinish()
             {
                 brk_timer.setText("Let's start again !");
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(BreakTimeActivity.this, InitialExperiment.class);
+                intent.putExtra("next_run", next_run);
+                startActivity(intent);
             }
         }.start();
+        run = run +1;
     }
 }

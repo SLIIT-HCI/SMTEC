@@ -1,7 +1,6 @@
-package com.example.smtec_labuserexperiment;
+package com.example.labexperiment;
 
 public class LabExperiment {
-
     private int userId;
     private String email;
     private String duration;

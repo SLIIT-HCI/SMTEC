@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 16;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecLabMobileApp.db";
@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN2_NAME = "ActualPhrase";
 
     public static final String TABLE2_NAME = "LabExperiment";
+    public static final String COLUMN1_ID = "UserID";
     public static final String COLUMN1_email = "email";
     public static final String COLUMN2_session = "sessionNo";
     public static final String COLUMN3_dateTime = "dateTime";
@@ -47,7 +48,8 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_PHRASE);
 
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
-                    + COLUMN1_email + " TEXT NOT NULL PRIMARY KEY,"
+                    + COLUMN1_email + " TEXT NOT NULL,"
+                    + COLUMN1_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN2_session + " INTEGER NOT NULL,"
                     + COLUMN3_dateTime + " TEXT NOT NULL,"
                     + COLUMN4_S1 + " TEXT NOT NULL,"
@@ -84,53 +86,41 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentvalues = new ContentValues();
 
         Log.d("Trying to insert 2..","1");
-       // contentvalues.put(COLUMN1_NAME, 1);
+
         contentvalues.put(COLUMN2_NAME, "Thanks, I will look at it tonight.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 2);
         contentvalues.put(COLUMN2_NAME, "She also wants us to hire everyone who is out on leave immediately instead of having them show up when released.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 3);
         contentvalues.put(COLUMN2_NAME, "I fear death is making a strong push down the backstretch.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 4);
         contentvalues.put(COLUMN2_NAME, "I've got a call into Wes to see if these numbers were in the second current estimate or not.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 5);
         contentvalues.put(COLUMN2_NAME, "This will be hard.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 6);
         contentvalues.put(COLUMN2_NAME, "Hopefully it cheered you up a bit.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-       // contentvalues.put(COLUMN1_NAME, 7);
         contentvalues.put(COLUMN2_NAME, "We are working on this as we speak.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-       // contentvalues.put(COLUMN1_NAME, 8);
         contentvalues.put(COLUMN2_NAME, "Interesting, are you around for a late lunch?");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 9);
         contentvalues.put(COLUMN2_NAME, "I've got a call into Wes to see if these numbers were in the second current estimate or not.");
-
-        sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
-
-      //  contentvalues.put(COLUMN1_NAME, 10);
         contentvalues.put(COLUMN2_NAME, "How about 9 in my office on 3825?");
+
+
+        contentvalues.put(COLUMN2_NAME, "Can you rough out a slide on rating agencies?");
+        contentvalues.put(COLUMN2_NAME, "We probably have to discuss trade behavior and margin.");
+        contentvalues.put(COLUMN2_NAME, "Tell her to get my expense report done.");
+        contentvalues.put(COLUMN2_NAME, "I didn't understand we were borrowing them.");
+        contentvalues.put(COLUMN2_NAME, "Let me know if I miss anything.");
+        contentvalues.put(COLUMN2_NAME, "Did you talk to Ava this morning?");
+        contentvalues.put(COLUMN2_NAME, "I'm at the doctor's office, should be in later.");
+        contentvalues.put(COLUMN2_NAME, "I am not concerned with the Brown money.");
+        contentvalues.put(COLUMN2_NAME, "See you in Enron House when I get back.");
+        contentvalues.put(COLUMN2_NAME, "Don't know how that happened.");
+
+
+        contentvalues.put(COLUMN2_NAME, "I wanted to go drinking with you.");
+        contentvalues.put(COLUMN2_NAME, "Neil has been asking around.");
+        contentvalues.put(COLUMN2_NAME, "I have rates and capacity utilization information ready.");
+        contentvalues.put(COLUMN2_NAME, "Got your back while you pick up wine.");
+        contentvalues.put(COLUMN2_NAME, "We haven't made that decision here though.");
+        contentvalues.put(COLUMN2_NAME, "We haven't made that decision here though.");
+        contentvalues.put(COLUMN2_NAME, "I have forwarded to Kelly.");
+        contentvalues.put(COLUMN2_NAME, "I am really not wanting to come back.");
+        contentvalues.put(COLUMN2_NAME, "I spoke with Lara Robinson this morning.");
+        contentvalues.put(COLUMN2_NAME, "Please stay on top of the security issue.");
 
         long result = sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
         sqLiteDatabase.close();
@@ -164,20 +154,19 @@ public class DBHelper extends SQLiteOpenHelper {
         return texts;
     }
 
-    public void saveToLocalDatabase(ArrayList<Experiment> ex,SQLiteDatabase database){
+    public void saveToLocalDatabase(String email, int session,ArrayList<Experiment> ex,SQLiteDatabase database){
 
         ContentValues contentValues = new ContentValues();
 
-        for(int i=0;i<ex.size();i++){
-            contentValues.put(COLUMN1_email,ex.get(i).getEmail());
-            contentValues.put(COLUMN2_session,ex.get(i).getSession());
-            contentValues.put(COLUMN3_dateTime, Arrays.toString(ex.get(i).getDurationTimeStamps()));
-            contentValues.put(COLUMN4_S1,ex.get(i).getStimulus());
-            contentValues.put(COLUMN5_S2,ex.get(i).getResponse());
-            contentValues.put(COLUMN6_EditDistance,ex.get(i).getEditDistance());
-
-            database.insert(TABLE2_NAME, null, contentValues);
-        }
+            contentValues.put(COLUMN1_email, email);
+            contentValues.put(COLUMN2_session, session);
+            for(int i=0;i<ex.size();i++){
+              contentValues.put(COLUMN3_dateTime, Arrays.toString(ex.get(i).getDurationTimeStamps()));
+              contentValues.put(COLUMN4_S1, ex.get(i).getStimulus());
+              contentValues.put(COLUMN5_S2, ex.get(i).getResponse());
+              contentValues.put(COLUMN6_EditDistance, ex.get(i).getEditDistance());
+            }
+        database.insert(TABLE2_NAME, null, contentValues);
     }
 
     public Cursor readFromLocalDatabase(SQLiteDatabase database) {

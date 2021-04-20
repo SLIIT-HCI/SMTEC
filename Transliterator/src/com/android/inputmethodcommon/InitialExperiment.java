@@ -1,5 +1,6 @@
 package com.example.labexperiment;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,10 +24,19 @@ import com.example.labexperiment.DBHelper;
 import com.example.labexperiment.Databasecontract;
 import com.example.labexperiment.R;
 
+import java.io.Console;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -33,24 +45,33 @@ public class InitialExperiment extends AppCompatActivity {
 
     DBHelper dbHelper;
 
-    TextView timer;
-    static TextView phrase;
-    Button btn_next ,btn_play_pause, btn_stop;
-    static EditText input_phrase;
+    TextView timer,brk_timer, session_Info;
+    TextView phrase;
+    Button btn_next ,btn_play_pause;
+    EditText input_phrase;
     Boolean clicked = false;
-    int clickCount = 0;
+    int clickCount;
     long timeleft;
-    double [] timestsmps = new double[100];
-    int editDistance;
-    String email;
-    int session;
-    double timestampValue,duration ;
+    int noOfRuns = 1;
+    int run, oldValue;
+    String response, stimulus;
+
+    Set<Integer> generated = new HashSet<>();
+    int randomMax = 10;
+
+    int editDistance, session , noOfCharacters;
+    String email , formatDateTime, text_displayed, text_input;
+    LocalDateTime dateTime;
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH.mm");
     BroadcastReceiver broadcastReceiver;
 
-    double startTime,endTime;
     ArrayList phrases = new ArrayList<String>();
-    ArrayList<LabExperiment> list = new ArrayList<>();
+    ArrayList<Experiment> experimentList = new ArrayList<>();
     recyclerAdapter_lab adapter;
+
+    String [] timestamps;
+    CountDownTimer countDown;
 
     public String formatTime(long millis) {
         String output = "00:00";
@@ -78,20 +99,25 @@ public class InitialExperiment extends AppCompatActivity {
         Log.d("I am coming here","1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_experiment);
+
         dbHelper = new DBHelper(this);
         dbHelper.insertData_Phrases();
 
-        timer = findViewById(R.id.timer_view);
-        phrase = findViewById(R.id.id_sentence);
-        btn_next = findViewById(R.id.btn_next);
-        btn_play_pause = findViewById(R.id.btn_play);
-        btn_stop = findViewById(R.id.btn_stop);
-        btn_stop.setEnabled(false);
-        input_phrase = findViewById(R.id.text_enter);
+        timer = (TextView) findViewById(R.id.timer_view);
+        phrase = (TextView) findViewById(R.id.id_sentence);
+        session_Info = (TextView) findViewById(R.id.sessionInfo);
+        btn_next = (Button) findViewById(R.id.btn_next);
+        btn_play_pause = (Button) findViewById(R.id.btn_play);
+        brk_timer = findViewById(R.id.brk_timer);
+
+        input_phrase = (EditText) findViewById(R.id.text_enter);
 
         email = getIntent().getStringExtra("email");
         session = getIntent().getIntExtra("session",0);
-        Date currentTime = Calendar.getInstance().getTime();
+        run = getIntent().getIntExtra("next_run",0);
+        noOfRuns = run;
+        System.out.println("Run " + noOfRuns);
+     //   System.out.println("Run " + run);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -100,9 +126,12 @@ public class InitialExperiment extends AppCompatActivity {
             }
         };
 
-        timer.setText("        Let's start !");
+        timer.setText("        Let's Start !");
+		
+		/* Timer Start*/
+        controlSession();
 
-        final CountDownTimer countDown = new CountDownTimer(60000, 1000)
+      /*  final CountDownTimer countDown = new CountDownTimer(60000, 1000)
         {
             public void onTick(long millisUntilFinished)
             {
@@ -126,33 +155,66 @@ public class InitialExperiment extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        };
+        }; */
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 countDown.start();
                 btn_play_pause.setEnabled(false);
                 btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
-                btn_stop.setEnabled(true);
                 setPhrase(0);
             }
         });
-        btn_stop.setOnClickListener(new View.OnClickListener() {
+      /*  btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 countDown.cancel();
             }
-        });
+        }); */
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
                 clicked = true;
+                timestamps[timestamps.length - 1] = LocalDateTime.now().format(formatDate);
+
+                response = input_phrase.getText().toString();
+                stimulus = phrase.getText().toString();
+                editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
+                noOfCharacters = timestamps.length;
+                experimentList.add(new Experiment(timestamps,stimulus,response,editDistance));
+                saveToLocalStorage(experimentList);
+
+                for(int i=0;i<experimentList.size();i++){
+                    System.out.println("Values " + experimentList.get(i).getStimulus());
+                    System.out.println("Values " + experimentList.get(i).getResponse());
+                    System.out.println("Values " + experimentList.get(i).getEditDistance());
+                    System.out.println("Values " + Arrays.toString(experimentList.get(i).getDurationTimeStamps()));
+                }
                 phraseArray_Iterator();
             }
         });
-        input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        final TextWatcher noOfTaps = new TextWatcher() {
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                timestamps = new String[2];
+                for(int i=0;i<s.length();i++){
+                    dateTime = LocalDateTime.now();
+                    formatDateTime = dateTime.format(formatDate);
+                    timestamps[0] = formatDateTime;
+                }
+            }
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        input_phrase.addTextChangedListener(noOfTaps);
+       /* input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -164,42 +226,114 @@ public class InitialExperiment extends AppCompatActivity {
                     }
                 }
             }
-        });
+        }); */
+    }
+	
+	public void startTimer(){
+
+            countDown = new CountDownTimer(60000, 1000)
+            {
+                public void onTick(long millisUntilFinished)
+                {
+                    timer.setText("Time remaining: " + formatTime(millisUntilFinished));
+                    session_Info.setText("        Session " + session + ":" + "Run " + noOfRuns);
+                    timeleft = millisUntilFinished/1000;
+                }
+                @RequiresApi(api = Build.VERSION_CODES.O)
+
+                public void onFinish()
+                {
+                    //saveToLocalStorage(experimentList);
+                    phrase.setText("");
+                    timer.setText(" Your Time is over !");
+                    input_phrase.setEnabled(false);
+                    input_phrase.setText("");
+                    try {
+                        TimeUnit.SECONDS.sleep(3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    noOfRuns = noOfRuns + 1;
+                    try {
+                        TimeUnit.SECONDS.sleep(3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                  //  System.out.println("noOfRuns " + noOfRuns);
+                    Intent intent = new Intent(InitialExperiment.this, BreakTimeActivity.class);
+                    intent.putExtra("noOfRuns", noOfRuns);
+                    startActivity(intent);
+                }
+            };
+
     }
 
     public void setPhrase(int count){
 
         phrases = dbHelper.getPhrases();
-        System.out.println("phrases: "+phrases.get(0));
+     //   System.out.println("phrases: "+phrases.get(0));
         if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
             phrase.setText(phrases.get(count).toString());
         }
     }
     public void phraseArray_Iterator(){
 
-        clickCount = clickCount + 1;
-        if(clickCount > 9){
-            clickCount = 0;
+      /*  Random r = new Random();
+        clickCount = r.nextInt(10);
+        clickCount += 1;
+        while (clickCount == oldValue){
+           clickCount = r.nextInt(10);
+           clickCount += 1;
         }
+        //clickCount = clickCount + 1;
+       // if(clickCount > 9){
+         //   clickCount = 0;
+        //}
+        oldValue = clickCount;
+        setPhrase(clickCount);
+        input_phrase.setText("");  */
+
+        Random rand = new Random();
+        clickCount = rand.nextInt(randomMax);
+        while (generated.contains(clickCount) && generated.size() < randomMax) {
+            clickCount = rand.nextInt(randomMax);
+        }
+        generated.add(clickCount);
+        clickCount += 1;
         setPhrase(clickCount);
         input_phrase.setText("");
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public double getDuration(){
+	
+   /* public double getDuration(){
 
         for(int i=0;i<input_phrase.getText().toString().length();i++){
             timestsmps[i] = LocalTime.now().toNanoOfDay();
         }
         timestampValue = timestsmps[timestsmps.length - 1] - timestsmps[0];
         return  timestampValue;
+    } */
+	
+	public void controlSession(){
+      if(noOfRuns != 2){
+         startTimer();
+      }else{
+         try {
+            TimeUnit.SECONDS.sleep(3);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+         Intent intent = new Intent(InitialExperiment.this, sessionPeriod.class);
+         startActivity(intent);
+      }
     }
 
-    private void saveToLocalStorage(String email,int session,double duration,String s1,String s2,int editDistance){
+    private void saveToLocalStorage(ArrayList<Experiment> experimentList){
 
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToLocalDatabase( email,session,duration,s1,s2,editDistance,database);
-    //    readFromLocalStorage();
+        dbHelper.saveToLocalDatabase(email,session,experimentList,database);
+
         dbHelper.close();
     }
 
