@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,20 +43,20 @@ import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class InitialExperiment extends AppCompatActivity {
 
     DBHelper dbHelper;
 
-    TextView timer,brk_timer, session_Info;
+    TextView timer, brk_timer, session_Info;
     TextView phrase;
     Button btn_next ,btn_play_pause;
     EditText input_phrase;
     Boolean clicked = false;
-    int clickCount;
-    long timeleft;
+    int clickCount , run;
     int noOfRuns = 1;
-    int run, oldValue;
-    String response, stimulus;
+    long timeleft;
+    String response, stimulus, inputMethod;
 
     Set<Integer> generated = new HashSet<>();
     int randomMax = 10;
@@ -73,30 +75,9 @@ public class InitialExperiment extends AppCompatActivity {
     String [] timestamps;
     CountDownTimer countDown;
 
-    public String formatTime(long millis) {
-        String output = "00:00";
-        long seconds = millis / 1000;
-        long minutes = seconds / 60;
-
-        seconds = seconds % 60;
-        minutes = minutes % 60;
-
-        String sec = String.valueOf(seconds);
-        String min = String.valueOf(minutes);
-
-        if (seconds < 10)
-            sec = "0" + seconds;
-        if (minutes < 10)
-            min= "0" + minutes;
-
-        output = min + " : " + sec;
-        return output;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
 
-        Log.d("I am coming here","1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_experiment);
 
@@ -109,15 +90,12 @@ public class InitialExperiment extends AppCompatActivity {
         btn_next = (Button) findViewById(R.id.btn_next);
         btn_play_pause = (Button) findViewById(R.id.btn_play);
         brk_timer = findViewById(R.id.brk_timer);
-
         input_phrase = (EditText) findViewById(R.id.text_enter);
+
 
         email = getIntent().getStringExtra("email");
         session = getIntent().getIntExtra("session",0);
-        run = getIntent().getIntExtra("next_run",0);
-        noOfRuns = run;
-        System.out.println("Run " + noOfRuns);
-     //   System.out.println("Run " + run);
+        inputMethod = getIntent().getStringExtra("inputMethod");
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -126,36 +104,11 @@ public class InitialExperiment extends AppCompatActivity {
             }
         };
 
-        timer.setText("        Let's Start !");
-		
-		/* Timer Start*/
-        controlSession();
+        timer.setText("          Let's Start !");
 
-      /*  final CountDownTimer countDown = new CountDownTimer(60000, 1000)
-        {
-            public void onTick(long millisUntilFinished)
-            {
-                if(clicked == false) {
-                    //setPhrase(0);
-                }
-                timer.setText("Time remaining: " + formatTime(millisUntilFinished));
-                timeleft = millisUntilFinished/1000;
-            }
-            @RequiresApi(api = Build.VERSION_CODES.O)
-
-            public void onFinish()
-            {
-                endTime = LocalTime.now().toNanoOfDay();
-                timer.setText("Your Time is over !");
-                phrase.setText("");
-                input_phrase.setText("");
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }; */
+        if (noOfRuns < 2){
+            startTimer();
+        }
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,12 +120,6 @@ public class InitialExperiment extends AppCompatActivity {
                 setPhrase(0);
             }
         });
-      /*  btn_stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                countDown.cancel();
-            }
-        }); */
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -187,12 +134,12 @@ public class InitialExperiment extends AppCompatActivity {
                 experimentList.add(new Experiment(timestamps,stimulus,response,editDistance));
                 saveToLocalStorage(experimentList);
 
-                for(int i=0;i<experimentList.size();i++){
+              /*  for(int i=0;i<experimentList.size();i++){
                     System.out.println("Values " + experimentList.get(i).getStimulus());
                     System.out.println("Values " + experimentList.get(i).getResponse());
                     System.out.println("Values " + experimentList.get(i).getEditDistance());
                     System.out.println("Values " + Arrays.toString(experimentList.get(i).getDurationTimeStamps()));
-                }
+                } */
                 phraseArray_Iterator();
             }
         });
@@ -214,29 +161,36 @@ public class InitialExperiment extends AppCompatActivity {
             }
         };
         input_phrase.addTextChangedListener(noOfTaps);
-       /* input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    while(btn_next.isPressed() && timeleft!=0){
-                        // saveInputPhrase();
-                        duration = getDuration();
-                        editDistance = levenshteinDistance(phrase.toString(),input_phrase.toString());
-                        saveToLocalStorage(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance);
-                    }
-                }
-            }
-        }); */
     }
-	
-	public void startTimer(){
+    /* onCreate ends here*/
+
+    public String formatTime(long millis) {
+        String output = "00:00";
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+
+        seconds = seconds % 60;
+        minutes = minutes % 60;
+
+        String sec = String.valueOf(seconds);
+        String min = String.valueOf(minutes);
+
+        if (seconds < 10)
+            sec = "0" + seconds;
+        if (minutes < 10)
+            min= "0" + minutes;
+
+        output = min + " : " + sec;
+        return output;
+    }
+
+    public void startTimer(){
 
             countDown = new CountDownTimer(60000, 1000)
             {
                 public void onTick(long millisUntilFinished)
                 {
                     timer.setText("Time remaining: " + formatTime(millisUntilFinished));
-                    session_Info.setText("        Session " + session + ":" + "Run " + noOfRuns);
                     timeleft = millisUntilFinished/1000;
                 }
                 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -253,45 +207,22 @@ public class InitialExperiment extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    noOfRuns = noOfRuns + 1;
-                    try {
-                        TimeUnit.SECONDS.sleep(3);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                  //  System.out.println("noOfRuns " + noOfRuns);
+                    noOfRuns = noOfRuns +1;
                     Intent intent = new Intent(InitialExperiment.this, BreakTimeActivity.class);
-                    intent.putExtra("noOfRuns", noOfRuns);
                     startActivity(intent);
                 }
             };
-
     }
 
     public void setPhrase(int count){
 
         phrases = dbHelper.getPhrases();
-     //   System.out.println("phrases: "+phrases.get(0));
         if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
             phrase.setText(phrases.get(count).toString());
         }
     }
-    public void phraseArray_Iterator(){
 
-      /*  Random r = new Random();
-        clickCount = r.nextInt(10);
-        clickCount += 1;
-        while (clickCount == oldValue){
-           clickCount = r.nextInt(10);
-           clickCount += 1;
-        }
-        //clickCount = clickCount + 1;
-       // if(clickCount > 9){
-         //   clickCount = 0;
-        //}
-        oldValue = clickCount;
-        setPhrase(clickCount);
-        input_phrase.setText("");  */
+    public void phraseArray_Iterator(){
 
         Random rand = new Random();
         clickCount = rand.nextInt(randomMax);
@@ -303,30 +234,8 @@ public class InitialExperiment extends AppCompatActivity {
         setPhrase(clickCount);
         input_phrase.setText("");
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-	
-   /* public double getDuration(){
 
-        for(int i=0;i<input_phrase.getText().toString().length();i++){
-            timestsmps[i] = LocalTime.now().toNanoOfDay();
-        }
-        timestampValue = timestsmps[timestsmps.length - 1] - timestsmps[0];
-        return  timestampValue;
-    } */
-	
-	public void controlSession(){
-      if(noOfRuns != 2){
-         startTimer();
-      }else{
-         try {
-            TimeUnit.SECONDS.sleep(3);
-         } catch (InterruptedException e) {
-            e.printStackTrace();
-         }
-         Intent intent = new Intent(InitialExperiment.this, sessionPeriod.class);
-         startActivity(intent);
-      }
-    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
 
     private void saveToLocalStorage(ArrayList<Experiment> experimentList){
 
