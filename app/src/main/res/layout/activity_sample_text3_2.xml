@@ -28,16 +28,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="13dp"
         android:layout_marginTop="141dp"
-        android:text="TextView" />
+        android:text="Setting goals is the first step in turning the invisible into the visible" />
 
     <EditText
         android:id="@+id/typeText32"
-        android:layout_width="377dp"
-        android:layout_height="105dp"
+        android:layout_width="370dp"
+        android:layout_height="68dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="19dp"
         android:layout_marginBottom="383dp"
         android:ems="10"
         android:inputType="textPersonName"

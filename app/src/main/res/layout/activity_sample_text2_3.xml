@@ -28,16 +28,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="13dp"
         android:layout_marginTop="141dp"
-        android:text="TextView" />
+        android:text="Don’t let yesterday take up too much of today" />
 
     <EditText
         android:id="@+id/typeText23"
-        android:layout_width="377dp"
-        android:layout_height="105dp"
+        android:layout_width="378dp"
+        android:layout_height="69dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="11dp"
         android:layout_marginBottom="383dp"
         android:ems="10"
         android:inputType="textPersonName"

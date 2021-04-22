@@ -8,41 +8,27 @@
     android:background="@drawable/b17">
 
     <TextView
-        android:id="@+id/sample12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="151dp"
-        android:layout_marginTop="78dp"
-        android:text="@string/sample1_2"
-        android:textSize="20dp"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/text12"
         android:layout_width="379dp"
         android:layout_height="91dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="141dp"
-        android:text="TextView" />
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="118dp"
+        android:text="Learn as if you will live forever, live like you will die tomorrow." />
 
-    <EditText
-        android:id="@+id/typeText12"
-        android:layout_width="377dp"
-        android:layout_height="105dp"
+    <TextView
+        android:id="@+id/sample12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="383dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="" />
-
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="55dp"
+        android:text="@string/sample1_2"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/next12"
@@ -50,9 +36,22 @@
         android:layout_height="61dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="23dp"
-        android:layout_marginBottom="315dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="334dp"
         app:srcCompat="@drawable/next1" />
+
+    <EditText
+        android:id="@+id/typeText12"
+        android:layout_width="368dp"
+        android:layout_height="59dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="404dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
 
 
 </RelativeLayout>

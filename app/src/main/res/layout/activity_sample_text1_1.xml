@@ -8,18 +8,6 @@
     android:background="@drawable/back51">
 
     <TextView
-        android:id="@+id/sample"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="151dp"
-        android:layout_marginTop="78dp"
-        android:text="@string/sample1_1"
-        android:textSize="20dp"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/text1"
         android:layout_width="379dp"
         android:layout_height="91dp"
@@ -27,22 +15,20 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="13dp"
-        android:layout_marginTop="141dp"
-        android:text="TextView" />
+        android:layout_marginTop="117dp"
+        android:text="Hello" />
 
-    <EditText
-        android:id="@+id/typeText"
-        android:layout_width="377dp"
-        android:layout_height="105dp"
+    <TextView
+        android:id="@+id/sample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="383dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="" />
-
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="151dp"
+        android:layout_marginTop="54dp"
+        android:text="@string/sample1_1"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/next"
@@ -51,8 +37,21 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="23dp"
-        android:layout_marginBottom="315dp"
+        android:layout_marginBottom="339dp"
         app:srcCompat="@drawable/next1" />
+
+    <EditText
+        android:id="@+id/typeText"
+        android:layout_width="389dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="407dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
 
 
 </RelativeLayout>
