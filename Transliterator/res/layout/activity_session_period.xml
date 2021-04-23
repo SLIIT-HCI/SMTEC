@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="278dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="48dp"
+        android:text="session successfully completed 1"
+        android:textColor="#7736A5"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/handPosture"
+        android:layout_width="197dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="147dp"
+        android:text="Hand Posture Used"
+        android:textColor="#934949"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <RadioGroup
+        android:id="@+id/radioHandPosture"
+        android:layout_width="199dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/handPosture">
+
+        <RadioButton
+            android:id="@+id/radioThumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Single Thumb"
+            android:textColor="#E9220505"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/radioFinger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Single Finger"
+            android:textColor="#E9220505"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/radioThumbs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Two Thumbs"
+            android:textColor="#E9220505"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="197dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="74dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="140dp"
+        android:text="Comment"
+        android:textColor="#934949"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioHandPosture" />
+
+    <EditText
+        android:id="@+id/textbox"
+        android:layout_width="270dp"
+        android:layout_height="113dp"
+        android:layout_marginStart="74dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="67dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="119dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="28dp"
+        android:text="SUBMIT"
+        android:textColor="#40DCC4"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textbox" />
+
+    <Button
+        android:id="@+id/nextSession"
+        android:layout_width="125dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="67dp"
+        android:text="NEXT SESSION"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/submit"
+        app:layout_constraintTop_toBottomOf="@+id/textbox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
