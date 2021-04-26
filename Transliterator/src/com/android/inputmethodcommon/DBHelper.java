@@ -250,9 +250,18 @@ public class DBHelper extends SQLiteOpenHelper {
         database.insert(TABLE3_NAME,null,contentValues);
     }
 
-    public Cursor readFromLocalDatabase(SQLiteDatabase database) {
+    public Cursor readFromLocalDatabase() {
 
-        String [] projection = {COLUMN1_email,COLUMN2_session,COLUMN3_dateTime,COLUMN4_S1,COLUMN5_S2,COLUMN6_EditDistance};
-        return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
+       // String [] projection = {COLUMN1_email,COLUMN2_session,COLUMN3_dateTime,COLUMN4_S1,COLUMN5_S2,COLUMN6_EditDistance};
+      //  return (database.query(TABLE2_NAME,projection,null,null,null,null,null));
+
+        String query = "SELECT * FROM " + TABLE2_NAME;
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(database != null){
+           cursor = database.rawQuery(query, null);
+        }
+        return cursor;
     }
 }

@@ -15,7 +15,6 @@ public class BreakTimeActivity extends AppCompatActivity {
 
     TextView brk_timer;
     long timeleft;
-    int nextRun = 1;
     RatingBar ratingSpeed, ratingAccuracy, ratingEaseOfUse, ratingPreference;
     float speed, accuracy, easeOfUse, preference;
     String email;
