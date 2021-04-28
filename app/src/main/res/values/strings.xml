@@ -5,8 +5,8 @@
     <string name="alertMsg">When Do You Wish To Start The Experiment?</string>
     <string name="startRB">Start Now</string>
     <string name="OneMin">1 minute</string>
-    <string name="TwoMin">2 minute</string>
-    <string name="FiveMin">5 minute</string>
+    <string name="TwoMin">2 minutes</string>
+    <string name="FiveMin">5 minutes</string>
 
     <!-- main screen-->
     <string name="getStartedBtn">Get Started</string>

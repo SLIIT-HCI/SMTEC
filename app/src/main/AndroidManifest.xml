@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.wildusers">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,19 +24,30 @@
         <activity android:name=".activity_sample_text2_1" />
         <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".activity_sample_text1_2" />
-        <activity android:name=".activity_sample_text1_1" />
         <activity android:name=".activity_sample_text3_1" />
-        <activity android:name=".alertScreen" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".activity_sample_text1_1" />
         <activity android:name=".questionnaire" />
         <activity android:name=".rating" />
         <activity android:name=".StartUp" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".alertScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--        <activity-->
+<!--            android:name=".alertScreen"-->
+<!--            android:excludeFromRecents="true"-->
+<!--            android:showOnLockScreen="true"-->
+<!--            android:showWhenLocked="true"-->
+<!--            android:turnScreenOn="true"-->
+<!--            android:showForAllUsers="true">-->
+        <receiver
+            android:name=".ReminderBroadcast"
+            android:enabled="true"/>
     </application>
 
 </manifest>
