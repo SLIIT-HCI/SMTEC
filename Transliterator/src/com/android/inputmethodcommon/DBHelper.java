@@ -109,15 +109,22 @@ public class DBHelper extends SQLiteOpenHelper {
             onCreate(sqLiteDatabase);
         }
     }
-    public boolean insertData_Phrases(){
+    public boolean insertData_Phrases(String phrase)  {
 
         Log.d("Trying to insert 1..","1");
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentvalues = new ContentValues();
 
-        Log.d("Trying to insert 2..","1");
+        contentvalues.put(COLUMN2_NAME, phrase);
+        long result = sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
+        sqLiteDatabase.close();
 
-        contentvalues.put(COLUMN2_NAME, "Thanks, I will look at it tonight.");
+        if(result == -1)
+            return  false;
+        else
+            return  true;
+
+     /*   contentvalues.put(COLUMN2_NAME, "Thanks, I will look at it tonight.");
         sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
         contentvalues.put(COLUMN2_NAME, "She also wants us to hire everyone who is out on leave immediately instead of having them show up when released.");
         sqLiteDatabase.insert(TABLE1_NAME, null, contentvalues);
@@ -185,8 +192,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if(result == -1)
             return  false;
         else
-            return  true;
+            return  true;   */
+
+
     }
+
 
     public ArrayList<String> getPhrases() {
 

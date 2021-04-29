@@ -4,19 +4,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -37,18 +52,19 @@ public class InitialExperiment extends AppCompatActivity {
     Button btn_next ,btn_play_pause;
     EditText input_phrase;
     Boolean clicked = false;
-    int clickCount,editDistance, session;
-    long timeleft;
-    String response, stimulus, inputMethod, email , formatDateTime;
+    int clickCount,editDistance, session, noOfRuns;
+    long timeleft, duration;
+    String response, stimulus, inputMethod, email , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
-    int randomMax = 10;
-    LocalDateTime dateTime;
-    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    int randomMax = 80;
+    LocalDateTime dateTime1,dateTime2;
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH.mm");
     BroadcastReceiver broadcastReceiver;
     ArrayList phrases = new ArrayList<String>();
     String [] timestamps;
     CountDownTimer countDown;
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
@@ -57,20 +73,22 @@ public class InitialExperiment extends AppCompatActivity {
         setContentView(R.layout.activity_initial_experiment);
 
         dbHelper = new DBHelper(this);
-        dbHelper.insertData_Phrases();
+        displayText();
+
 
         timer = (TextView) findViewById(R.id.timer_view);
         phrase = (TextView) findViewById(R.id.id_sentence);
-        session_Info = (TextView) findViewById(R.id.sessionInfo);
+     //   session_Info = (TextView) findViewById(R.id.sessionInfo);
         btn_next = (Button) findViewById(R.id.btn_next);
         btn_play_pause = (Button) findViewById(R.id.btn_play);
-        brk_timer = findViewById(R.id.brk_timer);
+      //  brk_timer = findViewById(R.id.brk_timer);
         input_phrase = (EditText) findViewById(R.id.text_enter);
 
         /*retrieving values through intents*/
         email = getIntent().getStringExtra("email");
         session = getIntent().getIntExtra("session",0);
         inputMethod = getIntent().getStringExtra("inputMethod");
+        noOfRuns = getIntent().getIntExtra("noOfRuns",0);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -80,12 +98,13 @@ public class InitialExperiment extends AppCompatActivity {
         };
 
         timer.setText("          Let's Start !");
-        startTimer();
+        //startTimer();
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-           countDown.start();
+          // countDown.start();
+           startTimer();
            btn_play_pause.setEnabled(false);
            btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
            setPhrase(0);
@@ -96,12 +115,17 @@ public class InitialExperiment extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
                 clicked = true;
-                timestamps[timestamps.length - 1] = LocalDateTime.now().format(formatDate);
+                dateTime2 = LocalDateTime.now();
+                formatDateTime2 = dateTime2.format(formatDate);
+                timestamps[timestamps.length - 1] = formatDateTime2;
+
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
                 editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
+                duration = Duration.between(dateTime1, dateTime2).toNanos();
+                System.out.println("Duration " + duration);
                 /*create an object to store the data using 'Experiment ' class*/
-                experiment = new Experiment(timestamps,stimulus,response,editDistance);
+                experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
                 saveToLocalStorage(experiment);
                 phraseArray_Iterator();
             }
@@ -112,9 +136,9 @@ public class InitialExperiment extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 timestamps = new String[2];
                 for(int i=0;i<s.length();i++){
-                    dateTime = LocalDateTime.now();
-                    formatDateTime = dateTime.format(formatDate);
-                    timestamps[0] = formatDateTime;
+                    dateTime1 = LocalDateTime.now();
+                    formatDateTime1 = dateTime1.format(formatDate);
+                    timestamps[0] = formatDateTime1;
                 }
             }
             public void afterTextChanged(Editable s) {}
@@ -149,7 +173,7 @@ public class InitialExperiment extends AppCompatActivity {
         {
            public void onTick(long millisUntilFinished)
            {
-              timer.setText("Time remaining: " + formatTime(millisUntilFinished));
+              timer.setText(" Time remaining: " + formatTime(millisUntilFinished));
               timeleft = millisUntilFinished/1000;
            }
            @RequiresApi(api = Build.VERSION_CODES.O)
@@ -167,9 +191,95 @@ public class InitialExperiment extends AppCompatActivity {
            Intent intent = new Intent(InitialExperiment.this, BreakTimeActivity.class);
            intent.putExtra("email", email);
            intent.putExtra("session", session);
+           intent.putExtra("noOfRuns", noOfRuns);
            startActivity(intent);
           }
-        };
+        }.start();
+    }
+    public void displayText() {
+
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(getAssets().open("phrases.txt")));
+
+            // do reading, usually loop until end of file reading
+            String mLine;
+            while ((mLine = reader.readLine()) != null) {
+                dbHelper.insertData_Phrases(mLine);
+            }
+        } catch (IOException e) {
+            //log the exception
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    //log the exception
+                }
+            }
+        }
+
+
+     /*   ArrayList<String> texts = new ArrayList<>();
+        File fileEvents = new File(InitialExperiment.this.getFilesDir()+"phrases");
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(fileEvents));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                texts.add(line);
+            }
+            reader.close();
+        } catch (IOException e) { }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    //log the exception
+                }
+            }
+        }
+        dbHelper.insertData_Phrases(texts);  */
+		
+		
+		/*
+		
+		String state = Environment.getExternalStorageState();
+        if (!(state.equals(Environment.MEDIA_MOUNTED))) {
+            Toast.makeText(this, "There is no any sd card", Toast.LENGTH_LONG).show();
+
+        } else {
+            BufferedReader reader = null;
+            try {
+                Toast.makeText(this, "Sd card available", Toast.LENGTH_LONG).show();
+                File file = Environment.getDataDirectory();
+                File textFile = new File(file.getAbsolutePath() + File.separator + "Download/phrases.txt");
+                reader = new BufferedReader(new FileReader(textFile));
+                StringBuilder textBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    dbHelper.insertData_Phrases(line);
+                }
+                reader.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }*/
+
     }
 
     public void setPhrase(int count){
