@@ -29,9 +29,9 @@
         <activity android:name=".activity_sample_text1_1" />
         <activity android:name=".questionnaire" />
         <activity android:name=".rating" />
-        <activity android:name=".StartUp" />
+        <activity android:name=".alertScreen" />
         <activity
-            android:name=".alertScreen">
+            android:name=".StartUp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -34,7 +34,7 @@ public class alertScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_screen);
 
-        //making the activity appear every one hour
+//        making the activity appear every one hour
 //        oneHourAlarmHandler alarmHandler = new oneHourAlarmHandler(this);
 //        alarmHandler.setAlarmManager();
 
@@ -45,7 +45,7 @@ public class alertScreen extends AppCompatActivity {
         twoMin = (RadioButton) findViewById(R.id.twoMinRB);
         fiveMin = (RadioButton) findViewById(R.id.fiveMinRB);
         
-        /************************************************************************************************/
+        /************************************************ implementing the option radio buttons ************************************************/
         alertGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -65,7 +65,7 @@ public class alertScreen extends AppCompatActivity {
 
                     AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                     long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 60; //1 minute
+                    long twoMinutes = 1000 * 10; //1 minute
                     alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
                     Toast.makeText(alertScreen.this, "Starting Experiment in 1 Minutes!", Toast.LENGTH_SHORT).show();
                 }
@@ -76,7 +76,7 @@ public class alertScreen extends AppCompatActivity {
 
                     AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                     long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 120; //2 minutes
+                    long twoMinutes = 1000 * 20; //2 minutes
 
                     alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
 
@@ -91,7 +91,7 @@ public class alertScreen extends AppCompatActivity {
 
                     AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                     long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 300; //5 minutes
+                    long twoMinutes = 1000 * 30; //5 minutes
                     alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
                     Toast.makeText(alertScreen.this, "Starting Experiment in 5 Minutes!", Toast.LENGTH_SHORT).show();
 
@@ -105,7 +105,7 @@ public class alertScreen extends AppCompatActivity {
     /**********************************************************************************************************/
 
     //code implementation for the reminder
-  //  @RequiresApi(api = Build.VERSION_CODES.O)
+    //@RequiresApi(api = Build.VERSION_CODES.O)
 
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -119,6 +119,5 @@ public class alertScreen extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
    }
-
 
 }
