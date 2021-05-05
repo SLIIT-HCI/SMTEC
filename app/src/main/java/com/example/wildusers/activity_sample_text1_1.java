@@ -1,26 +1,26 @@
 package com.example.wildusers;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,45 +30,48 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.wildusers.Database.DBContract;
 import com.example.wildusers.Database.DatabaseHelper;
 import com.example.wildusers.Database.mySingleton;
+import com.example.wildusers.Experiment;
+import com.example.wildusers.R;
+import com.example.wildusers.RecyclerAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class activity_sample_text1_1 extends AppCompatActivity {
 
-
     DatabaseHelper dbHelper;
-    ImageView next;
-    EditText text1;
-    TextView phrase1, timer1;
-    Button start1;
-
-    Boolean clicked = false;
-    long timeleft;
-    double endTime;
-    int clickCount = 0;
-
-    BroadcastReceiver broadcastReceiver;
-
+    RecyclerView recyclerview;
+    RecyclerView.LayoutManager layoutManager;
     RecyclerAdapter adapter;
-    ArrayList<String> phrases = new ArrayList<>();
     ArrayList<Experiment> list = new ArrayList<>();
 
-    /***************************************format time****************************************/
+    TextView timer;
+    static TextView phrase;
+    //Button btn_play_pause, btn_stop;
+    FloatingActionButton start1, stop1;
 
-    public String formatTime(long millis){
+    ImageView btn_next;
+    static EditText input_phrase;
+    Boolean clicked = false;
+    int clickCount = 0;
+    long timeleft;
+    int editDistance;
+    BroadcastReceiver broadcastReceiver;
+    double endTime;
+    String email;
+    int session;
+    ArrayList<String> phrases = new ArrayList<>();
+    String phrasesSet[] = new String[30];
+
+
+    public String formatTime(long millis) {
         String output = "00:00";
         long seconds = millis / 1000;
         long minutes = seconds / 60;
@@ -88,35 +91,32 @@ public class activity_sample_text1_1 extends AppCompatActivity {
         return output;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void onCreate(Bundle savedInstanceState) {
 
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        Log.d("I am coming here","1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text1_1);
 
+        dbHelper = new DatabaseHelper(this);
+        dbHelper.insertData_Phrases();
 
-        next = (ImageView) findViewById(R.id.next);
-        text1 = (EditText) findViewById(R.id.typeText);
-        phrase1 = (TextView) findViewById(R.id.text1);
-        start1 = (Button) findViewById(R.id.startBTN);
-        timer1 = (TextView) findViewById(R.id.timer1);
+        timer = (TextView) findViewById(R.id.timer);
+        phrase = (TextView) findViewById(R.id.viewPhrase);
+        btn_next = (ImageView) findViewById(R.id.next);
+        //btn_play_pause = (Button) findViewById(R.id.start);
+        //btn_stop = (Button) findViewById(R.id.Stop);
+        //btn_stop.setEnabled(false);
+        input_phrase = (EditText) findViewById(R.id.typeText);
+        start1 = (FloatingActionButton) findViewById(R.id.start1);
+        stop1 = (FloatingActionButton) findViewById(R.id.stop1);
+        stop1.setEnabled(false);
 
+        email = getIntent().getStringExtra("email");
+        session = getIntent().getIntExtra("session",0);
+        layoutManager = new LinearLayoutManager(this);
+        timer.setText("        Let's start !");
 
-        adapter = new RecyclerAdapter(list);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                readFromLocalStorage();
-            }
-        };
-
-        timer1.setText("        Let's start !");
-
-
-
-        /***********************************Count Down*********************************************/
         final CountDownTimer countDown = new CountDownTimer(60000, 1000)
         {
             public void onTick(long millisUntilFinished)
@@ -124,17 +124,17 @@ public class activity_sample_text1_1 extends AppCompatActivity {
                 if(clicked == false) {
                     setPhrase(0);
                 }
-                timer1.setText("Time remaining: " + formatTime(millisUntilFinished));
+                timer.setText("Time remaining: " + formatTime(millisUntilFinished));
                 timeleft = millisUntilFinished/1000;
             }
-
             @RequiresApi(api = Build.VERSION_CODES.O)
+
             public void onFinish()
             {
                 endTime = LocalTime.now().toNanoOfDay();
-                timer1.setText("Your Time is over !");
-                phrase1.setText("");
-                text1.setText("");
+                timer.setText("Your Time is over !");
+                phrase.setText("");
+                input_phrase.setText("");
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
@@ -143,83 +143,78 @@ public class activity_sample_text1_1 extends AppCompatActivity {
             }
         };
 
-        /**************************************end of count down***********************************/
+//        btn_play_pause.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                countDown.start();
+//                btn_play_pause.setEnabled(false);
+//                //btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
+//                btn_stop.setEnabled(true);
+//                setPhrase(0);
+//            }
+//        });
 
 
-
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(activity_sample_text1_1.this, activity_sample_text1_2.class);
-                startActivity(i);
-                clicked = true;
-                phraseArray_Iterator();
-            }
-        });
-
-/************************************    constructing    ******************************************/
+        /******************************* play floating *******************************/
         start1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 countDown.start();
                 start1.setEnabled(false);
-                //start1.setBackgroundResource(R.drawable.btn_play_gray);
-                //btn_stop.setEnabled(true);
+                //btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
+                stop1.setEnabled(true);
                 setPhrase(0);
+            }
+        });
+
+        stop1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countDown.cancel();
+            }
+        });
+
+
+        /*********************************************************************/
+
+
+
+
+//        btn_stop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                countDown.cancel();
+//            }
+//        });
+
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void onClick(View v) {
+                clicked = true;
+                phraseArray_Iterator();
+            }
+        });
+        input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    while(btn_next.isPressed() && timeleft!=0){
+                        // saveInputPhrase();
+                        editDistance = levenshteinDistance(phrase.toString(),input_phrase.toString());
+                        //  saveToAppServer(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance,id);
+                    }
+                }
             }
         });
     }
 
-
-
-
-//    public void setPhrase(Integer count){
-//
-//        /*phrase_array[0] ="You are ready to learn and do your best, but you are also nervous.";
-//        phrase_array[1] = "Sometimes the most difficult questions have the simplest solutions";
-//        phrase_array[2] = "Congratulations on your new job";
-//        phrase_array[3] = "Starting a new job is exciting but stressful.";
-//        phrase_array[4] = "Tomorrow is second Saturday.";
-//        phrase.setText(phrase_array[count]); */
-//
-//        List<String> allTexts = Phrases_from_Database.getInputTexts();
-//
-//            for(Integer index = 0 ; index < allTexts.size() ; index ++){
-//                phrase_array[index] = allTexts.get(index);
-//            }
-//
-//        phrase1.setText(phrase_array[count]);
-//
-//        phrases = getPhrasesFromAppServer("http://192.168.1.4/smtec/smtec.php");
-//
-//        phrase1.setText(phrases[count]);
-//    }
-
-//    public void setPhrase(int count){
-//
-//     /* phrases = dbHelper.getPhrases();
-//      System.out.println("phrases: "+phrases.get(0));
-//       if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
-//            phrase.setText(phrases.get(count).toString());
-//       }  */
-//
-//        phrases = getPhrasesFromAppServer("http://192.168.1.4/smtec/smtec.php");
-//
-//        phrase1.setText(phrases[count]);
-//    }
-
-
     public void setPhrase(int count){
-
-        //phrases = getPhrasesFromAppServer("http://192.168.1.4/smtec/smtec.php");
-        //System.out.println("phrases: "+phrases.get(0));
-        // phrase.setText(phrases[count]);
 
         phrases = dbHelper.getPhrases();
         phrases = dbHelper.getPhrases();
         System.out.println("phrases: "+phrases.get(0));
         if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
-            phrase1.setText(phrases.get(count).toString());
+            phrase.setText(phrases.get(count).toString());
         }
 
     }
@@ -230,15 +225,14 @@ public class activity_sample_text1_1 extends AppCompatActivity {
             clickCount = 0;
         }
         setPhrase(clickCount);
-        text1.setText("");
+        input_phrase.setText("");
 
     }
-
 
     /* save to local database*/
     public void saveToAppServer(final String email, final int session, final String duration, final String s1, final String s2, final int editDistance, final int status, final String sensorType, final double val_x, final double val_y, final double val_z){
 
-  //      if(checkNetworkConnection()){
+        if(checkNetworkConnection()){
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, DatabaseHelper.SERVER_URL,
                     new Response.Listener<String>() {
@@ -283,17 +277,11 @@ public class activity_sample_text1_1 extends AppCompatActivity {
             };
             mySingleton.getInstance(activity_sample_text1_1.this).addToRequestQueue(stringRequest);
 
-//        }else{
-//            saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
-//        }
+        }else{
+            saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
+        }
 
     }
-
-
-    private void getPhrasesFromAppServer() {
-
-    }
-
 
     /* read data from the local database*/
     private void readFromLocalStorage(){
@@ -314,20 +302,19 @@ public class activity_sample_text1_1 extends AppCompatActivity {
             double value_y = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN9_Y));
             double value_z = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN10_Z));
 
-/*****************/
-           // list.add(new Experiment(email,session,duration,s1,s2,editDistance,sync_status,sensorType,value_x,value_y,value_z));
+            list.add(new Experiment(email,session,duration,s1,s2,editDistance,sync_status,sensorType,value_x,value_y,value_z));
         }
         adapter.notifyDataSetChanged();
         cursor.close();
         dbHelper.close();
     }
-/************/
+
     /* checking Internet connection */
-//    public boolean checkNetworkConnection(){
-//        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();
-//        return (networkinfo != null && networkinfo.isConnected());
-//    }
+    public boolean checkNetworkConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();
+        return (networkinfo != null && networkinfo.isConnected());
+    }
 
     private void saveToLocalStorage(String email,int session,String duration,String s1,String s2,int editDistance,int sync_status,String sensorName,double val_x,double val_y,double val_z){
 
@@ -364,97 +351,16 @@ public class activity_sample_text1_1 extends AppCompatActivity {
         }
         return d[ s1.length ][ s2.length ];
     }
-/***************/
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //registerReceiver(broadcastReceiver, new IntentFilter(DBContract.UI_UPDATE_BROADCAST));
-//    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(broadcastReceiver, new IntentFilter(DBContract.UI_UPDATE_BROADCAST));
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    private String[] loadIntoTextView(String json) throws JSONException {
-//        JSONArray jsonArray = new JSONArray(json);
-//        String[] phrases = new String[jsonArray.length()];
-//        for (int i = 0; i < jsonArray.length(); i++) {
-//            JSONObject obj = jsonArray.getJSONObject(i);
-//            phrases[i] = obj.getString("phrase");
-//        }
-//        //  ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, phrases);
-//        // phrase.setText((CharSequence) arrayAdapter);
-//        return phrases;
-//    }
-//
-//    private String[] getPhrasesFromAppServer(final String urlWebService) {
-//
-//        final String[] value = new String[30];
-//        class GetJSON extends AsyncTask<Void, Void, String> {
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-//                try {
-//                    for(String text : loadIntoTextView(s)){
-//                        for(int i =0;i<value.length;i++){
-//                            value[i] = text;
-//                        }
-//                    }
-//
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//                try {
-//                    URL url = new URL(urlWebService);
-//                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//                    StringBuilder sb = new StringBuilder();
-//                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//                    String json;
-//                    while ((json = bufferedReader.readLine()) != null) {
-//                        sb.append(json + "\n");
-//                    }
-//                    return sb.toString().trim();
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//            }
-//        }
-//        GetJSON getJSON = new GetJSON();
-//        getJSON.execute();
-//
-//        return value;
-//    }
 }
