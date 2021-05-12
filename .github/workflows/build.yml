@@ -28,6 +28,19 @@ jobs:
           java-version: 1.8
       - name: Lint
         run: bash ./gradlew lint
+      - name: Lint results
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: app/build/reports/lint-results.html
+
+#Locally Devs usually just use ./gradlew lintDebug
+#and on CI which happens in the background Devs run the full suite ./gradlew lint
+
+#./gradlew lintDebug  -  run lint with your main sources and debug.
+#./gradlew lintRelease -  run lint with your main sources and release.
+#./gradlew lint  -  run all of the variations that there are.
+#./gradlew lintFlavor1Debug -  run lint with your main sources and the debug sources of flavor1.
 
 #A job to gradle testing with stacktrace
 
@@ -43,6 +56,12 @@ jobs:
           java-version: 1.8
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
+      - name: Unit tests results
+        uses: actions/upload-artifact@v1
+        with:
+          name: unit-tests-results
+          path: app/build/reports/tests/testDebugUnitTest/index.html
+
 
   # A job to gradle build with stacktrace
   build:
