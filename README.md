@@ -1,2 +1,3 @@
 [![Build](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/build.yml/badge.svg)](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/build.yml)                            [![Generate APK](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/build_release.yml/badge.svg)](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/build_release.yml)
  
+[![Remove old artifacts](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/remove-old-artifacts.yml/badge.svg)](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/remove-old-artifacts.yml) [![Update Gradle Wrapper](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/update-gradle-wrapper.yml/badge.svg)](https://github.com/SLIIT-HCI/SMTEC/actions/workflows/update-gradle-wrapper.yml)
