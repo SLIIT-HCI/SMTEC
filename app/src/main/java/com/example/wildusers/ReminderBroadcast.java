@@ -1,11 +1,8 @@
 package com.example.wildusers;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -30,7 +27,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
         Toast.makeText(context, "Starting Your Experiment!!", Toast.LENGTH_LONG).show();
         intent = new Intent();
-        intent.setClass(context, activity_sample_text1_1.class); //class name where to redirect
+        intent.setClass(context, activity_sample_text1_3.class); //class name where to redirect
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //intent.putExtra("msg", str);
         context.startActivity(intent);
@@ -42,7 +39,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
 //
 //        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                    Intent i = new Intent(context, activity_sample_text1_1.class);
+//                    Intent i = new Intent(context, activity_sample_text1_3.class);
 //                    PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 //                    alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 //                            SystemClock.elapsedRealtime() + 1000*60,

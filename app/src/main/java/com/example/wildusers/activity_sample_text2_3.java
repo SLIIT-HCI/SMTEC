@@ -27,7 +27,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
         next23.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(activity_sample_text2_3.this, activity_sample_text3_1.class);
+                Intent i = new Intent(activity_sample_text2_3.this, activity_sample_text3_3.class);
                 startActivity(i);
             }
         });

@@ -34,9 +34,8 @@
     <string name="R6">Open Comment</string>
 
     <!-- sample Text-->
-    <string name="sample1_1">Sample 01/01</string>
-    <string name="sample1_2">Sample 01/02</string>
     <string name="sample1_3">Sample 01/03</string>
+    <string name="sample1_2">Sample 01/02</string>
     <string name="sample2_1">Sample 02/01</string>
     <string name="sample2_2">Sample 02/02</string>
     <string name="sample2_3">Sample 02/03</string>
@@ -46,4 +45,5 @@
 
     <!-- startup -->
     <string name="startBtn">Start</string>
+
 </resources>

@@ -1,10 +1,14 @@
 package com.example.wildusers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,18 +40,18 @@ public class StartUp extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), activity_sample_text1_1.class);
+                Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
                 startActivity(i);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        Intent i = new Intent(getApplicationContext(), activity_sample_text1_1.class);
+//                        Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
 //                        startActivity(i);
                         finish();
                         //Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
                     }
-                }, 900);
+                }, 1000*60);
             }
         });
 
@@ -59,10 +63,47 @@ public class StartUp extends AppCompatActivity {
         @Override
         public void run() {
             Toast.makeText(StartUp.this, "Repeating Activity Every One Hour", Toast.LENGTH_SHORT).show();
-            mHandler.postDelayed(this, 1000*60*60);
+            mHandler.postDelayed(this, 1000*120);
             Intent i = new Intent(getApplicationContext(), alertScreen.class);
             startActivity(i);
 //            activityRunnable.run();
         }
     };
+
+
+    /******************************** mini menu **********************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.mini_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.activeTime:
+                Intent i1 = new Intent(getApplicationContext(), activeTime.class);
+                startActivity(i1);
+                return true;
+
+            case R.id.Instructions:
+                Intent i2 = new Intent(getApplicationContext(), Instructions.class);
+                startActivity(i2);
+                return true;
+
+            case R.id.settings:
+                Intent i3 = new Intent(getApplicationContext(), settings.class);
+                startActivity(i3);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /******************************************* end of mini-menu ***********************************************************/
+
 }

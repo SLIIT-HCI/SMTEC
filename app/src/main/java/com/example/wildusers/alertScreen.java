@@ -1,24 +1,14 @@
 package com.example.wildusers;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.KeyguardManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -54,7 +44,7 @@ public class alertScreen extends AppCompatActivity {
                 createNotificationChannel();
 
                 if(i == R.id.startRB){
-                    Intent i1 = new Intent(getApplicationContext(), activity_sample_text1_1.class);
+                    Intent i1 = new Intent(getApplicationContext(), activity_sample_text1_3.class);
                     startActivity(i1);
                     Toast.makeText(alertScreen.this, "Starting Experiment Now!", Toast.LENGTH_SHORT).show();
                 }
