@@ -1,9 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkBlue"
     tools:context=".settings">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/settingsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="10dp"
+        android:text="SETTINGS"
+        android:textSize="28dp"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/googleKeyboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="70dp"
+        android:text="Set-Up Google Keyboard"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/step1LL"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="-3dp"
+        android:layout_marginTop="305dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:text="STEP 1 - Download Google Keyboa"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/downloadGBoardBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:backgroundTint="#7086F6"
+            android:text="Download GBoard" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/step2LL"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+
+
+        android:layout_below="@+id/step1LL"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="-5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/step2TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:textColor="@color/white"
+            android:text="STEP 2 - Set-Up GBoard as Default Keyboard"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/step2_2TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:textColor="@color/white"
+            android:text="Go to Settings --> Language and inputs --> Keyboard and input methods --> Current Keyboard --> Select GBoard"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/settingsOkBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="65dp"
+        android:backgroundTint="#28BF06"
+        android:src="@drawable/ic_baseline_check_24"/>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/gboard"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="133dp"
+        android:src="@drawable/gboard">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+
+</RelativeLayout>

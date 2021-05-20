@@ -1,5 +1,6 @@
 package com.example.wildusers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
@@ -9,6 +10,9 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -109,5 +113,43 @@ public class alertScreen extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
    }
+
+
+
+    /******************************** mini menu **********************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.mini_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.activeTime:
+                Intent i1 = new Intent(getApplicationContext(), activeTime.class);
+                startActivity(i1);
+                return true;
+
+            case R.id.Instructions:
+                Intent i2 = new Intent(getApplicationContext(), Instructions.class);
+                startActivity(i2);
+                return true;
+
+            case R.id.settings:
+                Intent i3 = new Intent(getApplicationContext(), settings.class);
+                startActivity(i3);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /******************************************* end of mini-menu ***********************************************************/
+
 
 }

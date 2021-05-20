@@ -43,41 +43,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-/******************************** mini menu **********************************************/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.mini_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.activeTime:
-                Intent i1 = new Intent(getApplicationContext(), activeTime.class);
-                startActivity(i1);
-                return true;
-
-            case R.id.Instructions:
-                Intent i2 = new Intent(getApplicationContext(), Instructions.class);
-                startActivity(i2);
-                return true;
-
-            case R.id.settings:
-                Intent i3 = new Intent(getApplicationContext(), settings.class);
-                startActivity(i3);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
-    /******************************************* end of mini-menu ***********************************************************/
-
-
 }

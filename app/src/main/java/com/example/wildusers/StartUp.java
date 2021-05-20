@@ -63,7 +63,7 @@ public class StartUp extends AppCompatActivity {
         @Override
         public void run() {
             Toast.makeText(StartUp.this, "Repeating Activity Every One Hour", Toast.LENGTH_SHORT).show();
-            mHandler.postDelayed(this, 1000*120);
+            mHandler.postDelayed(this, 1000*60);
             Intent i = new Intent(getApplicationContext(), alertScreen.class);
             startActivity(i);
 //            activityRunnable.run();
