@@ -48,6 +48,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN1_userEmail = "Email";
     private static final String COLUMN2_session = "Session";
 
+
+
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -108,6 +111,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             onCreate(sqLiteDatabase);
         }
     }
+
+
+
     public boolean insertData_Phrases(){
 
         Log.d("Trying to insert 1..","1");

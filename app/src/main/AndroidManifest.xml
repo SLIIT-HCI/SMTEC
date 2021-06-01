@@ -17,35 +17,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WildUsers">
+        <receiver android:name=".AlarmReceiver"></receiver>
         <activity android:name=".webViewPlayStore"></activity>
         <activity android:name=".settings" />
         <activity android:name=".Instructions" />
         <activity android:name=".activeTime" />
-        <activity android:name=".rating2" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".activity_sample_text3_3" />
         <activity android:name=".activity_sample_text2_3" />
         <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".StartUp" />
         <activity android:name=".questionnaire" />
         <activity android:name=".rating" />
-<!--        <activity android:name=".alertScreen" />-->
-        <activity android:name=".MainActivity">
+        <activity android:name=".rating2" />
+        <activity android:name=".alertScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         <activity
-         android:name=".alertScreen"
-         android:excludeFromRecents="true"
-         android:showOnLockScreen="true"
-         android:showWhenLocked="true"
-         android:turnScreenOn="true"
-         android:showForAllUsers="true"/>
+<!--         <activity-->
+<!--         android:name=".alertScreen"-->
+<!--         android:excludeFromRecents="true"-->
+<!--         android:showOnLockScreen="true"-->
+<!--         android:showWhenLocked="true"-->
+<!--         android:turnScreenOn="true"-->
+<!--         android:showForAllUsers="true"/>-->
         <receiver
             android:name=".ReminderBroadcast"
             android:enabled="true" />
+
     </application>
 
 </manifest>

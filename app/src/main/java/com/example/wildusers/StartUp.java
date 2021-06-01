@@ -34,7 +34,7 @@ public class StartUp extends AppCompatActivity {
 
 
         //calling alert screen every one hour
-        activityRunnable.run();
+        //activityRunnable.run();
 
         //Navigating to the text entry interface
         start.setOnClickListener(new View.OnClickListener() {
@@ -59,16 +59,16 @@ public class StartUp extends AppCompatActivity {
 
 
     /******************************************* repeating activity every one hour *********************************************/
-    private Runnable activityRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Toast.makeText(StartUp.this, "Repeating Activity Every One Hour", Toast.LENGTH_SHORT).show();
-            mHandler.postDelayed(this, 1000*60);
-            Intent i = new Intent(getApplicationContext(), alertScreen.class);
-            startActivity(i);
-//            activityRunnable.run();
-        }
-    };
+//    private Runnable activityRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            Toast.makeText(StartUp.this, "Repeating Activity Every One Hour", Toast.LENGTH_SHORT).show();
+//            mHandler.postDelayed(this, 1000*60);
+//            Intent i = new Intent(getApplicationContext(), alertScreen.class);
+//            startActivity(i);
+////            activityRunnable.run();
+//        }
+//    };
 
 
     /******************************** mini menu **********************************************/

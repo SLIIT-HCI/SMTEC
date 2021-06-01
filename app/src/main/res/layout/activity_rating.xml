@@ -8,6 +8,7 @@
     android:background="@drawable/back8">
 
     <TextView
+        android:id="@+id/ratingTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

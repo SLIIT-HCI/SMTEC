@@ -4,6 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/back10"
     tools:context=".activeTime">
+
+    <TextView
+        android:id="@+id/activeTimeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="52dp"
+        android:text="Active Time"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtActiveTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activeTimeTV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:text="Please Select Your Active Time Range"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activeTimeTV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="90dp"
+        android:text="Assume 0 is 12 am"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/timeRange"
+        android:layout_width="174dp"
+        android:layout_height="79dp"
+        android:layout_below="@+id/rangeSlider"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="127dp"
+        android:text=" 12am - 12am "
+        android:textSize="20dp" />
+
+    <me.bendik.simplerangeview.SimpleRangeView
+        android:id="@+id/rangeSlider"
+        android:layout_width="376dp"
+        android:layout_height="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="231dp"
+        android:layout_marginEnd="9dp"
+        app:count="24"
+        app:movable="true" />
 
 </RelativeLayout>
