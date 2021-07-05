@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,12 +16,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+//import com.example.wildusers.Database.LocalDB.DBHandler;
+import com.example.wildusers.Database.LocalDB.DBHelper;
+
+
 public class StartUp extends AppCompatActivity {
 
-    private Handler mHandler = new Handler();
-
+    //private Handler mHandler = new Handler();
+    String PassUserID;
     Button start;
     EditText ID, condition, rotationSequence;
+
+    DBHelper DB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +44,42 @@ public class StartUp extends AppCompatActivity {
         //calling alert screen every one hour
         //activityRunnable.run();
 
-        //Navigating to the text entry interface
+
+
+
+        DB = new DBHelper(this);
+
+        //Store user details to DB and Navigating to the text entry interface
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //Passing the entering fields data to local database
+                String User_ID = ID.getText().toString();
+                System.out.println(User_ID);
+
+                String Condition = condition.getText().toString();
+                System.out.println(Condition);
+
+                String RS = rotationSequence.getText().toString();
+                System.out.println(RS);
+
+
+                SaveToLocalDB(User_ID, Condition, RS);
+
+//                DB.StoreUserDetails(User_ID, Condition, RS);
+//                Toast.makeText(StartUp.this,"Inserted", Toast.LENGTH_SHORT).show();
+//                Log.d("check", "Checking");
+//                Boolean checkInsert = DB.StoreUserDetails(User_ID, Condition, RS);
+//                if (checkInsert == true){
+//                    Toast.makeText(StartUp.this,"Inserted", Toast.LENGTH_SHORT).show();
+//                }
+//                else
+//                    Toast.makeText(StartUp.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
+
+
                 Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
+                i.putExtra("PassUserID",PassUserID);
                 startActivity(i);
 
                 new Handler().postDelayed(new Runnable() {
@@ -54,6 +93,17 @@ public class StartUp extends AppCompatActivity {
                 }, 1000*60);
             }
         });
+
+    }
+
+
+
+    public void SaveToLocalDB(String User_ID, String Condition, String RS){
+        //DBHelper dbHelper = new DBHelper(this);
+        //DB.StoreUserDetails(User_ID, Condition, RS, database);
+        SQLiteDatabase database = DB.getWritableDatabase();
+        DB.StoreUserDetails(User_ID, Condition, RS);
+        Toast.makeText(StartUp.this,"Data Inserted", Toast.LENGTH_SHORT).show();
 
     }
 

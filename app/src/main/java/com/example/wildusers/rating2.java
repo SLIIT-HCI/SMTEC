@@ -1,9 +1,5 @@
 package com.example.wildusers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +8,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.example.wildusers.Database.DBHelperRating;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.wildusers.Database.LocalDB.DBHandlerRating;
 
 public class rating2 extends AppCompatActivity {
 
@@ -21,7 +19,7 @@ public class rating2 extends AppCompatActivity {
     RadioButton stk, sgk, singleThumb, singleFinger, doubleThumb;
     EditText OpenComment, test;
 
-    DBHelperRating dbHandler;
+    DBHandlerRating DB;
 
 
     @Override
@@ -36,35 +34,29 @@ public class rating2 extends AppCompatActivity {
         singleThumb = (RadioButton) findViewById(R.id.singleThumb);
         singleFinger = (RadioButton) findViewById(R.id.singleFinger);
         doubleThumb = (RadioButton) findViewById(R.id.doubleThumb);
-        OpenComment = (EditText) findViewById(R.id.commentEdit);
+        OpenComment = findViewById(R.id.commentEdit);
         test = (EditText) findViewById(R.id.test);
 
 
-//        rateSubmit = (Button)findViewById(R.id.rate2SubmitBTN);
+        rateSubmit = findViewById(R.id.rate2SubmitBTN);
 
-//        rateSubmit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(getApplicationContext(), questionnaire.class);
-//                startActivity(i);
-//            }
-//        });
+        DB = new DBHandlerRating(this);
+        rateSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = OpenComment.getText().toString();
 
-         dbHandler = new DBHelperRating(this);
-        
+                Boolean chkInsert = DB.insertData(name);
+                if (chkInsert == true){
+                    Toast.makeText(rating2.this,"Inserted", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(rating2.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
 
-    }
-
-    public void inserRatingBtn(View view){
-        int id = Integer.parseInt(test.getText().toString());
-        String cmt = OpenComment.getText().toString();
-
-        boolean status = dbHandler.addRatingData(id, cmt);
-
-        if(status)
-            Toast.makeText(this, "Your Rating is Saved Successfully!!", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Sorry! Your Rating is not Saved!!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
+
+
 }

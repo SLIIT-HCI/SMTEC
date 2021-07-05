@@ -55,7 +55,7 @@
     <RatingBar
         android:id="@+id/ratingBar5"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="36dp"
@@ -64,7 +64,7 @@
     <RatingBar
         android:id="@+id/ratingBar6"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="34dp"
@@ -74,7 +74,7 @@
     <RatingBar
         android:id="@+id/ratingBar7"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
         android:layout_marginStart="34dp"
@@ -92,10 +92,136 @@
         android:textStyle="bold" />
 
 
+    <TextView
+        android:id="@+id/rate3"
+        android:layout_width="289dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="348dp"
+        android:text="@string/R3"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/type"
+        android:layout_width="285dp"
+        android:layout_height="32dp"
+        android:layout_below="@+id/ratingBar7"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginEnd="94dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/STK"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="15dp"
+            android:text="@string/R3_1" />
+
+        <RadioButton
+            android:id="@+id/SGK"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:text="@string/R3_2" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/handPosture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="413dp"
+        android:layout_marginEnd="139dp"
+        android:text="@string/R5"
+        android:textStyle="bold" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
+    <EditText
+        android:id="@+id/commentEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="513dp"
+        android:layout_marginBottom="220dp"
+        android:ems="10"
+        android:hint="Type your Comment here.."
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="151dp"
+        android:layout_height="26dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="486dp"
+        android:layout_marginEnd="221dp"
+        android:text="@string/R6"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/postureRG"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="436dp"
+        android:layout_marginEnd="4dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/singleThumb"
+            android:layout_width="120dp"
+            android:layout_height="21dp"
+            android:text="@string/R5_2" />
+
+        <RadioButton
+            android:id="@+id/singleFinger"
+            android:layout_width="120dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:text="@string/R5_1" />
+
+        <RadioButton
+            android:id="@+id/doubleThumb"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="11dp"
+            android:text="@string/R5_3" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/rate2SubmitBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="20dp"
+        android:text="Submit"
+        app:backgroundTint="#3F51B5" />
 
 
 </RelativeLayout>

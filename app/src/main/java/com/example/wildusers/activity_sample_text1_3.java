@@ -1,8 +1,11 @@
 package com.example.wildusers;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -10,11 +13,15 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,44 +37,161 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.wildusers.Database.DBContract;
-import com.example.wildusers.Database.DatabaseHelper;
+import com.example.wildusers.Database.LocalDB.DBHelper;
 import com.example.wildusers.Database.mySingleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class activity_sample_text1_3 extends AppCompatActivity {
 
-    DatabaseHelper dbHelper;
-    RecyclerView recyclerview;
-    RecyclerView.LayoutManager layoutManager;
-    RecyclerAdapter adapter;
-    ArrayList<Experiment> list = new ArrayList<>();
-
-    TextView timer;
-    static TextView phrase;
-    //Button btn_play_pause, btn_stop;
-    FloatingActionButton start1, stop1;
-
-    ImageView btn_next;
-    static EditText input_phrase;
+    //DBHandler dbHandler;
+    DBHelper helper;
+    Experiment experiment;
+    TextView timer, phrase;
+    Button btn_play_pause;
+    Button submit;
+    EditText input_phrase, sessionNo;
+    Button nextBtn;
     Boolean clicked = false;
-    int clickCount = 0;
-    long timeleft;
-    int editDistance;
+    int clickCount,editDistance, noOfRuns;
+    int session = 1;
+    long timeleft, duration;
+    String Sample = "Sample - 1";
+    String response, stimulus, PassUserID , formatDateTime1,formatDateTime2;
+    Set<Integer> generated = new HashSet<>();
+    int randomMax = 80;
+    int count = 1;
+    LocalDateTime dateTime1,dateTime2;
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     BroadcastReceiver broadcastReceiver;
-    double endTime;
-    String email;
-    int session;
-    ArrayList<String> phrases = new ArrayList<>();
-    String phrasesSet[] = new String[30];
+    ArrayList phrases = new ArrayList<String>();
+    String [] timestamps;
+    CountDownTimer countDown;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+    private int request_code =1, FILE_SELECT_CODE =101;
+    public String  actualfilepath="";
+    private static int RESULT_LOAD_IMAGE = 100;
+
+    ArrayList<String> userEmail = new ArrayList<>();
+    ArrayList<Integer> userSession = new ArrayList<>();
+    Cursor cursorSession;
+
+
+
+
+
+    //Sample 3
+    //Sessions / no of runs in each session = 10
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void onCreate(Bundle savedInstanceState) {
+
+        Log.d("I am coming here","1");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sample_text1_3);
+
+        //helper = new DBHelper(this);
+        helper = new DBHelper(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                }, 10);
+
+            }
+        }
+
+        displayText();
+
+        timer = (TextView) findViewById(R.id.timer);
+        phrase = (TextView) findViewById(R.id.viewPhrase);
+        nextBtn = (Button) findViewById(R.id.next);
+        btn_play_pause = (Button) findViewById(R.id.play_pause1);
+        input_phrase = (EditText) findViewById(R.id.typeText);
+        submit = (Button) findViewById(R.id.submit);
+        sessionNo = (EditText) findViewById(R.id.enterSessionNo);
+
+        /*retrieving values through intents*/
+        PassUserID = getIntent().getStringExtra("PassUserID");
+        //session = getIntent().getIntExtra("session",0);
+        //inputMethod = getIntent().getStringExtra("inputMethod");
+        noOfRuns = getIntent().getIntExtra("noOfRuns",0);
+        if(noOfRuns !=0 ){
+            count = noOfRuns;
+        }
+
+        timer.setText("            Let's Start !");
+        btn_play_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startTimer();
+                btn_play_pause.setEnabled(false);
+                btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
+                setPhrase(0);
+            }
+        });
+
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void onClick(View v) {
+                clicked = true;
+                dateTime2 = LocalDateTime.now();
+                formatDateTime2 = dateTime2.format(formatDate);
+                timestamps[timestamps.length - 1] = formatDateTime2;
+
+                //session = Integer.parseInt(sessionNo.getText().toString());
+
+                response = input_phrase.getText().toString();
+                stimulus = phrase.getText().toString();
+                editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
+                duration = Duration.between(dateTime1, dateTime2).toNanos();
+                /*create an object to store the data using 'Experiment ' class*/
+                experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
+                saveToLocalStorage(experiment);
+                //saveToLocalStorage(experiment);
+                phraseArray_Iterator();
+
+            }
+        });
+
+
+        /*getting timestamp for the first character entered*/
+        final TextWatcher noOfTaps = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                timestamps = new String[2];
+                for(int i=0;i<s.length();i++){
+                    dateTime1 = LocalDateTime.now();
+                    formatDateTime1 = dateTime1.format(formatDate);
+                    timestamps[0] = formatDateTime1;
+                }
+            }
+            public void afterTextChanged(Editable s) {}
+        };
+        input_phrase.addTextChangedListener(noOfTaps);
+
+    }
+
+
 
 
     public String formatTime(long millis) {
@@ -90,268 +214,84 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         return output;
     }
 
-
-
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onCreate(Bundle savedInstanceState) {
-
-        Log.d("I am coming here","1");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sample_text1_3);
-
-        dbHelper = new DatabaseHelper(this);
-        dbHelper.insertData_Phrases();
-
-        timer = (TextView) findViewById(R.id.timer);
-        phrase = (TextView) findViewById(R.id.viewPhrase);
-        btn_next = (ImageView) findViewById(R.id.next);
-        //btn_play_pause = (Button) findViewById(R.id.start);
-        //btn_stop = (Button) findViewById(R.id.Stop);
-        //btn_stop.setEnabled(false);
-        input_phrase = (EditText) findViewById(R.id.typeText);
-        start1 = (FloatingActionButton) findViewById(R.id.start1);
-        stop1 = (FloatingActionButton) findViewById(R.id.stop1);
-        stop1.setEnabled(false);
-
-        email = getIntent().getStringExtra("email");
-        session = getIntent().getIntExtra("session",0);
-        layoutManager = new LinearLayoutManager(this);
-        timer.setText("        Let's start !");
-
-        /************************* preventing copy-paste to the edit text *********************************/
-
-        input_phrase.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode actionMode) {
-
-            }
-        });
-
-        /******************************** end of c-p implementation ******************************************/
-
-
-        final CountDownTimer countDown = new CountDownTimer(60000, 1000)
+    // Countdown Method Invocation
+    public void startTimer(){
+        countDown = new CountDownTimer(60000, 1000)
         {
             public void onTick(long millisUntilFinished)
             {
-                if(clicked == false) {
-                    setPhrase(0);
-                }
-                timer.setText("Time remaining: " + formatTime(millisUntilFinished));
+                timer.setText("  Time remaining: " + formatTime(millisUntilFinished));
                 timeleft = millisUntilFinished/1000;
             }
             @RequiresApi(api = Build.VERSION_CODES.O)
-
             public void onFinish()
             {
-                endTime = LocalTime.now().toNanoOfDay();
-                timer.setText("Your Time is over!");
                 phrase.setText("");
+                timer.setText("   Your Time is over !");
+                nextBtn.setEnabled(false);
+                input_phrase.setEnabled(false);
                 input_phrase.setText("");
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
 
-//        btn_play_pause.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                countDown.start();
-//                btn_play_pause.setEnabled(false);
-//                //btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
-//                btn_stop.setEnabled(true);
-//                setPhrase(0);
-//            }
-//        });
-
-
-        /******************************* play floating *******************************/
-        start1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                countDown.start();
-                start1.setEnabled(false);
-                //btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
-                stop1.setEnabled(true);
-                setPhrase(0);
-            }
-        });
-
-        stop1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                countDown.cancel();
-            }
-        });
-
-
-        /*****************************************************************************/
-
-
-
-
-//        btn_stop.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                countDown.cancel();
-//            }
-//        });
-
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            public void onClick(View v) {
-                clicked = true;
-                phraseArray_Iterator();
-            }
-        });
-        input_phrase.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    while(btn_next.isPressed() && timeleft!=0){
-                        // saveInputPhrase();
-                        editDistance = levenshteinDistance(phrase.toString(),input_phrase.toString());
-                        //  saveToAppServer(email,session,duration,phrase.toString(),input_phrase.toString(),editDistance,id);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(activity_sample_text1_3.this, rating.class);
+                        intent.putExtra("PassUserID", PassUserID);
+                        intent.putExtra("session", session);
+                        intent.putExtra("noOfRuns", noOfRuns);
+                        startActivity(intent);
                     }
+                }, 2000);
+            }
+        }.start();
+    }
+    public void displayText() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(getAssets().open("phrases.txt")));
+            // do reading, usually loop until end of file reading
+            String mLine;
+            while ((mLine = reader.readLine()) != null) {
+                helper.insertData_Phrases(mLine);
+            }
+        } catch (IOException e) {
+            //log the exception
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    //log the exception
                 }
             }
-        });
+        }
     }
 
     public void setPhrase(int count){
-
-        phrases = dbHelper.getPhrases();
-        phrases = dbHelper.getPhrases();
-        System.out.println("phrases: "+phrases.get(0));
+        phrases = helper.getPhrases();
         if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
             phrase.setText(phrases.get(count).toString());
         }
-
     }
-    public void phraseArray_Iterator(){
 
-        clickCount = clickCount + 1;
-        if(clickCount > 9){
-            clickCount = 0;
+    public void phraseArray_Iterator(){
+        Random rand = new Random();
+        clickCount = rand.nextInt(randomMax);
+        while (generated.contains(clickCount) && generated.size() < randomMax) {
+            clickCount = rand.nextInt(randomMax);
         }
+        generated.add(clickCount);
+        clickCount += 1;
         setPhrase(clickCount);
         input_phrase.setText("");
-
     }
 
-    /* save to local database*/
-    public void saveToAppServer(final String email, final int session, final String duration, final String s1, final String s2, final int editDistance, final int status, final String sensorType, final double val_x, final double val_y, final double val_z){
-
-        if(checkNetworkConnection()){
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, DatabaseHelper.SERVER_URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                String Response = jsonObject.getString("response");
-                                if(response.equals("OK")){
-                                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_OK,sensorType,val_x,val_y,val_z);
-                                }
-                                else{
-                                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener(){
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
-                }
-            }){
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String,String> params = new HashMap<>();
-                    params.put("session","session");
-                    params.put("email","email");
-                    params.put("duration","duration");
-                    params.put("s1","s1");
-                    params.put("s2","s2");
-                    params.put("editDistance","editDistance");
-                    params.put("sensorType","sensorType");
-                    params.put("value_x","value_x");
-                    params.put("value_y","value_y");
-                    params.put("value_z","value_z");
-
-                    return params;
-                }
-            };
-            mySingleton.getInstance(activity_sample_text1_3.this).addToRequestQueue(stringRequest);
-
-        }else{
-            saveToLocalStorage(email,session,duration,s1,s2,editDistance,DatabaseHelper.SYNC_STATUS_FAILED,sensorType,val_x,val_y,val_z);
-        }
-
-    }
-
-    /* read data from the local database*/
-    private void readFromLocalStorage(){
-
-        list.clear();
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor cursor = dbHelper.readFromLocalDatabase(database);
-        while (cursor.moveToNext()){
-            int session = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN1_session));
-            String email = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN1_email));
-            String duration = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN2_Duration));
-            String s1 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN3_S1));
-            String s2 = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN4_S2));
-            int editDistance = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN5_EditDistance));
-            int sync_status = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN6_SYNC_STATUS));
-            String sensorType = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN7_SENSOR_NAME));
-            double value_x = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN8_X));
-            double value_y = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN9_Y));
-            double value_z = cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.COLUMN10_Z));
-
-            list.add(new Experiment(email,session,duration,s1,s2,editDistance,sync_status,sensorType,value_x,value_y,value_z));
-        }
-        adapter.notifyDataSetChanged();
-        cursor.close();
-        dbHelper.close();
-    }
-
-    /* checking Internet connection */
-    public boolean checkNetworkConnection(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkinfo = connectivityManager.getActiveNetworkInfo();
-        return (networkinfo != null && networkinfo.isConnected());
-    }
-
-    private void saveToLocalStorage(String email,int session,String duration,String s1,String s2,int editDistance,int sync_status,String sensorName,double val_x,double val_y,double val_z){
-
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToLocalDatabase(email,session,duration,s1,s2,editDistance,sensorName,val_x,val_y,val_z,sync_status,database);
-        readFromLocalStorage();
-        dbHelper.close();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void saveToLocalStorage(Experiment experimentList){
+        SQLiteDatabase database = helper.getWritableDatabase();
+        //dbHandler.saveToLocalDatabaseS1(PassUserID,Sample,experimentList,database);
+        helper.saveToLocalDatabase("PassUserID", 1, 1, experimentList, database);
     }
 
     /* calculating edit distance */
@@ -380,16 +320,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         }
         return d[ s1.length ][ s2.length ];
     }
+/****************************************************************************************************/
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerReceiver(broadcastReceiver, new IntentFilter(DBContract.UI_UPDATE_BROADCAST));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(broadcastReceiver);
-    }
 }

@@ -9,13 +9,13 @@
 
     <TextView
         android:id="@+id/viewPhrase"
-        android:layout_width="379dp"
-        android:layout_height="91dp"
+        android:layout_width="381dp"
+        android:layout_height="57dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="13dp"
-        android:layout_marginTop="117dp"
+        android:layout_marginTop="150dp"
         android:text="Hello" />
 
     <TextView
@@ -24,23 +24,22 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="49dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="12dp"
         android:text="@string/sample1_3"
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <ImageView
+    <Button
         android:id="@+id/next"
-        android:layout_width="62dp"
-        android:layout_height="61dp"
-        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="326dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginBottom="339dp"
-        app:srcCompat="@drawable/next1" />
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="328dp"
+        android:clickable="true"
+        android:text="Next" />
 
     <EditText
         android:id="@+id/typeText"
@@ -66,8 +65,9 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="22dp"
         android:background="#F8F0F0"
-        android:text="TextView"
-        android:textColor="#EA0B0B"
+        android:text="Timer"
+        android:textAlignment="center"
+        android:textColor="#0720AA"
         android:textSize="20dp"
         android:textStyle="bold" />
 
@@ -76,34 +76,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="161dp"
-        android:layout_marginBottom="17dp"
+        android:layout_marginStart="313dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="97dp"
         android:text="submit"
         app:backgroundTint="#3F51B5" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/stop1"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/play_pause1"
+        android:layout_width="54dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="205dp"
-        android:layout_marginBottom="243dp"
-        android:backgroundTint="#DF0909"
-        app:srcCompat="@drawable/stop" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="172dp"
+        android:layout_marginBottom="142dp"
+        android:background="@drawable/btn_play"
+        android:backgroundTint="#247C05"
+        android:clickable="true" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/start1"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/enterSessionNo"
+        android:layout_width="178dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="99dp"
-        android:layout_marginBottom="244dp"
-        android:backgroundTint="#33B505"
-        app:srcCompat="@drawable/next" />
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="213dp"
+        android:layout_marginTop="68dp"
+        android:ems="10"
+        android:hint="Session Number"
+        android:textStyle="bold"
+        android:inputType="textPersonName"/>
 
 
 </RelativeLayout>
