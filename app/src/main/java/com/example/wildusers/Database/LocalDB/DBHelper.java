@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 40;
+    private static final int DATABASE_VERSION = 43;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -34,18 +34,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public static final String TABLE2_NAME = "WildExperiment";
-    public static final String COLUMN1_id = "PassUserID";
-    public static final String COLUMN2_session = "sessionNo";
-    public static final String COLUMN2_attempt = "noOfRuns";
+    //public static final String COLUMN1_id = "PassUserID";
+   // public static final String COLUMN2_session = "sessionNo";
+   // public static final String COLUMN2_attempt = "noOfRuns";
     public static final String COLUMN3_dateTime = "dateTime";
     public static final String COLUMN4_S1 = "stimulusPhrase";
     public static final String COLUMN5_S2 = "responsePhrase";
     public static final String COLUMN6_EditDistance = "edit_distance";
-    public static final String COLUMN7_inputMethod = "inputMethod";
+//    public static final String COLUMN7_inputMethod = "inputMethod";
     public static final String COLUMN8_duration = "duration";
 
     private static final String TABLE3_NAME = "Rating";
-    private static final String COLUMN2_userId = "ID";
+//    private static final String COLUMN2_userId = "ID";
     //private static final String COLUMN_userSession = "userSession";
     //private static final String COLUMN_dateTime = "FinishedTime";
     //private static final String COLUMN_userNoOfruns = "runs";
@@ -53,8 +53,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_accuracy = "Accuracy";
     private static final String COLUMN_preference = "preference";
     private static final String COLUMN_easeOfUse = "easeOfUse";
-//    private static final String COLUMN_handPosture1 = "handPosture1";
-//    private static final String COLUMN_commentR = "commentOfTest";
+    private static final String COLUMN_handPosture1 = "handPosture1";
+    private static final String COLUMN_commentR = "commentOfTest";
 
     private static final String TABLE4_NAME = "User";
     private static final String COLUMN1_userEmail = "Email";
@@ -89,14 +89,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
-                    + COLUMN1_id + " TEXT NOT NULL,"
-                    + COLUMN2_session + " INTEGER NOT NULL,"
-                    + COLUMN2_attempt + " INTEGER NOT NULL,"
+                    //+ COLUMN1_id + " TEXT NOT NULL,"
+                    //+ COLUMN2_session + " INTEGER NOT NULL,"
+                    //+ COLUMN2_attempt + " INTEGER NOT NULL,"
                     + COLUMN3_dateTime + " TEXT NOT NULL,"
                     + COLUMN4_S1 + " TEXT NOT NULL,"
                     + COLUMN5_S2 + " TEXT NOT NULL,"
                     + COLUMN6_EditDistance + " INTEGER NOT NULL,"
-                    + COLUMN7_inputMethod + " TEXT NOT NULL,"
                     + COLUMN8_duration + " REAL NOT NULL )";
 
             sqLiteDatabase.execSQL(TABLE_EXPERIMENT);
@@ -108,10 +107,10 @@ public class DBHelper extends SQLiteOpenHelper {
 //                    + COLUMN_userNoOfruns + " INTEGER NOT NULL,"
                     + COLUMN_speed + " INTEGER NOT NULL,"
                     + COLUMN_accuracy + " INTEGER NOT NULL,"
-                    + COLUMN_preference + " INTEGER NOT NULL,"
-                    + COLUMN_easeOfUse + " INTEGER NOT NULL )" ;
-//                    + COLUMN_handPosture1 + " TEXT NOT NULL,"
-//                    + COLUMN_commentR + " TEXT NOT NULL )";
+                    + COLUMN_preference + " TEXT NOT NULL,"
+                    + COLUMN_easeOfUse + " INTEGER NOT NULL,"
+                    + COLUMN_handPosture1 + " TEXT NOT NULL,"
+                    + COLUMN_commentR + " TEXT NOT NULL )";
 
             sqLiteDatabase.execSQL(TABLE_RATING);
 
@@ -237,14 +236,14 @@ public class DBHelper extends SQLiteOpenHelper {
 //
 //    }
 
-    public void saveToLocalDatabase(String PassUserID, int session, int attempt, Experiment ex, SQLiteDatabase database){
+    public void saveToLocalDatabase(Experiment ex, SQLiteDatabase database){
 
         //SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN1_id, PassUserID);
-        contentValues.put(COLUMN2_session, session);
-        contentValues.put(COLUMN2_attempt, attempt);
+        //contentValues.put(COLUMN1_id, PassUserID);
+        //contentValues.put(COLUMN2_session, session);
+        //contentValues.put(COLUMN2_attempt, attempt);
         contentValues.put(COLUMN3_dateTime, Arrays.toString(ex.getDurationTimeStamps()));
         contentValues.put(COLUMN4_S1, ex.getStimulus());
         contentValues.put(COLUMN5_S2, ex.getResponse());
@@ -285,11 +284,11 @@ public class DBHelper extends SQLiteOpenHelper {
 //        database.insert(TABLE3_NAME,null,contentValues);
 //    }
 
-    public void saveToRatingsTable( float speed, float accuracy, float preference, float easeOfUse, SQLiteDatabase database) {
+    public void saveToRatingsTable(float speed, float accuracy, String preference, float easeOfUse,  String HandPosture, String comment,  SQLiteDatabase database) {
 
         ContentValues contentValues = new ContentValues();
 
-        //contentValues.put(COLUMN2_userId, ID);
+//        contentValues.put(COLUMN2_userId, ID);
 //        contentValues.put(COLUMN_userSession, session);
 //        contentValues.put(COLUMN_dateTime, datetime);
 //        contentValues.put(COLUMN_userNoOfruns,runs);
@@ -297,6 +296,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_accuracy, accuracy);
         contentValues.put(COLUMN_preference, preference);
         contentValues.put(COLUMN_easeOfUse, easeOfUse);
+        contentValues.put(COLUMN_handPosture1, HandPosture);
+        contentValues.put(COLUMN_commentR, comment);
+
 
         database.insert(TABLE3_NAME,null,contentValues);
     }
@@ -337,17 +339,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public Cursor readFromLocalDatabase(String UserEmail) {
-
-        String query = ("SELECT * FROM " + TABLE2_NAME + " WHERE " + COLUMN1_id + "='" + UserEmail + "'");
-        SQLiteDatabase database = this.getReadableDatabase();
-
-        Cursor cursor = null;
-        if(database != null){
-           cursor = database.rawQuery(query, null);
-        }
-        return cursor;
-    }
+//    public Cursor readFromLocalDatabase(String UserEmail) {
+//
+//        String query = ("SELECT * FROM " + TABLE2_NAME + " WHERE " + COLUMN1_id + "='" + UserEmail + "'");
+//        SQLiteDatabase database = this.getReadableDatabase();
+//
+//        Cursor cursor = null;
+//        if(database != null){
+//           cursor = database.rawQuery(query, null);
+//        }
+//        return cursor;
+//    }
 
 //    public Cursor getCommentInfo(String UserEmail) {
 //
@@ -361,17 +363,19 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return cursor;
 //    }
 
-    public Cursor getRatingInfo(String UserEmail) {
+//    public Cursor getRatingInfo(String UserEmail) {
+//
+//        String query = ("SELECT * FROM " + TABLE3_NAME + " WHERE " + COLUMN2_userId + "='" + UserEmail + "'");
+//        SQLiteDatabase database = this.getReadableDatabase();
+//
+//        Cursor cursor = null;
+//        if(database != null){
+//            cursor = database.rawQuery(query, null);
+//        }
+//        return cursor;
+//    }
 
-        String query = ("SELECT * FROM " + TABLE3_NAME + " WHERE " + COLUMN2_userId + "='" + UserEmail + "'");
-        SQLiteDatabase database = this.getReadableDatabase();
 
-        Cursor cursor = null;
-        if(database != null){
-            cursor = database.rawQuery(query, null);
-        }
-        return cursor;
-    }
     public Cursor getSessionValidationInfo() {
 
         String query = ("select email, sessionNo from LabExperiment");

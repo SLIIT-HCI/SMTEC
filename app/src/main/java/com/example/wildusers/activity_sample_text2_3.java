@@ -146,7 +146,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
-                saveToLocalStorage(experiment);
+                //saveToLocalStorage(experiment);
                 phraseArray_Iterator();
             }
         });
@@ -263,10 +263,10 @@ public class activity_sample_text2_3 extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void saveToLocalStorage(Experiment experimentList){
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToLocalDatabase(email,session,count,experimentList,database);
-    }
+//    private void saveToLocalStorage(Experiment experimentList){
+//        SQLiteDatabase database = dbHelper.getWritableDatabase();
+//        dbHelper.saveToLocalDatabase(email,session,count,experimentList,database);
+//    }
 
     /* calculating edit distance */
     public static int levenshteinDistance( String s1, String s2 ) {
