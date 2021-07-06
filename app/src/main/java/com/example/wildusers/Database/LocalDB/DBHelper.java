@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public static final String TABLE2_NAME = "WildExperiment";
-    public static final String COLUMN1_id = "PassUserID";
+    public static final String COLUMN1_id = "UserID";
     public static final String COLUMN2_session = "sessionNo";
     public static final String COLUMN2_attempt = "noOfRuns";
     public static final String COLUMN3_dateTime = "dateTime";

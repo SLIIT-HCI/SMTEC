@@ -23,7 +23,7 @@ import com.example.wildusers.Database.LocalDB.DBHelper;
 public class StartUp extends AppCompatActivity {
 
     //private Handler mHandler = new Handler();
-    String PassUserID;
+    String UserID;
     Button start;
     EditText ID, condition, rotationSequence;
 
@@ -55,8 +55,8 @@ public class StartUp extends AppCompatActivity {
             public void onClick(View view) {
 
                 //Passing the entering fields data to local database
-                String User_ID = ID.getText().toString();
-                System.out.println(User_ID);
+                UserID = ID.getText().toString();
+                System.out.println(UserID);
 
                 String Condition = condition.getText().toString();
                 System.out.println(Condition);
@@ -65,7 +65,7 @@ public class StartUp extends AppCompatActivity {
                 System.out.println(RS);
 
 
-                SaveToLocalDB(User_ID, Condition, RS);
+                SaveToLocalDB(UserID, Condition, RS);
 
 //                DB.StoreUserDetails(User_ID, Condition, RS);
 //                Toast.makeText(StartUp.this,"Inserted", Toast.LENGTH_SHORT).show();
@@ -79,7 +79,7 @@ public class StartUp extends AppCompatActivity {
 
 
                 Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
-                i.putExtra("PassUserID",PassUserID);
+                i.putExtra("UserID", UserID);
                 startActivity(i);
 
                 new Handler().postDelayed(new Runnable() {
@@ -98,11 +98,11 @@ public class StartUp extends AppCompatActivity {
 
 
 
-    public void SaveToLocalDB(String User_ID, String Condition, String RS){
+    public void SaveToLocalDB(String UserID, String Condition, String RS){
         //DBHelper dbHelper = new DBHelper(this);
         //DB.StoreUserDetails(User_ID, Condition, RS, database);
         SQLiteDatabase database = DB.getWritableDatabase();
-        DB.StoreUserDetails(User_ID, Condition, RS);
+        DB.StoreUserDetails(UserID, Condition, RS);
         Toast.makeText(StartUp.this,"Data Inserted", Toast.LENGTH_SHORT).show();
 
     }

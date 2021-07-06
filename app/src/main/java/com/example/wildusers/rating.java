@@ -43,7 +43,7 @@ public class rating extends AppCompatActivity {
         singleFinger = (RadioButton) findViewById(R.id.singleFinger);
         doubleThumb = (RadioButton) findViewById(R.id.doubleThumb);
         OpenComment = findViewById(R.id.commentEdit);
-        test = (EditText) findViewById(R.id.test);
+        //test = (EditText) findViewById(R.id.test);
 
         submit = (Button)findViewById(R.id.rate2SubmitBTN);
 
@@ -58,8 +58,8 @@ public class rating extends AppCompatActivity {
 
                 saveToDatabase(speed,accuracy,preference,easeOfUse);
 
-                Intent i = new Intent(getApplicationContext(), rating2.class);
-                startActivity(i);
+//                Intent i = new Intent(getApplicationContext(), rating2.class);
+//                startActivity(i);
             }
         });
     }
