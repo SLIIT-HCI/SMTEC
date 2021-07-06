@@ -74,8 +74,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     int clickCount,editDistance, noOfRuns;
     int session = 1;
     long timeleft, duration;
-    String Sample = "Sample - 1";
-    String response, stimulus, PassUserID , formatDateTime1,formatDateTime2;
+    String Sample = "Sample - 1/3";
+    String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
     int count = 1;
@@ -130,7 +130,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         sessionNo = (EditText) findViewById(R.id.enterSessionNo);
 
         /*retrieving values through intents*/
-        PassUserID = getIntent().getStringExtra("PassUserID");
+        UserID = getIntent().getStringExtra("UserID");
         //session = getIntent().getIntExtra("session",0);
         //inputMethod = getIntent().getStringExtra("inputMethod");
         noOfRuns = getIntent().getIntExtra("noOfRuns",0);
@@ -236,8 +236,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                     @Override
                     public void run() {
                         Intent intent = new Intent(activity_sample_text1_3.this, rating.class);
-                        intent.putExtra("PassUserID", PassUserID);
-                        intent.putExtra("session", session);
+                        intent.putExtra("UserID", UserID);
+                        intent.putExtra("session", Sample);
                         intent.putExtra("noOfRuns", noOfRuns);
                         startActivity(intent);
                     }
@@ -291,7 +291,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     private void saveToLocalStorage(Experiment experimentList){
         SQLiteDatabase database = helper.getWritableDatabase();
         //dbHandler.saveToLocalDatabaseS1(PassUserID,Sample,experimentList,database);
-        helper.saveToLocalDatabase(experimentList, database);
+        helper.saveToLocalDatabase(UserID, Sample, count, experimentList, database);
     }
 
     /* calculating edit distance */

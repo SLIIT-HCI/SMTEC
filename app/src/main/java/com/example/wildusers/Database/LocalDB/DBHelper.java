@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 43;
+    private static final int DATABASE_VERSION = 55;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -34,9 +34,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public static final String TABLE2_NAME = "WildExperiment";
-    //public static final String COLUMN1_id = "PassUserID";
-   // public static final String COLUMN2_session = "sessionNo";
-   // public static final String COLUMN2_attempt = "noOfRuns";
+    public static final String COLUMN1_id = "UserID";
+    public static final String COLUMN2_session = "sessionNo";
+    public static final String COLUMN2_attempt = "noOfRuns";
     public static final String COLUMN3_dateTime = "dateTime";
     public static final String COLUMN4_S1 = "stimulusPhrase";
     public static final String COLUMN5_S2 = "responsePhrase";
@@ -45,10 +45,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN8_duration = "duration";
 
     private static final String TABLE3_NAME = "Rating";
-//    private static final String COLUMN2_userId = "ID";
-    //private static final String COLUMN_userSession = "userSession";
-    //private static final String COLUMN_dateTime = "FinishedTime";
-    //private static final String COLUMN_userNoOfruns = "runs";
+    private static final String COLUMN2_userId = "UID";
+    private static final String COLUMN_userSession = "userSession";
+//    private static final String COLUMN_dateTime = "FinishedTime";
+    private static final String COLUMN_userNoOfruns = "runs";
     private static final String COLUMN_speed = "Speed";
     private static final String COLUMN_accuracy = "Accuracy";
     private static final String COLUMN_preference = "preference";
@@ -89,9 +89,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
-                    //+ COLUMN1_id + " TEXT NOT NULL,"
-                    //+ COLUMN2_session + " INTEGER NOT NULL,"
-                    //+ COLUMN2_attempt + " INTEGER NOT NULL,"
+                    + COLUMN1_id + " TEXT NOT NULL,"
+                    + COLUMN2_session + " TEXT NOT NULL,"
+                    + COLUMN2_attempt + " INTEGER NOT NULL,"
                     + COLUMN3_dateTime + " TEXT NOT NULL,"
                     + COLUMN4_S1 + " TEXT NOT NULL,"
                     + COLUMN5_S2 + " TEXT NOT NULL,"
@@ -101,10 +101,10 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_EXPERIMENT);
 
             String TABLE_RATING = "CREATE TABLE " + TABLE3_NAME + "("
-//                    + COLUMN2_userId + " TEXT PRIMARY KEY,"
-//                    + COLUMN_userSession + " INTEGER NOT NULL,"
+                    + COLUMN2_userId + " TEXT PRIMARY KEY,"
+                    + COLUMN_userSession + " TEXT NOT NULL,"
 //                    + COLUMN_dateTime + " TEXT NOT NULL,"
-//                    + COLUMN_userNoOfruns + " INTEGER NOT NULL,"
+                    + COLUMN_userNoOfruns + " INTEGER NOT NULL,"
                     + COLUMN_speed + " INTEGER NOT NULL,"
                     + COLUMN_accuracy + " INTEGER NOT NULL,"
                     + COLUMN_preference + " TEXT NOT NULL,"
@@ -236,14 +236,14 @@ public class DBHelper extends SQLiteOpenHelper {
 //
 //    }
 
-    public void saveToLocalDatabase(Experiment ex, SQLiteDatabase database){
+    public void saveToLocalDatabase(String UserID, String session, int attempt, Experiment ex, SQLiteDatabase database){
 
         //SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        //contentValues.put(COLUMN1_id, PassUserID);
-        //contentValues.put(COLUMN2_session, session);
-        //contentValues.put(COLUMN2_attempt, attempt);
+        contentValues.put(COLUMN1_id, UserID);
+        contentValues.put(COLUMN2_session, session);
+        contentValues.put(COLUMN2_attempt, attempt);
         contentValues.put(COLUMN3_dateTime, Arrays.toString(ex.getDurationTimeStamps()));
         contentValues.put(COLUMN4_S1, ex.getStimulus());
         contentValues.put(COLUMN5_S2, ex.getResponse());
@@ -284,14 +284,14 @@ public class DBHelper extends SQLiteOpenHelper {
 //        database.insert(TABLE3_NAME,null,contentValues);
 //    }
 
-    public void saveToRatingsTable(float speed, float accuracy, String preference, float easeOfUse,  String HandPosture, String comment,  SQLiteDatabase database) {
+    public void saveToRatingsTable(String ID, String session, int runs, float speed, float accuracy, String preference, float easeOfUse,  String HandPosture, String comment,  SQLiteDatabase database) {
 
         ContentValues contentValues = new ContentValues();
 
-//        contentValues.put(COLUMN2_userId, ID);
-//        contentValues.put(COLUMN_userSession, session);
+        contentValues.put(COLUMN2_userId, ID);
+        contentValues.put(COLUMN_userSession, session);
 //        contentValues.put(COLUMN_dateTime, datetime);
-//        contentValues.put(COLUMN_userNoOfruns,runs);
+        contentValues.put(COLUMN_userNoOfruns,runs);
         contentValues.put(COLUMN_speed, speed);
         contentValues.put(COLUMN_accuracy, accuracy);
         contentValues.put(COLUMN_preference, preference);
