@@ -291,7 +291,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     private void saveToLocalStorage(Experiment experimentList){
         SQLiteDatabase database = helper.getWritableDatabase();
         //dbHandler.saveToLocalDatabaseS1(PassUserID,Sample,experimentList,database);
-        helper.saveToLocalDatabase("PassUserID", 1, 1, experimentList, database);
+        helper.saveToLocalDatabase(experimentList, database);
     }
 
     /* calculating edit distance */

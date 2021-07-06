@@ -20,10 +20,15 @@ public class rating extends AppCompatActivity {
     RatingBar rb5_speed, rb6_accuracy, rb7_easeOfUse;
     //Button rateSubmit;
     RadioGroup type, postureRG;
-    RadioButton stk, sgk, singleThumb, singleFinger, doubleThumb;
-    EditText OpenComment, test;
+    //RadioButton stk, sgk, singleThumb, singleFinger, doubleThumb;
+    RadioButton Type_radioBtn, TypeHandPosture;
+    EditText OpenComment;
 
-    float speed, accuracy, easeOfUse, preference;
+    String PassUserID;
+
+    float speed, accuracy, easeOfUse;
+    String preference, HandPosture;
+
     Button submit;
 
     @Override
@@ -37,36 +42,45 @@ public class rating extends AppCompatActivity {
 
         type = (RadioGroup) findViewById(R.id.type);
         postureRG = (RadioGroup) findViewById(R.id.postureRG);
-        stk = (RadioButton) findViewById(R.id.STK);
-        sgk = (RadioButton) findViewById(R.id.SGK);
-        singleThumb = (RadioButton) findViewById(R.id.singleThumb);
-        singleFinger = (RadioButton) findViewById(R.id.singleFinger);
-        doubleThumb = (RadioButton) findViewById(R.id.doubleThumb);
-        OpenComment = findViewById(R.id.commentEdit);
-        //test = (EditText) findViewById(R.id.test);
 
+//        stk = (RadioButton) findViewById(R.id.STK);
+//        sgk = (RadioButton) findViewById(R.id.SGK);
+//        singleThumb = (RadioButton) findViewById(R.id.singleThumb);
+//        singleFinger = (RadioButton) findViewById(R.id.singleFinger);
+//        doubleThumb = (RadioButton) findViewById(R.id.doubleThumb);
+        OpenComment = findViewById(R.id.commentEdit);
         submit = (Button)findViewById(R.id.rate2SubmitBTN);
+
+        PassUserID = getIntent().getStringExtra("PassUserID");
 
         dbHelper = new DBHelper(this);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                int selectedIDPreference = type.getCheckedRadioButtonId();
+                Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
+                preference = (String) Type_radioBtn.getText().toString();
+
+                int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
+                TypeHandPosture = (RadioButton)findViewById(selectedIDHandPosture);
+                HandPosture = (String) TypeHandPosture.getText().toString();
+
                 speed = rb5_speed.getRating();
                 accuracy = rb6_accuracy.getRating();
                 easeOfUse = rb7_easeOfUse.getRating();
+                String comment = OpenComment.getText().toString();
 
-                saveToDatabase(speed,accuracy,preference,easeOfUse);
 
-//                Intent i = new Intent(getApplicationContext(), rating2.class);
-//                startActivity(i);
+                saveToDatabase(speed,accuracy,preference,easeOfUse,HandPosture, comment);
+
             }
         });
     }
 
-    public void saveToDatabase(float speed,float accuracy,float preference,float easeOfUse){
+    public void saveToDatabase(float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToRatingsTable(speed,accuracy,preference,easeOfUse,database);
+        dbHelper.saveToRatingsTable(speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
     }
 }
