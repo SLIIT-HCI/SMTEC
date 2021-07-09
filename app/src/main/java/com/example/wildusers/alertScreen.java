@@ -146,7 +146,7 @@ public class alertScreen extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, ia, 0);
 
         AlarmManager am = (AlarmManager)   this.getSystemService(Context.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 6000, pendingIntent);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 6000*5, pendingIntent);
 
     }
 

@@ -67,7 +67,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     Experiment experiment;
     TextView timer, phrase;
     Button btn_play_pause;
-    Button submit;
+    //Button submit;
     EditText input_phrase, sessionNo;
     Button nextBtn;
     Boolean clicked = false;
@@ -94,7 +94,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     ArrayList<Integer> userSession = new ArrayList<>();
     Cursor cursorSession;
 
-
+    int phraseCount = 1;
 
 
 
@@ -126,7 +126,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         nextBtn = (Button) findViewById(R.id.next);
         btn_play_pause = (Button) findViewById(R.id.play_pause1);
         input_phrase = (EditText) findViewById(R.id.typeText);
-        submit = (Button) findViewById(R.id.submit);
+        //submit = (Button) findViewById(R.id.submit);
         sessionNo = (EditText) findViewById(R.id.enterSessionNo);
 
         /*retrieving values through intents*/
@@ -158,7 +158,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 formatDateTime2 = dateTime2.format(formatDate);
                 timestamps[timestamps.length - 1] = formatDateTime2;
 
-                //session = Integer.parseInt(sessionNo.getText().toString());
+                session = Integer.parseInt(sessionNo.getText().toString());
 
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
@@ -167,7 +167,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
                 saveToLocalStorage(experiment);
-                //saveToLocalStorage(experiment);
+
                 phraseArray_Iterator();
 
             }
@@ -235,10 +235,10 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(activity_sample_text1_3.this, rating.class);
+                        Intent intent = new Intent(activity_sample_text1_3.this, activity_sample_text2_3.class);
                         intent.putExtra("UserID", UserID);
-                        intent.putExtra("session", Sample);
-                        intent.putExtra("noOfRuns", noOfRuns);
+                        intent.putExtra("session", session);
+                        //intent.putExtra("noOfRuns", noOfRuns);
                         startActivity(intent);
                     }
                 }, 2000);
@@ -276,22 +276,24 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     }
 
     public void phraseArray_Iterator(){
-        Random rand = new Random();
-        clickCount = rand.nextInt(randomMax);
-        while (generated.contains(clickCount) && generated.size() < randomMax) {
+      //  for (int i=0; clickCount <= 3; i++){
+            Random rand = new Random();
             clickCount = rand.nextInt(randomMax);
-        }
-        generated.add(clickCount);
-        clickCount += 1;
-        setPhrase(clickCount);
-        input_phrase.setText("");
+            while (generated.contains(clickCount) && generated.size() < randomMax) {
+                clickCount = rand.nextInt(randomMax);
+            }
+            generated.add(clickCount);
+            clickCount += 1;
+            setPhrase(clickCount);
+            input_phrase.setText("");
+       // }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveToLocalStorage(Experiment experimentList){
         SQLiteDatabase database = helper.getWritableDatabase();
-        //dbHandler.saveToLocalDatabaseS1(PassUserID,Sample,experimentList,database);
-        helper.saveToLocalDatabase(UserID, Sample, count, experimentList, database);
+        helper.saveToLocalDatabase(UserID, Sample, session, experimentList, database);
     }
 
     /* calculating edit distance */

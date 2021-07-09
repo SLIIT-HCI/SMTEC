@@ -21,14 +21,14 @@
         <activity android:name=".webViewPlayStore"></activity>
         <activity android:name=".settings" />
         <activity android:name=".Instructions" />
-        <activity android:name=".activeTime" />
-        <activity android:name=".activity_sample_text3_3" />
         <activity android:name=".MainActivity" />
         <activity android:name=".activity_sample_text2_3" />
-        <activity android:name=".activity_sample_text1_3" />
-        <activity android:name=".questionnaire" />
-        <activity android:name=".rating" />
+        <activity android:name=".activeTime" />
         <activity android:name=".alertScreen" />
+        <activity android:name=".activity_sample_text1_3" />
+        <activity android:name=".activity_sample_text3_3" />
+        <activity android:name=".rating" />
+        <activity android:name=".questionnaire" />
         <activity android:name=".StartUp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

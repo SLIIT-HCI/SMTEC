@@ -43,7 +43,7 @@ public class rating extends AppCompatActivity {
     long timeleft;
     String formatDateTime;
     LocalDateTime sessionOnFinished;
-    String session;
+    int session;
 
     Button submit;
 
@@ -64,7 +64,7 @@ public class rating extends AppCompatActivity {
 
         UserID = getIntent().getStringExtra("UserID");
         totalRuns = getIntent().getIntExtra("noOfRuns",0);
-        session = getIntent().getStringExtra("session");
+        session = getIntent().getIntExtra("session",0);
 
         System.out.println("total runs" + totalRuns);
         if(totalRuns != 0){
@@ -163,10 +163,10 @@ public class rating extends AppCompatActivity {
         });
     }
 
-    public void saveToDatabase(String session, float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
+    public void saveToDatabase(int session, float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbHelper.saveToRatingsTable(UserID, session, noOfRuns, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
+        dbHelper.saveToRatingsTable(UserID, session, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
     }
 
 

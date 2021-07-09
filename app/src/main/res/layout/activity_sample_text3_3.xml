@@ -8,6 +8,23 @@
     android:background="@drawable/b41">
 
     <TextView
+        android:id="@+id/timer3"
+        android:layout_width="223dp"
+        android:layout_height="53dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="166dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="22dp"
+        android:background="#F8F0F0"
+        android:text="Timer"
+        android:textAlignment="center"
+        android:textColor="#0720AA"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/sample33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +37,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/text33"
+        android:id="@+id/RetrievePhrase3"
         android:layout_width="379dp"
         android:layout_height="91dp"
         android:layout_alignParentStart="true"
@@ -31,7 +48,7 @@
         android:text="Work until your bank account looks like a phone number." />
 
     <EditText
-        android:id="@+id/typeText33"
+        android:id="@+id/typeText3"
         android:layout_width="367dp"
         android:layout_height="61dp"
         android:layout_alignParentStart="true"
@@ -44,14 +61,27 @@
         android:text="" />
 
     <Button
-        android:id="@+id/sampleSubmit33"
+        android:id="@+id/next3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="27dp"
         android:layout_marginBottom="305dp"
-        android:text="Submit"
-        app:backgroundTint="#3F51B5" />
+        android:text="Next" />
+
+
+    <Button
+        android:id="@+id/play_pause3"
+        android:layout_width="54dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="181dp"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/btn_play"
+        android:backgroundTint="#247C05"
+        android:clickable="true" />
 
 </RelativeLayout>

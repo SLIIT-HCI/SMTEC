@@ -72,28 +72,14 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="313dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="97dp"
-        android:text="submit"
-        app:backgroundTint="#3F51B5" />
-
-    <Button
         android:id="@+id/play_pause1"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="172dp"
-        android:layout_marginBottom="142dp"
+        android:layout_marginStart="187dp"
+        android:layout_marginBottom="200dp"
         android:background="@drawable/btn_play"
         android:backgroundTint="#247C05"
         android:clickable="true" />

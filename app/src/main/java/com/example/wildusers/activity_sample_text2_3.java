@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +40,7 @@ import java.util.Set;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class activity_sample_text2_3 extends AppCompatActivity {
 
-    ImageView btn_next;
+    //ImageView btn_next;
 //    EditText text23;
 //    TextView phrase23, Timer2;
     //FloatingActionButton btn_play_pause
@@ -46,19 +48,21 @@ public class activity_sample_text2_3 extends AppCompatActivity {
     //Button btn_next;
 
 
-    DBHelper dbHelper;
+    DBHelper helper;
     Experiment experiment;
     TextView timer, phrase;
-    Button btn_play_pause1;
+    Button btn_play_pause, nextBtn;
     EditText input_phrase;
     Boolean clicked = false;
-    int clickCount,editDistance, session, noOfRuns;
+    int clickCount,editDistance, noOfRuns;
+    int session;
     long timeleft, duration;
-    String response, stimulus, inputMethod, email , formatDateTime1,formatDateTime2;
+    String Sample = "Sample - 2/3";
+    String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
     int count = 1;
-    LocalDateTime dateTime1,dateTime2;
+    LocalDateTime dateTime1, dateTime2;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     BroadcastReceiver broadcastReceiver;
     ArrayList phrases = new ArrayList<String>();
@@ -69,6 +73,10 @@ public class activity_sample_text2_3 extends AppCompatActivity {
     public String  actualfilepath="";
     private static int RESULT_LOAD_IMAGE = 100;
 
+    ArrayList<String> userEmail = new ArrayList<>();
+    ArrayList<Integer> userSession = new ArrayList<>();
+    Cursor cursorSession;
+
 
 
 
@@ -77,24 +85,10 @@ public class activity_sample_text2_3 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text2_3);
+        Log.d("I am coming here","1");
 
-//        text23 = (EditText) findViewById(R.id.typeText23);
-//        phrase23 = (TextView) findViewById(R.id.text23);
-        //btn_next = (ImageView) findViewById(R.id.next23);
-//        btn_next.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(activity_sample_text2_3.this, activity_sample_text3_3.class);
-//                startActivity(i);
-//            }
-//        });
-
-
-
-
-        /**********************************************************************/
-
-        dbHelper = new DBHelper(this);
+        //helper = new DBHelper(this);
+        helper = new DBHelper(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{
@@ -108,31 +102,34 @@ public class activity_sample_text2_3 extends AppCompatActivity {
 
         timer = (TextView) findViewById(R.id.timer2);
         phrase = (TextView) findViewById(R.id.RetrievePhrase2);
-        btn_next = (ImageView) findViewById(R.id.next23);
-        btn_play_pause1 = (Button) findViewById(R.id.play_pause2);
+        nextBtn = (Button) findViewById(R.id.next23);
+        btn_play_pause = (Button) findViewById(R.id.play_pause2);
         input_phrase = (EditText) findViewById(R.id.typeText23);
+        //submit = (Button) findViewById(R.id.submit);
+
 
         /*retrieving values through intents*/
-        email = getIntent().getStringExtra("email");
+        UserID = getIntent().getStringExtra("UserID");
         session = getIntent().getIntExtra("session",0);
-        inputMethod = getIntent().getStringExtra("inputMethod");
+        //inputMethod = getIntent().getStringExtra("inputMethod");
         noOfRuns = getIntent().getIntExtra("noOfRuns",0);
         if(noOfRuns !=0 ){
             count = noOfRuns;
         }
 
         timer.setText("            Let's Start !");
-        btn_play_pause1.setOnClickListener(new View.OnClickListener() {
+        btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startTimer();
-                btn_play_pause1.setEnabled(false);
-                btn_play_pause1.setBackgroundResource(R.drawable.btn_play_gray);
+                btn_play_pause.setEnabled(false);
+                btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
                 setPhrase(0);
             }
         });
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
                 clicked = true;
@@ -140,16 +137,22 @@ public class activity_sample_text2_3 extends AppCompatActivity {
                 formatDateTime2 = dateTime2.format(formatDate);
                 timestamps[timestamps.length - 1] = formatDateTime2;
 
+                //session = Integer.parseInt(sessionNo.getText().toString());
+
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
                 editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
+                saveToLocalStorage(experiment);
                 //saveToLocalStorage(experiment);
                 phraseArray_Iterator();
+
             }
         });
+
+
         /*getting timestamp for the first character entered*/
         final TextWatcher noOfTaps = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -170,6 +173,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
 
 
 
+    /***********************************************************************/
     public String formatTime(long millis) {
         String output = "00:00";
         long seconds = millis / 1000;
@@ -189,6 +193,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
         output = min + " : " + sec;
         return output;
     }
+
     // Countdown Method Invocation
     public void startTimer(){
         countDown = new CountDownTimer(60000, 1000)
@@ -203,7 +208,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
             {
                 phrase.setText("");
                 timer.setText("   Your Time is over !");
-                btn_next.setEnabled(false);
+                nextBtn.setEnabled(false);
                 input_phrase.setEnabled(false);
                 input_phrase.setText("");
 
@@ -211,9 +216,9 @@ public class activity_sample_text2_3 extends AppCompatActivity {
                     @Override
                     public void run() {
                         Intent intent = new Intent(activity_sample_text2_3.this, activity_sample_text3_3.class);
-                        intent.putExtra("email", email);
+                        intent.putExtra("UserID", UserID);
                         intent.putExtra("session", session);
-                        intent.putExtra("noOfRuns", noOfRuns);
+                        //intent.putExtra("noOfRuns", noOfRuns);
                         startActivity(intent);
                     }
                 }, 2000);
@@ -228,7 +233,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
             // do reading, usually loop until end of file reading
             String mLine;
             while ((mLine = reader.readLine()) != null) {
-                dbHelper.insertData_Phrases(mLine);
+                helper.insertData_Phrases(mLine);
             }
         } catch (IOException e) {
             //log the exception
@@ -244,7 +249,7 @@ public class activity_sample_text2_3 extends AppCompatActivity {
     }
 
     public void setPhrase(int count){
-        phrases = dbHelper.getPhrases();
+        phrases = helper.getPhrases();
         if(!phrases.isEmpty() && ((phrases.size()-1) >= count)) {
             phrase.setText(phrases.get(count).toString());
         }
@@ -257,16 +262,18 @@ public class activity_sample_text2_3 extends AppCompatActivity {
             clickCount = rand.nextInt(randomMax);
         }
         generated.add(clickCount);
+
         clickCount += 1;
         setPhrase(clickCount);
         input_phrase.setText("");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-//    private void saveToLocalStorage(Experiment experimentList){
-//        SQLiteDatabase database = dbHelper.getWritableDatabase();
-//        dbHelper.saveToLocalDatabase(email,session,count,experimentList,database);
-//    }
+    private void saveToLocalStorage(Experiment experimentList){
+        SQLiteDatabase database = helper.getWritableDatabase();
+        //dbHandler.saveToLocalDatabaseS1(PassUserID,Sample,experimentList,database);
+        helper.saveToLocalDatabase(UserID, Sample, session, experimentList, database);
+    }
 
     /* calculating edit distance */
     public static int levenshteinDistance( String s1, String s2 ) {
@@ -295,4 +302,5 @@ public class activity_sample_text2_3 extends AppCompatActivity {
         return d[ s1.length ][ s2.length ];
     }
 /****************************************************************************************************/
+
 }
