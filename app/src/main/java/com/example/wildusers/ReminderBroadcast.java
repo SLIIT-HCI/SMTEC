@@ -9,6 +9,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class ReminderBroadcast extends BroadcastReceiver {
+
+    String UserID;
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notifyToStart")
@@ -27,12 +29,10 @@ public class ReminderBroadcast extends BroadcastReceiver {
 
         Toast.makeText(context, "Starting Your Experiment!!", Toast.LENGTH_LONG).show();
         intent = new Intent();
-        intent.setClass(context, activity_sample_text1_3.class); //class name where to redirect
+        intent.setClass(context, alertScreen.class); //class name where to redirect
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //intent.putExtra("msg", str);
         context.startActivity(intent);
-
-
 
 
 

@@ -31,18 +31,13 @@ public class rating extends AppCompatActivity {
     RadioButton Type_radioBtn, TypeHandPosture;
     EditText OpenComment;
     TextView brk_timer;
-    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
 
     String UserID;
     String comment;
-
     float speed, accuracy, easeOfUse;
     String preference, HandPosture;
     int totalRuns;
     int noOfRuns = 1;
-    long timeleft;
-    String formatDateTime;
-    LocalDateTime sessionOnFinished;
     int session;
 
     Button submit;
@@ -73,69 +68,6 @@ public class rating extends AppCompatActivity {
 
 
         dbHelper = new DBHelper(this);
-        /********************************/
-        new CountDownTimer(60000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                brk_timer.setText("         Submit Your Rating: " + formatTime(millisUntilFinished));
-                timeleft = millisUntilFinished / 1000;
-            }
-
-            public void onFinish() {
-                brk_timer.setText("       Let's start again !");
-
-
-//                int selectedIDPreference = type.getCheckedRadioButtonId();
-//                Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
-//                preference = (String) Type_radioBtn.getText().toString();
-//
-//                int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
-//                TypeHandPosture = (RadioButton)findViewById(selectedIDHandPosture);
-//                HandPosture = (String) TypeHandPosture.getText().toString();
-//
-//                speed = rb5_speed.getRating();
-//                accuracy = rb6_accuracy.getRating();
-//                easeOfUse = rb7_easeOfUse.getRating();
-//                //String comment = OpenComment.getText().toString();
-//                comment = OpenComment.getText().toString();
-
-
-//                sessionOnFinished = LocalDateTime.now();
-                formatDateTime = sessionOnFinished.format(formatDate);
-               // saveToDatabase(email,session,noOfRuns,speed,accuracy,preference,easeOfUse, formatDateTime);
-                //saveToDatabase(speed,accuracy,preference,easeOfUse,HandPosture, comment);
-
-                System.out.println("Before" + noOfRuns);
-                noOfRuns = noOfRuns +1;
-                if(noOfRuns<2){
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Intent intent = new Intent(rating.this, activity_sample_text1_3.class);
-                            intent.putExtra("noOfRuns", noOfRuns);
-                            startActivity(intent);
-                        }
-                    }, 3000);
-
-                }else{
-                    brk_timer.setText("            Session is over");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Intent intent=new Intent(rating.this, activity_sample_text2_3.class);
-                            intent.putExtra("noOfRuns", noOfRuns);
-                            intent.putExtra("session", session);
-                            startActivity(intent);
-                        }
-                    }, 3000);
-                }
-                System.out.println("After" + noOfRuns);
-
-            }
-        }.start();
-
-        /*******************************/
 
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +91,18 @@ public class rating extends AppCompatActivity {
 
                 saveToDatabase(session, speed,accuracy,preference,easeOfUse,HandPosture, comment);
 
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Intent intent=new Intent(rating.this, questionnaire.class);
+                        intent.putExtra("UserID", UserID);
+                        startActivity(intent);
+                    }
+                }, 1000*60);
+
             }
         });
     }
@@ -169,24 +113,4 @@ public class rating extends AppCompatActivity {
         dbHelper.saveToRatingsTable(UserID, session, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
     }
 
-
-    public String formatTime(long millis) {
-        String output = "00:00";
-        long seconds = millis / 1000;
-        long minutes = seconds / 60;
-
-        seconds = seconds % 60;
-        minutes = minutes % 60;
-
-        String sec = String.valueOf(seconds);
-        String min = String.valueOf(minutes);
-
-        if (seconds < 10)
-            sec = "0" + seconds;
-        if (minutes < 10)
-            min= "0" + minutes;
-
-        output = min + " : " + sec;
-        return output;
-    }
 }

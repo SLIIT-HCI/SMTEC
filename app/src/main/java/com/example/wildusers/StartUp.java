@@ -78,7 +78,7 @@ public class StartUp extends AppCompatActivity {
 //                    Toast.makeText(StartUp.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
 
 
-                Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
+                Intent i = new Intent(getApplicationContext(), alertScreen.class);
                 i.putExtra("UserID", UserID);
                 startActivity(i);
 

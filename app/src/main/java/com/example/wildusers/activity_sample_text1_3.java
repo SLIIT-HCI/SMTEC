@@ -67,7 +67,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     Experiment experiment;
     TextView timer, phrase;
     Button btn_play_pause;
-    //Button submit;
+    Button submit;
     EditText input_phrase, sessionNo;
     Button nextBtn;
     Boolean clicked = false;
@@ -94,7 +94,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     ArrayList<Integer> userSession = new ArrayList<>();
     Cursor cursorSession;
 
-    int phraseCount = 1;
 
 
 
@@ -121,14 +120,13 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
         displayText();
 
-        timer = (TextView) findViewById(R.id.timer);
+        //timer = (TextView) findViewById(R.id.timer);
         phrase = (TextView) findViewById(R.id.viewPhrase);
         nextBtn = (Button) findViewById(R.id.next);
         btn_play_pause = (Button) findViewById(R.id.play_pause1);
         input_phrase = (EditText) findViewById(R.id.typeText);
-        //submit = (Button) findViewById(R.id.submit);
         sessionNo = (EditText) findViewById(R.id.enterSessionNo);
-
+        submit = (Button) findViewById(R.id.sampleSubmit);
         /*retrieving values through intents*/
         UserID = getIntent().getStringExtra("UserID");
         //session = getIntent().getIntExtra("session",0);
@@ -138,11 +136,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
             count = noOfRuns;
         }
 
-        timer.setText("            Let's Start !");
+        //timer.setText("            Let's Start !");
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startTimer();
+               // startTimer();
                 btn_play_pause.setEnabled(false);
                 btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
                 setPhrase(0);
@@ -173,7 +171,16 @@ public class activity_sample_text1_3 extends AppCompatActivity {
             }
         });
 
-
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), rating.class);
+                intent.putExtra("UserID", UserID);
+                intent.putExtra("session", session);
+                //intent.putExtra("noOfRuns", noOfRuns);
+                startActivity(intent);
+            }
+        });
         /*getting timestamp for the first character entered*/
         final TextWatcher noOfTaps = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -191,60 +198,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
     }
 
-
-
-
-    public String formatTime(long millis) {
-        String output = "00:00";
-        long seconds = millis / 1000;
-        long minutes = seconds / 60;
-
-        seconds = seconds % 60;
-        minutes = minutes % 60;
-
-        String sec = String.valueOf(seconds);
-        String min = String.valueOf(minutes);
-
-        if (seconds < 10)
-            sec = "0" + seconds;
-        if (minutes < 10)
-            min= "0" + minutes;
-
-        output = min + " : " + sec;
-        return output;
-    }
-
-    // Countdown Method Invocation
-    public void startTimer(){
-        countDown = new CountDownTimer(60000, 1000)
-        {
-            public void onTick(long millisUntilFinished)
-            {
-                timer.setText("  Time remaining: " + formatTime(millisUntilFinished));
-                timeleft = millisUntilFinished/1000;
-            }
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            public void onFinish()
-            {
-                phrase.setText("");
-                timer.setText("   Your Time is over !");
-                nextBtn.setEnabled(false);
-                input_phrase.setEnabled(false);
-                input_phrase.setText("");
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(activity_sample_text1_3.this, activity_sample_text2_3.class);
-                        intent.putExtra("UserID", UserID);
-                        intent.putExtra("session", session);
-                        //intent.putExtra("noOfRuns", noOfRuns);
-                        startActivity(intent);
-                    }
-                }, 2000);
-            }
-        }.start();
-    }
     public void displayText() {
         BufferedReader reader = null;
         try {

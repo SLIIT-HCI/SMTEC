@@ -54,23 +54,6 @@
         android:inputType="textPersonName"
         android:text="" />
 
-    <TextView
-        android:id="@+id/timer"
-        android:layout_width="176dp"
-        android:layout_height="51dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="213dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="22dp"
-        android:background="#F8F0F0"
-        android:text="Timer"
-        android:textAlignment="center"
-        android:textColor="#0720AA"
-        android:textSize="20dp"
-        android:textStyle="bold" />
-
     <Button
         android:id="@+id/play_pause1"
         android:layout_width="54dp"
@@ -86,16 +69,43 @@
 
     <EditText
         android:id="@+id/enterSessionNo"
-        android:layout_width="178dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="81dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/textView2"
+        android:ems="10"
+        android:hint="Session"
+        android:inputType="textPersonName"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="282dp"
+        android:layout_height="40dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="213dp"
-        android:layout_marginTop="68dp"
-        android:ems="10"
-        android:hint="Session Number"
-        android:textStyle="bold"
-        android:inputType="textPersonName"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="83dp"
+        android:text="Please Enter the session Number"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/sampleSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="304dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="102dp"
+        android:backgroundTint="#20681E"
+        android:text="Submit" />
 
 
 </RelativeLayout>

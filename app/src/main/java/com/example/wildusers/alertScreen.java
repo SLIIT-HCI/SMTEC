@@ -24,7 +24,7 @@ public class alertScreen extends AppCompatActivity {
 
     RadioGroup alertGroup;
     RadioButton start, oneMin, twoMin, fiveMin;
-
+    String UserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +52,13 @@ public class alertScreen extends AppCompatActivity {
 
 
 
-
 /***************************************************************************************************************************/
         alertGroup = (RadioGroup) findViewById(R.id.alertTime);
         start = (RadioButton) findViewById(R.id.startRB);
         oneMin =  (RadioButton) findViewById(R.id.oneMinRB);
         twoMin = (RadioButton) findViewById(R.id.twoMinRB);
         fiveMin = (RadioButton) findViewById(R.id.fiveMinRB);
+        UserID = getIntent().getStringExtra("UserID");
         
         /************************************************ implementing the option radio buttons ************************************************/
         alertGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -70,11 +70,13 @@ public class alertScreen extends AppCompatActivity {
 
                 if(i == R.id.startRB){
                     Intent i1 = new Intent(getApplicationContext(), activity_sample_text1_3.class);
+                    i1.putExtra("UserID", UserID);
                     startActivity(i1);
                     Toast.makeText(alertScreen.this, "Starting Experiment Now!", Toast.LENGTH_SHORT).show();
                 }
                 else if(i == R.id.oneMinRB) {
                     Intent i1 = new Intent(getApplicationContext(), ReminderBroadcast.class);
+                    i1.putExtra("UserID", UserID);
                     //startActivity(i1);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i1, 0);
 
@@ -86,6 +88,7 @@ public class alertScreen extends AppCompatActivity {
                 }
                 else if(i == R.id.twoMinRB) {
                     Intent i2 = new Intent(getApplicationContext(), ReminderBroadcast.class);
+                    i2.putExtra("UserID", UserID);
                     //startActivity(i1);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i2, 0);
 
@@ -101,6 +104,7 @@ public class alertScreen extends AppCompatActivity {
 
                 else if(i == R.id.fiveMinRB) {
                     Intent i3 = new Intent(getApplicationContext(), ReminderBroadcast.class);
+                    i3.putExtra("UserID", UserID);
 //                    startActivity(i3);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i3, 0);
 
@@ -146,10 +150,9 @@ public class alertScreen extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, ia, 0);
 
         AlarmManager am = (AlarmManager)   this.getSystemService(Context.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 6000*5, pendingIntent);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 6000*60*5, pendingIntent);
 
     }
-
 
 
 
