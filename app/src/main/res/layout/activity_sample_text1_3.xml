@@ -32,12 +32,14 @@
 
     <Button
         android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="112dp"
+        android:layout_height="52dp"
+        android:layout_below="@+id/typeText"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="328dp"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="333dp"
         android:clickable="true"
         android:text="Next" />
 
@@ -84,8 +86,8 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="282dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="41dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="30dp"
@@ -96,12 +98,12 @@
 
     <Button
         android:id="@+id/sampleSubmit"
-        android:layout_width="wrap_content"
+        android:layout_width="113dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="304dp"
+        android:layout_marginStart="284dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="102dp"
         android:backgroundTint="#20681E"
