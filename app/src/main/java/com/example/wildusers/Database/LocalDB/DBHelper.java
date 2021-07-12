@@ -23,7 +23,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN2_NAME = "ActualPhrase";
 
 
-
     /********************** WILD USER details **************************/
     //User Details Storing
     private static final String WILD_USER_DETAIL_TABLE_NAME = "WildUser";
@@ -31,7 +30,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_CONDITION = "Condition";
     private static final String COLUMN_NAME_RS = "Rotational_Sequence";
    /**************************************************************************/
-
 
     public static final String TABLE2_NAME = "WildExperiment";
     public static final String COLUMN1_id = "UserID";
@@ -75,9 +73,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_tired = "Tired";
 
 
-//    public DBHelper(Context context) {
-//        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-//    }
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -168,6 +163,7 @@ public class DBHelper extends SQLiteOpenHelper {
             onCreate(sqLiteDatabase);
         }
     }
+    
     public boolean insertData_Phrases(String phrase)  {
 
         Log.d("Trying to insert 1..","1");

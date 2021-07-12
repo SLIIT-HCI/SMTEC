@@ -65,16 +65,17 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     //DBHandler dbHandler;
     DBHelper helper;
     Experiment experiment;
-    TextView timer, phrase;
+    TextView phrase, Sentence_counter;
     Button btn_play_pause;
     Button submit;
     EditText input_phrase, sessionNo;
     Button nextBtn;
     Boolean clicked = false;
     int clickCount,editDistance, noOfRuns;
-    int session = 1;
-    long timeleft, duration;
-    String Sample = "Sample - 1/3";
+    private int session = 1;
+    private int sentenceCount = 0;
+    long duration;
+    String Sample = "Sample";
     String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
@@ -93,7 +94,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     ArrayList<String> userEmail = new ArrayList<>();
     ArrayList<Integer> userSession = new ArrayList<>();
     Cursor cursorSession;
-
 
 
 
@@ -127,6 +127,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         input_phrase = (EditText) findViewById(R.id.typeText);
         sessionNo = (EditText) findViewById(R.id.enterSessionNo);
         submit = (Button) findViewById(R.id.sampleSubmit);
+        Sentence_counter = (TextView) findViewById(R.id.count);
+
         /*retrieving values through intents*/
         UserID = getIntent().getStringExtra("UserID");
         //session = getIntent().getIntExtra("session",0);
@@ -167,6 +169,10 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 saveToLocalStorage(experiment);
 
                 phraseArray_Iterator();
+
+                //Display the sentence count
+                sentenceCount ++;
+                Sentence_counter.setText(Integer.toString(sentenceCount));
 
             }
         });
@@ -236,9 +242,12 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 clickCount = rand.nextInt(randomMax);
             }
             generated.add(clickCount);
+//            Sentence_counter.setText(sentenceCount);
+//            sentenceCount +=1;
             clickCount += 1;
             setPhrase(clickCount);
             input_phrase.setText("");
+
        // }
 
     }
