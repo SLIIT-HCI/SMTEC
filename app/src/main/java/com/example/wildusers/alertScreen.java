@@ -85,6 +85,8 @@ public class alertScreen extends AppCompatActivity {
                     long twoMinutes = 1000 * 10; //1 minute
                     alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
                     Toast.makeText(alertScreen.this, "Starting Experiment in 1 Minutes!", Toast.LENGTH_SHORT).show();
+
+                    moveTaskToBack(true);
                 }
                 else if(i == R.id.twoMinRB) {
                     Intent i2 = new Intent(getApplicationContext(), ReminderBroadcast.class);
@@ -100,6 +102,8 @@ public class alertScreen extends AppCompatActivity {
 
                     Toast.makeText(alertScreen.this, "Starting Experiment in 2 Minutes!", Toast.LENGTH_SHORT).show();
 
+                    //move the activity to background
+                    moveTaskToBack(true);
                 }
 
                 else if(i == R.id.fiveMinRB) {
@@ -114,6 +118,8 @@ public class alertScreen extends AppCompatActivity {
                     alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
                     Toast.makeText(alertScreen.this, "Starting Experiment in 5 Minutes!", Toast.LENGTH_SHORT).show();
 
+                    //move the activity to background
+                    moveTaskToBack(true);
                 }
             }
         });

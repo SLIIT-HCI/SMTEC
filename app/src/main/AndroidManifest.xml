@@ -23,7 +23,7 @@
         <activity android:name=".Instructions" />
         <activity android:name=".StartUp" />
         <activity android:name=".activeTime" />
-        <activity android:name=".alertScreen" />
+<!--        <activity android:name=".alertScreen" />-->
         <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".rating" />
         <activity android:name=".questionnaire" />
@@ -35,13 +35,13 @@
             </intent-filter>
         </activity>
 
-<!--         <activity-->
-<!--         android:name=".alertScreen"-->
-<!--         android:excludeFromRecents="true"-->
-<!--         android:showOnLockScreen="true"-->
-<!--         android:showWhenLocked="true"-->
-<!--         android:turnScreenOn="true"-->
-<!--         android:showForAllUsers="true"/>-->
+         <activity
+         android:name=".alertScreen"
+         android:excludeFromRecents="true"
+         android:showOnLockScreen="true"
+         android:showWhenLocked="true"
+         android:turnScreenOn="true"
+         android:showForAllUsers="true"/>
 
         <receiver
             android:name=".ReminderBroadcast"

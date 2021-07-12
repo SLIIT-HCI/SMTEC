@@ -78,19 +78,25 @@ public class StartUp extends AppCompatActivity {
 //                    Toast.makeText(StartUp.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
 
 
-                Intent i = new Intent(getApplicationContext(), alertScreen.class);
-                i.putExtra("UserID", UserID);
-                startActivity(i);
+
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        Intent i = new Intent(getApplicationContext(), activity_sample_text1_3.class);
-//                        startActivity(i);
+                        Intent i = new Intent(getApplicationContext(), alertScreen.class);
+                        i.putExtra("UserID", UserID);
+                        startActivity(i);
                         finish();
-                        //Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
+
+                        //destroy the app completely
+                        //System.exit(0);
                     }
-                }, 1000*60);
+                }, 1000);
+
+
+                //move the activity to background
+                moveTaskToBack(true);
             }
         });
 

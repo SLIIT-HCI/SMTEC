@@ -55,7 +55,6 @@ public class rating extends AppCompatActivity {
         postureRG = (RadioGroup) findViewById(R.id.postureRG);
         OpenComment = findViewById(R.id.commentEdit);
         submit = (Button)findViewById(R.id.rate2SubmitBTN);
-        brk_timer = (TextView) findViewById(R.id.break_timer);
 
         UserID = getIntent().getStringExtra("UserID");
         totalRuns = getIntent().getIntExtra("noOfRuns",0);
@@ -103,6 +102,8 @@ public class rating extends AppCompatActivity {
                     }
                 }, 1000*60);
 
+                //move the activity to background
+                moveTaskToBack(true);
             }
         });
     }

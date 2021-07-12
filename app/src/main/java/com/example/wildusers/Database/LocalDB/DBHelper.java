@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 59;
+    private static final int DATABASE_VERSION = 60;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -54,9 +54,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_handPosture1 = "handPosture1";
     private static final String COLUMN_commentR = "commentOfTest";
 
-    private static final String TABLE4_NAME = "User";
-    private static final String COLUMN1_userEmail = "Email";
-    private static final String COLUMN2_Session = "ExperimentSession";
+//    private static final String TABLE4_NAME = "User";
+//    private static final String COLUMN1_userEmail = "Email";
+//    private static final String COLUMN2_Session = "ExperimentSession";
 
 //    private static final String TABLE5_NAME = "Comment";
 //    private static final String COLUMN_Email = "Email";
@@ -115,11 +115,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL(TABLE_RATING);
 
-            String TABLE_USER = "CREATE TABLE " + TABLE4_NAME + "("
-                    + COLUMN1_userEmail + " TEXT PRIMARY KEY,"
-                    + COLUMN2_Session + " INTEGER )";
-
-            sqLiteDatabase.execSQL(TABLE_USER);
+//            String TABLE_USER = "CREATE TABLE " + TABLE4_NAME + "("
+//                    + COLUMN1_userEmail + " TEXT PRIMARY KEY,"
+//                    + COLUMN2_Session + " INTEGER )";
+//
+//            sqLiteDatabase.execSQL(TABLE_USER);
 
 
             String TABLE_QUESTION = "CREATE TABLE " + TABLE_QUESTIONNAIRE + "("
@@ -154,7 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE1_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE2_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE3_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONNAIRE);
 //        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE5_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WILD_USER_DETAIL_TABLE_NAME);
