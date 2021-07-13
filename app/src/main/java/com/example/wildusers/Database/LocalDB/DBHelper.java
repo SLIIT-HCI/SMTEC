@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 60;
+    private static final int DATABASE_VERSION = 61;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -95,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     + COLUMN3_dateTime + " TEXT NOT NULL,"
                     + COLUMN4_S1 + " TEXT NOT NULL,"
                     + COLUMN5_S2 + " TEXT NOT NULL,"
-                    + COLUMN7_sample + " TEXT NOT NULL,"
+                    + COLUMN7_sample + " INTEGER NOT NULL,"
                     + COLUMN6_EditDistance + " INTEGER NOT NULL,"
                     + COLUMN8_duration + " REAL NOT NULL )";
 
@@ -204,7 +204,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public void saveToLocalDatabase(String UserID, String sample, int session, Experiment ex, SQLiteDatabase database){
+    public void saveToLocalDatabase(String UserID, int sample, int session, Experiment ex, SQLiteDatabase database){
 
         //SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

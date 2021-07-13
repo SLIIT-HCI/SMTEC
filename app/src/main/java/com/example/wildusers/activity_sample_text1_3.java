@@ -73,9 +73,10 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     Boolean clicked = false;
     int clickCount,editDistance, noOfRuns;
     private int session = 1;
-    private int sentenceCount = 0;
+    private int sentenceCount = 1;
     long duration;
-    String Sample = "Sample";
+    //String Sample = "Sample";
+    //int sentence;
     String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
@@ -160,6 +161,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
                 session = Integer.parseInt(sessionNo.getText().toString());
 
+
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
                 editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
@@ -173,7 +175,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 //Display the sentence count
                 sentenceCount ++;
                 Sentence_counter.setText(Integer.toString(sentenceCount));
-
+                sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
             }
         });
 
@@ -255,7 +257,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveToLocalStorage(Experiment experimentList){
         SQLiteDatabase database = helper.getWritableDatabase();
-        helper.saveToLocalDatabase(UserID, Sample, session, experimentList, database);
+        helper.saveToLocalDatabase(UserID, sentenceCount, session, experimentList, database);
     }
 
     /* calculating edit distance */

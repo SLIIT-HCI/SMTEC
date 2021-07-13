@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -74,33 +75,53 @@ public class alertScreen extends AppCompatActivity {
                     startActivity(i1);
                     Toast.makeText(alertScreen.this, "Starting Experiment Now!", Toast.LENGTH_SHORT).show();
                 }
+
                 else if(i == R.id.oneMinRB) {
                     Intent i1 = new Intent(getApplicationContext(), ReminderBroadcast.class);
                     i1.putExtra("UserID", UserID);
-                    //startActivity(i1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i1, 0);
 
-                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-                    long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 10; //1 minute
-                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
-                    Toast.makeText(alertScreen.this, "Starting Experiment in 1 Minutes!", Toast.LENGTH_SHORT).show();
+                    //startActivity(i1);
+//                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i1, 0);
+//                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+//                    long timeAtButtonClick = System.currentTimeMillis();
+//                    long twoMinutes = 1000 * 10; //1 minute
+//                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
+//                    Toast.makeText(alertScreen.this, "Starting Experiment in 1 Minutes!", Toast.LENGTH_SHORT).show();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent=new Intent(alertScreen.this, alertScreen.class);
+                            intent.putExtra("UserID", UserID);
+                            startActivity(intent);
+                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
+                        }
+                    }, 1000*30);
 
                     moveTaskToBack(true);
                 }
                 else if(i == R.id.twoMinRB) {
                     Intent i2 = new Intent(getApplicationContext(), ReminderBroadcast.class);
-                    i2.putExtra("UserID", UserID);
-                    //startActivity(i1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i2, 0);
 
-                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-                    long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 20; //2 minutes
+//                    i2.putExtra("UserID", UserID);
+//                    //startActivity(i1);
+//                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i2, 0);
+//                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+//                    long timeAtButtonClick = System.currentTimeMillis();
+//                    long twoMinutes = 1000 * 20; //2 minutes
+//                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
 
-                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    Toast.makeText(alertScreen.this, "Starting Experiment in 2 Minutes!", Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(alertScreen.this, alertScreen.class);
+                            intent.putExtra("UserID", UserID);
+                            startActivity(intent);
+                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
+                        }
+                    }, 1000*30);
 
                     //move the activity to background
                     moveTaskToBack(true);
@@ -108,15 +129,27 @@ public class alertScreen extends AppCompatActivity {
 
                 else if(i == R.id.fiveMinRB) {
                     Intent i3 = new Intent(getApplicationContext(), ReminderBroadcast.class);
-                    i3.putExtra("UserID", UserID);
-//                    startActivity(i3);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i3, 0);
 
-                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-                    long timeAtButtonClick = System.currentTimeMillis();
-                    long twoMinutes = 1000 * 30; //5 minutes
-                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
-                    Toast.makeText(alertScreen.this, "Starting Experiment in 5 Minutes!", Toast.LENGTH_SHORT).show();
+
+//                    i3.putExtra("UserID", UserID);
+////                    startActivity(i3);
+//                    PendingIntent pendingIntent = PendingIntent.getBroadcast(alertScreen.this, 0, i3, 0);
+//                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+//                    long timeAtButtonClick = System.currentTimeMillis();
+//                    long twoMinutes = 1000 * 30; //5 minutes
+//                    alarmManager.set( AlarmManager.RTC_WAKEUP, timeAtButtonClick + twoMinutes, pendingIntent);
+//                    Toast.makeText(alertScreen.this, "Starting Experiment in 5 Minutes!", Toast.LENGTH_SHORT).show();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent=new Intent(alertScreen.this, alertScreen.class);
+                            intent.putExtra("UserID", UserID);
+                            startActivity(intent);
+                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
+                        }
+                    }, 1000*30);
 
                     //move the activity to background
                     moveTaskToBack(true);
