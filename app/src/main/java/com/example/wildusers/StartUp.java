@@ -3,10 +3,14 @@ package com.example.wildusers;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.AlarmClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +31,7 @@ public class StartUp extends AppCompatActivity {
     Button start;
     EditText ID, condition, rotationSequence;
 
+    public static String ALARM_TO_SET = "ALRMTOSEND";
     DBHelper DB;
 
     @Override
@@ -95,8 +100,18 @@ public class StartUp extends AppCompatActivity {
                 }, 1000);
 
 
+
                 //move the activity to background
                 moveTaskToBack(true);
+
+                //Alarm to appear the screen
+//                int time = 1000*60;
+//                Intent intentAlarm = new Intent(ALARM_TO_SET);
+//
+//                AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//                PendingIntent pIntent = PendingIntent.getBroadcast(StartUp.this, 0, intentAlarm, 0);
+//                alarm.setRepeating(AlarmManager.RTC_WAKEUP, time, time, pIntent);
+
             }
         });
 

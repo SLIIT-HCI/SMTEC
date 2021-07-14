@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 61;
+    private static final int DATABASE_VERSION = 65;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -58,12 +58,6 @@ public class DBHelper extends SQLiteOpenHelper {
 //    private static final String COLUMN1_userEmail = "Email";
 //    private static final String COLUMN2_Session = "ExperimentSession";
 
-//    private static final String TABLE5_NAME = "Comment";
-//    private static final String COLUMN_Email = "Email";
-//    private static final String COLUMN_session = "session";
-//    private static final String COLUMN_time = "FinishedTime";
-//    private static final String COLUMN_handPosture = "HandPosture";
-//    private static final String COLUMN_comment = "Comment";
 
     private static final String TABLE_QUESTIONNAIRE = "Questionnaire";
     private static final String COLUMNQ_userid = "ID";
@@ -222,19 +216,6 @@ public class DBHelper extends SQLiteOpenHelper {
         database.insert(TABLE2_NAME, null, contentValues);
 
 }
-//    public void saveToCommentTable(String email, int session,String dateTime, String handPosture, String comment, SQLiteDatabase database){
-//
-//        ContentValues contentValues = new ContentValues();
-//
-//        contentValues.put(COLUMN_Email, email);
-//        contentValues.put(COLUMN_session, session);
-//        contentValues.put(COLUMN_time, dateTime);
-//        contentValues.put(COLUMN_handPosture, handPosture);
-//        contentValues.put(COLUMN_comment, comment);
-//
-//        database.insert(TABLE5_NAME,null,contentValues);
-//    }
-
 
     public void saveToRatingsTable(String ID, int session, float speed, float accuracy, String preference, float easeOfUse,  String HandPosture, String comment,  SQLiteDatabase database) {
 

@@ -71,8 +71,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     EditText input_phrase, sessionNo;
     Button nextBtn;
     Boolean clicked = false;
-    int clickCount,editDistance, noOfRuns;
-    private int session = 1;
+    int clickCount,editDistance;
+    public int session;
     private int sentenceCount = 1;
     long duration;
     //String Sample = "Sample";
@@ -92,6 +92,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     public String  actualfilepath="";
     private static int RESULT_LOAD_IMAGE = 100;
 
+   // public static final int S = 1;
+
     ArrayList<String> userEmail = new ArrayList<>();
     ArrayList<Integer> userSession = new ArrayList<>();
     Cursor cursorSession;
@@ -104,7 +106,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
 
-        Log.d("I am coming here","1");
+        Log.d("I am coming here", "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text1_3);
 
@@ -132,18 +134,19 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
         /*retrieving values through intents*/
         UserID = getIntent().getStringExtra("UserID");
+
         //session = getIntent().getIntExtra("session",0);
         //inputMethod = getIntent().getStringExtra("inputMethod");
-        noOfRuns = getIntent().getIntExtra("noOfRuns",0);
-        if(noOfRuns !=0 ){
-            count = noOfRuns;
-        }
+        session = getIntent().getIntExtra("session", 0);
+//        if (session != 0) {
+//            count = session;
+//        }
 
-        //timer.setText("            Let's Start !");
+
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // startTimer();
+                // startTimer();
                 btn_play_pause.setEnabled(false);
                 btn_play_pause.setBackgroundResource(R.drawable.btn_play_gray);
                 setPhrase(0);
@@ -164,16 +167,16 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
-                editDistance = levenshteinDistance( input_phrase.getText().toString(), phrase.getText().toString());
+                editDistance = levenshteinDistance(input_phrase.getText().toString(), phrase.getText().toString());
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
                 /*create an object to store the data using 'Experiment ' class*/
-                experiment = new Experiment(timestamps,duration,stimulus,response,editDistance);
+                experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
                 saveToLocalStorage(experiment);
 
                 phraseArray_Iterator();
 
                 //Display the sentence count
-                sentenceCount ++;
+                sentenceCount++;
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
             }
@@ -191,16 +194,20 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         });
         /*getting timestamp for the first character entered*/
         final TextWatcher noOfTaps = new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 timestamps = new String[2];
-                for(int i=0;i<s.length();i++){
+                for (int i = 0; i < s.length(); i++) {
                     dateTime1 = LocalDateTime.now();
                     formatDateTime1 = dateTime1.format(formatDate);
                     timestamps[0] = formatDateTime1;
                 }
             }
-            public void afterTextChanged(Editable s) {}
+
+            public void afterTextChanged(Editable s) {
+            }
         };
         input_phrase.addTextChangedListener(noOfTaps);
 
@@ -253,6 +260,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
        // }
 
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveToLocalStorage(Experiment experimentList){

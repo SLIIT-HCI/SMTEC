@@ -36,10 +36,9 @@ public class rating extends AppCompatActivity {
     String comment;
     float speed, accuracy, easeOfUse;
     String preference, HandPosture;
-    int totalRuns;
-    int noOfRuns = 1;
+    int totalSessions;
     int session;
-
+    int runs = 1;
     Button submit;
 
     @Override
@@ -56,59 +55,75 @@ public class rating extends AppCompatActivity {
         OpenComment = findViewById(R.id.commentEdit);
         submit = (Button)findViewById(R.id.rate2SubmitBTN);
 
+
         UserID = getIntent().getStringExtra("UserID");
-        totalRuns = getIntent().getIntExtra("noOfRuns",0);
+        //totalSessions = getIntent().getIntExtra("noOfRuns",0);
         session = getIntent().getIntExtra("session",0);
 
-        System.out.println("total runs" + totalRuns);
-        if(totalRuns != 0){
-            noOfRuns = totalRuns;
+
+        System.out.println("total runs" + totalSessions);
+        if(totalSessions != 0){
+            runs = totalSessions;
         }
 
 
         dbHelper = new DBHelper(this);
 
+        System.out.println("Before" + runs);
+        runs = runs + 1;
+        if(runs < 10) {
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                int selectedIDPreference = type.getCheckedRadioButtonId();
-                Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
-                preference = (String) Type_radioBtn.getText().toString();
+                    int selectedIDPreference = type.getCheckedRadioButtonId();
+                    Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
+                    preference = (String) Type_radioBtn.getText().toString();
 
-                int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
-                TypeHandPosture = (RadioButton)findViewById(selectedIDHandPosture);
-                HandPosture = (String) TypeHandPosture.getText().toString();
+                    int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
+                    TypeHandPosture = (RadioButton) findViewById(selectedIDHandPosture);
+                    HandPosture = (String) TypeHandPosture.getText().toString();
 
-                speed = rb5_speed.getRating();
-                accuracy = rb6_accuracy.getRating();
-                easeOfUse = rb7_easeOfUse.getRating();
-                //String comment = OpenComment.getText().toString();
-                comment = OpenComment.getText().toString();
-
-
-                saveToDatabase(session, speed,accuracy,preference,easeOfUse,HandPosture, comment);
+                    speed = rb5_speed.getRating();
+                    accuracy = rb6_accuracy.getRating();
+                    easeOfUse = rb7_easeOfUse.getRating();
+                    //String comment = OpenComment.getText().toString();
+                    comment = OpenComment.getText().toString();
 
 
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        Intent intent=new Intent(rating.this, questionnaire.class);
-                        intent.putExtra("UserID", UserID);
-                        startActivity(intent);
-                    }
-                }, 1000*60);
+                            Intent intent = new Intent(rating.this, alertScreen.class);
+                            intent.putExtra("UserID", UserID);
+                            intent.putExtra("session", session);
+                            startActivity(intent);
+                        }
+                    }, 1000 * 10);
 
-                //move the activity to background
-                moveTaskToBack(true);
-            }
-        });
+                    saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
+
+                    //move the activity to background
+                    moveTaskToBack(true);
+                }
+            });
+        }else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent intent=new Intent(rating.this, questionnaire.class);
+                    intent.putExtra("UserID", UserID);
+                    startActivity(intent);
+                }
+            }, 1000*60*60);
+        }
     }
 
-    public void saveToDatabase(int session, float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
+    public void saveToDatabase(float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         dbHelper.saveToRatingsTable(UserID, session, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
