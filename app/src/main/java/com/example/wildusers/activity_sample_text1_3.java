@@ -71,7 +71,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     EditText input_phrase, sessionNo;
     Button nextBtn;
     Boolean clicked = false;
-    int clickCount,editDistance;
+    int editDistance, clickCount;
     public int session;
     private int sentenceCount = 1;
     long duration;
@@ -79,7 +79,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
-    private static int sentenceLimit = 3;
+    private int sentenceLimit = 3;
+    private int sentenceBegin = 0;
     LocalDateTime dateTime1,dateTime2;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     BroadcastReceiver broadcastReceiver;
@@ -172,10 +173,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
                 saveToLocalStorage(experiment);
 
-             //   if(sentenceLimit < 4){
-                    phraseArray_Iterator();
-                   // sentenceLimit++;
-                //}
+                phraseArray_Iterator();
 
 
                 //Display the sentence count
@@ -247,21 +245,21 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     }
 
     public void phraseArray_Iterator(){
-      //  for (int i=0; clickCount <= 3; i++){
             Random rand = new Random();
             clickCount = rand.nextInt(randomMax);
             while (generated.contains(clickCount) && generated.size() < randomMax) {
                 clickCount = rand.nextInt(randomMax);
             }
             generated.add(clickCount);
-//            Sentence_counter.setText(sentenceCount);
-//            sentenceCount +=1;
             clickCount += 1;
             setPhrase(clickCount);
             input_phrase.setText("");
 
-       // }
-
+        sentenceBegin++;
+        if (sentenceLimit < sentenceBegin) {
+            phrase.setText("");
+            nextBtn.setEnabled(false);
+        }
     }
 
 
