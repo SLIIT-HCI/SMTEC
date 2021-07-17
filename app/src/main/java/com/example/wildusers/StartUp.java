@@ -156,6 +156,7 @@ public class StartUp extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.activeTime:
                 Intent i1 = new Intent(getApplicationContext(), activeTime.class);
+                i1.putExtra("UserID", UserID);
                 startActivity(i1);
                 return true;
 

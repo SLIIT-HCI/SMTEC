@@ -11,10 +11,11 @@ import com.example.wildusers.Experiment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 65;
+    private static final int DATABASE_VERSION = 67;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -66,6 +67,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_busy = "Busy";
     private static final String COLUMN_tired = "Tired";
 
+    private static final String TABLE_ACTIVETIME = "ActiveTime";
+    private static final String COLUMNA_userid = "U_ID";
+    private static final String COLUMN_ACTIVETIME = "Time";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -109,12 +114,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL(TABLE_RATING);
 
-//            String TABLE_USER = "CREATE TABLE " + TABLE4_NAME + "("
-//                    + COLUMN1_userEmail + " TEXT PRIMARY KEY,"
-//                    + COLUMN2_Session + " INTEGER )";
-//
-//            sqLiteDatabase.execSQL(TABLE_USER);
-
 
             String TABLE_QUESTION = "CREATE TABLE " + TABLE_QUESTIONNAIRE + "("
                     + COLUMNQ_userid + " TEXT PRIMARY KEY,"
@@ -124,6 +123,13 @@ public class DBHelper extends SQLiteOpenHelper {
                     + COLUMN_tired + " INTEGER NOT NULL )";
 
             sqLiteDatabase.execSQL(TABLE_QUESTION);
+
+
+            String TABLE_ACTIVE_TIME = "CREATE TABLE " + TABLE_ACTIVETIME + "("
+                    + COLUMNA_userid + " TEXT PRIMARY KEY,"
+                    + COLUMN_ACTIVETIME + " TEXT )";
+
+            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME);
 
 
             /****************** WILD USER DETAILS *************************************/
@@ -150,7 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE3_NAME);
 //        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONNAIRE);
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE5_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVETIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WILD_USER_DETAIL_TABLE_NAME);
 
         if(newVersion >oldVersion) {
@@ -248,22 +254,6 @@ public class DBHelper extends SQLiteOpenHelper {
         database.insert(TABLE_QUESTIONNAIRE,null,contentValues);
     }
 
-    /**
-     * @return*************************************************************************/
-//    public void StoreUserDetails(String UID, String Condition, String RotationalSequence, SQLiteDatabase database){
-//
-//        //SQLiteDatabase database = new SQLiteDatabase();
-//        //SQLiteDatabase database = this.getWritableDatabase();
-//
-//        ContentValues contentValues = new ContentValues();
-//
-//        contentValues.put(COLUMN_NAME_ID, UID);
-//        contentValues.put(COLUMN_NAME_CONDITION, Condition);
-//        contentValues.put(COLUMN_NAME_RS, RotationalSequence);
-//
-//        database.insert("WILD_USER_DETAIL_TABLE_NAME",null,contentValues);
-//        //return true;
-//    }
 
     public void StoreUserDetails(String UID, String Condition, String RotationalSequence){
 
@@ -280,6 +270,14 @@ public class DBHelper extends SQLiteOpenHelper {
         //return true;
     }
 
+    public void StoreActiveTime(String UID, String time, SQLiteDatabase database){
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMNA_userid, UID);
+        contentValues.put(COLUMN_ACTIVETIME, time);
+
+        database.insert(TABLE_ACTIVETIME,null,contentValues);
+    }
 
 
 //    public Cursor readFromLocalDatabase(String UserEmail) {
@@ -319,15 +317,15 @@ public class DBHelper extends SQLiteOpenHelper {
 //    }
 
 
-    public Cursor getSessionValidationInfo() {
-
-        String query = ("select email, sessionNo from LabExperiment");
-        SQLiteDatabase database = this.getReadableDatabase();
-
-        Cursor cursor = null;
-        if(database != null){
-            cursor = database.rawQuery(query, null);
-        }
-        return cursor;
-    }
+//    public Cursor getSessionValidationInfo() {
+//
+//        String query = ("select email, sessionNo from LabExperiment");
+//        SQLiteDatabase database = this.getReadableDatabase();
+//
+//        Cursor cursor = null;
+//        if(database != null){
+//            cursor = database.rawQuery(query, null);
+//        }
+//        return cursor;
+//    }
 }

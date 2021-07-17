@@ -75,12 +75,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     public int session;
     private int sentenceCount = 1;
     long duration;
-    //String Sample = "Sample";
     //int sentence;
     String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
-    int count = 1;
+    private static int sentenceLimit = 3;
     LocalDateTime dateTime1,dateTime2;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     BroadcastReceiver broadcastReceiver;
@@ -173,7 +172,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
                 saveToLocalStorage(experiment);
 
-                phraseArray_Iterator();
+             //   if(sentenceLimit < 4){
+                    phraseArray_Iterator();
+                   // sentenceLimit++;
+                //}
+
 
                 //Display the sentence count
                 sentenceCount++;

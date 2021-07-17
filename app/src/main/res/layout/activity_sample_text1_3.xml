@@ -55,17 +55,26 @@
         android:inputType="textPersonName"
         android:text="" />
 
+    <!--    <Button-->
+<!--        android:id="@+id/play_pause1"-->
+<!--        android:layout_width="54dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/typeText"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginTop="158dp"-->
+<!--        android:layout_marginEnd="191dp"-->
+<!--        android:layout_marginBottom="232dp"-->
+<!--        android:background="@drawable/btn_play" />-->
+
     <Button
         android:id="@+id/play_pause1"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/typeText"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="153dp"
-        android:layout_marginTop="173dp"
-        android:layout_marginBottom="217dp"
+        android:layout_marginStart="145dp"
+        android:layout_marginTop="33dp"
         android:background="@drawable/btn_play"
         android:backgroundTint="#247C05"
         android:clickable="true" />
