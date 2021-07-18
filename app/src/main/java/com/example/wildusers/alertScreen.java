@@ -33,7 +33,7 @@ public class alertScreen extends AppCompatActivity {
     int session;
     int totalSessions;
     int runs = 1;
-//
+
 //    private int lastCheck = 0;
 //    private SharedPreferences pref;
 //    private SharedPreferences.Editor editor;
@@ -270,7 +270,7 @@ public class alertScreen extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.activeTime:
-                Intent i1 = new Intent(getApplicationContext(), activeTime.class);
+                Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
                 i1.putExtra("UserID", UserID);
                 startActivity(i1);
                 return true;

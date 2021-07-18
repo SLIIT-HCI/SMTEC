@@ -142,7 +142,7 @@ public class StartUp extends AppCompatActivity {
 //    };
 
 
-    /******************************** mini menu **********************************************/
+    /********************************* mini menu **********************************************/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -155,7 +155,7 @@ public class StartUp extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.activeTime:
-                Intent i1 = new Intent(getApplicationContext(), activeTime.class);
+                Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
                 i1.putExtra("UserID", UserID);
                 startActivity(i1);
                 return true;

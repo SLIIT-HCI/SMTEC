@@ -67,9 +67,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_busy = "Busy";
     private static final String COLUMN_tired = "Tired";
 
-    private static final String TABLE_ACTIVETIME = "ActiveTime";
-    private static final String COLUMNA_userid = "U_ID";
-    private static final String COLUMN_ACTIVETIME = "Time";
+//    private static final String TABLE_ACTIVETIME = "ActiveTime";
+//    private static final String COLUMNA_userid = "U_ID";
+//    private static final String COLUMN_ACTIVETIME = "Time";
 
     private static final String TABLE_ACTIVE_TIME = "ActiveTimeSelection";
     private static final String COLUMNAT_userid = "U_ID";
@@ -130,11 +130,11 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_QUESTION);
 
 
-            String TABLE_ACTIVE_TIME1 = "CREATE TABLE " + TABLE_ACTIVETIME + "("
-                    + COLUMNA_userid + " TEXT PRIMARY KEY,"
-                    + COLUMN_ACTIVETIME + " TEXT )";
-
-            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME1);
+//            String TABLE_ACTIVE_TIME1 = "CREATE TABLE " + TABLE_ACTIVETIME + "("
+//                    + COLUMNA_userid + " TEXT PRIMARY KEY,"
+//                    + COLUMN_ACTIVETIME + " TEXT )";
+//
+//            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME1);
 
 
             String TABLE_ACTIVE_TIME_SELECTOR = "CREATE TABLE " + TABLE_ACTIVE_TIME + "("
@@ -169,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE3_NAME);
 //        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONNAIRE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVETIME);
+//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVETIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVE_TIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WILD_USER_DETAIL_TABLE_NAME);
 
@@ -284,14 +284,14 @@ public class DBHelper extends SQLiteOpenHelper {
         //return true;
     }
 
-    public void StoreActiveTime(String UID, String time, SQLiteDatabase database){
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(COLUMNA_userid, UID);
-        contentValues.put(COLUMN_ACTIVETIME, time);
-
-        database.insert(TABLE_ACTIVETIME,null,contentValues);
-    }
+//    public void StoreActiveTime(String UID, String time, SQLiteDatabase database){
+//        ContentValues contentValues = new ContentValues();
+//
+//        contentValues.put(COLUMNA_userid, UID);
+//        contentValues.put(COLUMN_ACTIVETIME, time);
+//
+//        database.insert(TABLE_ACTIVETIME,null,contentValues);
+//    }
 
 
 
