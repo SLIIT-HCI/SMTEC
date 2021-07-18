@@ -75,12 +75,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     public int session;
     private int sentenceCount = 1;
     long duration;
-    //int sentence;
     String response, stimulus, UserID , formatDateTime1,formatDateTime2;
     Set<Integer> generated = new HashSet<>();
     int randomMax = 80;
-    private int sentenceLimit = 3;
-    private int sentenceBegin = 0;
     LocalDateTime dateTime1,dateTime2;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     BroadcastReceiver broadcastReceiver;
@@ -92,7 +89,12 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     public String  actualfilepath="";
     private static int RESULT_LOAD_IMAGE = 100;
 
-   // public static final int S = 1;
+
+    //limiting sentence count declaration
+    private int sentenceLimit = 3;
+    private int sentenceBegin = 0;
+
+    
 
     ArrayList<String> userEmail = new ArrayList<>();
     ArrayList<Integer> userSession = new ArrayList<>();

@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 67;
+    private static final int DATABASE_VERSION = 68;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -71,6 +71,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMNA_userid = "U_ID";
     private static final String COLUMN_ACTIVETIME = "Time";
 
+    private static final String TABLE_ACTIVE_TIME = "ActiveTimeSelection";
+    private static final String COLUMNAT_userid = "U_ID";
+    private static final String COLUMN_STARTTIME = "StartTime";
+    private static final String COLUMN_ENDTIME = "EndTime";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -125,11 +130,19 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_QUESTION);
 
 
-            String TABLE_ACTIVE_TIME = "CREATE TABLE " + TABLE_ACTIVETIME + "("
+            String TABLE_ACTIVE_TIME1 = "CREATE TABLE " + TABLE_ACTIVETIME + "("
                     + COLUMNA_userid + " TEXT PRIMARY KEY,"
                     + COLUMN_ACTIVETIME + " TEXT )";
 
-            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME);
+            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME1);
+
+
+            String TABLE_ACTIVE_TIME_SELECTOR = "CREATE TABLE " + TABLE_ACTIVE_TIME + "("
+                    + COLUMNAT_userid + " TEXT PRIMARY KEY,"
+                    + COLUMN_STARTTIME + " TEXT,"
+                    + COLUMN_ENDTIME + " TEXT )";
+
+            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME_SELECTOR);
 
 
             /****************** WILD USER DETAILS *************************************/
@@ -157,6 +170,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONNAIRE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVETIME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVE_TIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WILD_USER_DETAIL_TABLE_NAME);
 
         if(newVersion >oldVersion) {
@@ -277,6 +291,19 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ACTIVETIME, time);
 
         database.insert(TABLE_ACTIVETIME,null,contentValues);
+    }
+
+
+
+
+    public void StoreActiveTimeSelector(String UID, String start, String end, SQLiteDatabase database){
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMNAT_userid, UID);
+        contentValues.put(COLUMN_STARTTIME, start);
+        contentValues.put(COLUMN_ENDTIME, end);
+
+        database.insert(TABLE_ACTIVE_TIME,null,contentValues);
     }
 
 
