@@ -158,6 +158,7 @@ public class StartUp extends AppCompatActivity {
                 Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
                 i1.putExtra("UserID", UserID);
                 startActivity(i1);
+                item.setEnabled(false);
                 return true;
 
             case R.id.Instructions:

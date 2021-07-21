@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WildUsers">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ActiveTime_Selection"></activity>
 
         <receiver android:name=".AlarmReceiver" />
 
@@ -26,11 +26,10 @@
         <activity android:name=".settings" />
         <activity android:name=".Instructions" />
         <activity android:name=".StartUp" />
-        <activity android:name=".activeTime" /> <!-- <activity android:name=".alertScreen" /> -->
         <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".rating" />
         <activity android:name=".questionnaire" />
-        <activity android:name=".ActiveTime_Selection">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="com.example.wildusers.START_ALARM" />
