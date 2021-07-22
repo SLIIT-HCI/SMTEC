@@ -67,10 +67,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_busy = "Busy";
     private static final String COLUMN_tired = "Tired";
 
-//    private static final String TABLE_ACTIVETIME = "ActiveTime";
-//    private static final String COLUMNA_userid = "U_ID";
-//    private static final String COLUMN_ACTIVETIME = "Time";
-
     private static final String TABLE_ACTIVE_TIME = "ActiveTimeSelection";
     private static final String COLUMNAT_userid = "U_ID";
     private static final String COLUMN_STARTTIME = "StartTime";
