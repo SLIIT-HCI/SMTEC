@@ -8,9 +8,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.AlarmClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,14 +24,31 @@ import android.widget.Toast;
 
 //import com.example.wildusers.Database.LocalDB.DBHandler;
 import com.example.wildusers.Database.LocalDB.DBHelper;
+import com.example.wildusers.Database.OnlineDB.Api.UserApi;
+import com.example.wildusers.Database.OnlineDB.Model.User;
+import com.example.wildusers.Database.OnlineDB.RequestHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class StartUp extends AppCompatActivity {
+
+    private static final int CODE_GET_REQUEST = 1024;
+    private static final int CODE_POST_REQUEST = 1025;
 
     //private Handler mHandler = new Handler();
     String UserID;
     Button start;
     EditText ID, condition, rotationSequence;
+
+
+    List<User> userList;
+
 
     public static String ALARM_TO_SET = "ALRMTOSEND";
     DBHelper DB;
@@ -39,6 +58,7 @@ public class StartUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up);
 
+        userList = new ArrayList<>();
 
         start = (Button)findViewById(R.id.startBtn);
         ID = (EditText)findViewById(R.id.uIDET);
@@ -69,6 +89,8 @@ public class StartUp extends AppCompatActivity {
                 String RS = rotationSequence.getText().toString();
                 System.out.println(RS);
 
+
+                createUser();
 
                 SaveToLocalDB(UserID, Condition, RS);
 
@@ -117,7 +139,43 @@ public class StartUp extends AppCompatActivity {
 
     }
 
+    private void createUser(){
+        String userID = ID.getText().toString().trim();
+        String cond = condition.getText().toString().trim();
+        String rs = rotationSequence.getText().toString().trim();
 
+
+
+        //validating the inputs
+        if (TextUtils.isEmpty(userID)) {
+            ID.setError("Please enter ID");
+            ID.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(cond)) {
+            condition.setError("Please enter the condition");
+            condition.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(rs)) {
+            rotationSequence.setError("Please enter rotational sequence");
+            rotationSequence.requestFocus();
+            return;
+        }
+
+        //if validation passes
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", userID);
+        params.put("condition_wild", cond);
+        params.put("rotational_sequence", rs);
+
+
+        //Calling the create hero API
+        PerformNetworkRequest request = new PerformNetworkRequest(UserApi.URL_CREATE_HERO, params, CODE_POST_REQUEST);
+        request.execute();
+    }
 
     public void SaveToLocalDB(String UserID, String Condition, String RS){
         //DBHelper dbHelper = new DBHelper(this);
@@ -140,6 +198,74 @@ public class StartUp extends AppCompatActivity {
 ////            activityRunnable.run();
 //        }
 //    };
+
+
+
+    /*********************************** class to perform network request - online db impl**************************/
+    //inner class to perform network request extending an AsyncTask
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        //the url where we need to send the request
+        String url;
+
+        //the parameters
+        HashMap<String, String> params;
+
+        //the request code to define whether it is a GET or POST
+        int requestCode;
+
+        //constructor to initialize values
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        //when the task started displaying a progressbar
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progressBar.setVisibility(View.VISIBLE);
+        }
+
+
+        //this method will give the response from the request
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            //progressBar.setVisibility(GONE);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    //refreshing the herolist after every operation
+                    //so we get an updated list
+                    //we will create this method right now it is commented
+                    //because we haven't created it yet
+                    //refreshHeroList(object.getJSONArray("heroes"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //the network operation will be performed in background
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+
 
 
     /********************************* mini menu **********************************************/
