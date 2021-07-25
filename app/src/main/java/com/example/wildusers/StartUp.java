@@ -94,17 +94,6 @@ public class StartUp extends AppCompatActivity {
 
                 SaveToLocalDB(UserID, Condition, RS);
 
-//                DB.StoreUserDetails(User_ID, Condition, RS);
-//                Toast.makeText(StartUp.this,"Inserted", Toast.LENGTH_SHORT).show();
-//                Log.d("check", "Checking");
-//                Boolean checkInsert = DB.StoreUserDetails(User_ID, Condition, RS);
-//                if (checkInsert == true){
-//                    Toast.makeText(StartUp.this,"Inserted", Toast.LENGTH_SHORT).show();
-//                }
-//                else
-//                    Toast.makeText(StartUp.this, "Unsuccessful", Toast.LENGTH_SHORT).show();
-
-
 
 
                 new Handler().postDelayed(new Runnable() {
@@ -280,12 +269,12 @@ public class StartUp extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.activeTime:
-                Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
-                i1.putExtra("UserID", UserID);
-                startActivity(i1);
-                item.setEnabled(false);
-                return true;
+//            case R.id.activeTime:
+//                Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
+//                i1.putExtra("UserID", UserID);
+//                startActivity(i1);
+//                item.setEnabled(false);
+//                return true;
 
             case R.id.Instructions:
                 Intent i2 = new Intent(getApplicationContext(), Instructions.class);
