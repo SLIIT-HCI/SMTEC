@@ -10,11 +10,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +41,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.wildusers.Database.DBContract;
 import com.example.wildusers.Database.LocalDB.DBHelper;
+import com.example.wildusers.Database.OnlineDB.Api.ExperimentApi;
+import com.example.wildusers.Database.OnlineDB.Model.User;
+import com.example.wildusers.Database.OnlineDB.Model.W_Experiment;
+import com.example.wildusers.Database.OnlineDB.RequestHandler;
 import com.example.wildusers.Database.mySingleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -52,8 +59,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -90,17 +99,21 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     private static int RESULT_LOAD_IMAGE = 100;
 
 
+    //server impl request codes
+    private static final int CODE_GET_REQUEST = 1024;
+    private static final int CODE_POST_REQUEST = 1025;
+
     //limiting sentence count declaration
     private int sentenceLimit = 3;
-    private int sentenceBegin = 0;
+    private int sentenceBegin = 1;
 
-    
+    String newStamp;
 
     ArrayList<String> userEmail = new ArrayList<>();
     ArrayList<Integer> userSession = new ArrayList<>();
     Cursor cursorSession;
 
-
+    List<W_Experiment> w_experiments;
 
     //Sample 3
     //Sessions / no of runs in each session = 10
@@ -111,6 +124,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         Log.d("I am coming here", "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text1_3);
+
+        w_experiments = new ArrayList<>();
 
         //helper = new DBHelper(this);
         helper = new DBHelper(this);
@@ -164,6 +179,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 formatDateTime2 = dateTime2.format(formatDate);
                 timestamps[timestamps.length - 1] = formatDateTime2;
 
+
+
+                //session = Integer.parseInt(sessionNo.getText().toString());
                 session = Integer.parseInt(sessionNo.getText().toString());
 
 
@@ -173,7 +191,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
-                saveToLocalStorage(experiment);
+
 
                 phraseArray_Iterator();
 
@@ -182,6 +200,13 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 sentenceCount++;
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
+
+
+
+                newStamp = formatDateTime1 + " , "+ formatDateTime2;
+
+                saveToLocalStorage(experiment);
+                createExperiment();
             }
         });
 
@@ -193,8 +218,15 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 intent.putExtra("session", session);
                 //intent.putExtra("noOfRuns", noOfRuns);
                 startActivity(intent);
+
+                //inserting experiment data to server
+                //createExperiment();
+                //saveToLocalStorage(experiment);
+                //createExperiment();
             }
         });
+
+
         /*getting timestamp for the first character entered*/
         final TextWatcher noOfTaps = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -298,5 +330,122 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         return d[ s1.length ][ s2.length ];
     }
 /****************************************************************************************************/
+
+/**************************************************Server Implementation*********************/
+
+
+private void createExperiment(){
+
+
+    //validating the inputs
+    if (TextUtils.isEmpty(String.valueOf(session))) {
+        sessionNo.setError("Please enter session");
+        sessionNo.requestFocus();
+        return;
+    }
+
+    if (TextUtils.isEmpty(response)) {
+        input_phrase.setError("Please enter response");
+        input_phrase.requestFocus();
+        return;
+    }
+
+    //if validation passes
+
+    HashMap<String, String> params = new HashMap<>();
+    params.put("user_id", UserID);
+
+
+    params.put("session", String.valueOf(session));
+    System.out.println("Checking................."+session);
+
+    params.put("date", newStamp);
+    System.out.println("Time Stamps................."+newStamp);
+
+    params.put("stimulus", stimulus);
+    System.out.println("stimulus................."+stimulus);
+
+    params.put("response", response);
+    System.out.println("Checking................." + response);
+
+    params.put("edit_distance", String.valueOf(editDistance));
+    System.out.println("Checking................." + editDistance);
+
+    params.put("sentenceNo", String.valueOf(sentenceCount));
+    System.out.println("Checking................."+sentenceCount);
+
+    params.put("duration", String.valueOf(duration));
+    System.out.println("Checking................."+duration);
+
+
+    //Calling the create hero API
+    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
+    request.execute();
+    System.out.println("Executed!!");
+}
+
+//inner class to perform network request extending an AsyncTask
+private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+    //the url where we need to send the request
+    String url;
+
+    //the parameters
+    HashMap<String, String> params;
+
+    //the request code to define whether it is a GET or POST
+    int requestCode;
+
+    //constructor to initialize values
+    PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+        this.url = url;
+        this.params = params;
+        this.requestCode = requestCode;
+    }
+
+    //when the task started displaying a progressbar
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+    }
+
+
+    //this method will give the response from the request
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        try {
+            JSONObject object = new JSONObject(s);
+            if (!object.getBoolean("error")) {
+                Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                //refreshing the herolist after every operation
+                //so we get an updated list
+                //we will create this method right now it is commented
+                //because we haven't created it yet
+                //refreshHeroList(object.getJSONArray("heroes"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //the network operation will be performed in background
+    @Override
+    protected String doInBackground(Void... voids) {
+        RequestHandler requestHandler = new RequestHandler();
+
+        if (requestCode == CODE_POST_REQUEST)
+            return requestHandler.sendPostRequest(url, params);
+
+
+        if (requestCode == CODE_GET_REQUEST)
+            return requestHandler.sendGetRequest(url);
+
+        return null;
+    }
+}
+
 
 }

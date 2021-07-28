@@ -6,13 +6,13 @@ public class W_Rating {
     private String user_id;
     private int session;
     private double speed;
-    private int accuracy;
+    private double accuracy;
     private String preference;
     private double easeOfUse;
     private String handPosture;
     private String comment;
 
-    public W_Rating(int id, String user_id, int session, double speed, int accuracy, String preference, double easeOfUse, String handPosture, String comment) {
+    public W_Rating(int id, String user_id, int session, double speed, double accuracy, String preference, double easeOfUse, String handPosture, String comment) {
         this.id = id;
         this.user_id = user_id;
         this.session = session;
@@ -56,11 +56,11 @@ public class W_Rating {
         this.speed = speed;
     }
 
-    public int getAccuracy() {
+    public double getAccuracy() {
         return accuracy;
     }
 
-    public void setAccuracy(int accuracy) {
+    public void setAccuracy(double accuracy) {
         this.accuracy = accuracy;
     }
 

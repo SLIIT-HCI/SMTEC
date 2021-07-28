@@ -28,8 +28,8 @@
         <activity android:name=".settings" />
         <activity android:name=".Instructions" />
         <activity android:name=".StartUp" />
-        <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".rating" />
+        <activity android:name=".activity_sample_text1_3" />
         <activity android:name=".questionnaire" />
         <activity android:name=".MainActivity">
             <intent-filter>

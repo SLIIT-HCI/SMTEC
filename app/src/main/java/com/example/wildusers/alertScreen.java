@@ -58,6 +58,7 @@ public class alertScreen extends AppCompatActivity {
 
 
 
+
             /***************  Waking up alert screen even when the app is closed / screen is locked / screen is offed *************/
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 setShowWhenLocked(true);
@@ -86,7 +87,7 @@ public class alertScreen extends AppCompatActivity {
 
             /************************************************ implementing the option radio buttons ************************************************/
 
-           if(runs < 10) {
+           if(runs <= 10) {
                alertGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                    @Override
                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -123,7 +124,7 @@ public class alertScreen extends AppCompatActivity {
                                    startActivity(intent);
                                    Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
                                }
-                           }, 1000 * 60);
+                           }, 1000 * 10);
 
                            moveTaskToBack(true);
 
@@ -183,8 +184,10 @@ public class alertScreen extends AppCompatActivity {
                    }
                });
            }
-/************************************************************************************************************/
 
+
+///******************************** appear alert screen per day impl*****************************************/
+//
 //        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 //        editor = pref.edit();
 //
@@ -210,6 +213,10 @@ public class alertScreen extends AppCompatActivity {
 //            editor.commit();
 //        }
 //
+//        /************************************************************************************************************/
+//
+
+
     }
 
 
