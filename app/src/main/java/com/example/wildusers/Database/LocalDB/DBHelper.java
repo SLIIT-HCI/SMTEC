@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 69;
+    private static final int DATABASE_VERSION = 74;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -102,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_EXPERIMENT);
 
             String TABLE_RATING = "CREATE TABLE " + TABLE3_NAME + "("
-                    + COLUMN2_userId + " TEXT PRIMARY KEY,"
+                    + COLUMN2_userId + " TEXT,"
                     + COLUMN_userSession + " INTEGER NOT NULL,"
 //                    + COLUMN_dateTime + " TEXT NOT NULL,"
                    // + COLUMN_userNoOfruns + " INTEGER NOT NULL,"
@@ -117,7 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
             String TABLE_QUESTION = "CREATE TABLE " + TABLE_QUESTIONNAIRE + "("
-                    + COLUMNQ_userid + " TEXT PRIMARY KEY,"
+                    + COLUMNQ_userid + " TEXT,"
                     + COLUMN_move + " INTEGER NOT NULL,"
                     + COLUMN_walk + " INTEGER NOT NULL,"
                     + COLUMN_busy + " INTEGER NOT NULL,"
@@ -134,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
             String TABLE_ACTIVE_TIME_SELECTOR = "CREATE TABLE " + TABLE_ACTIVE_TIME + "("
-                    + COLUMNAT_userid + " TEXT PRIMARY KEY,"
+                    + COLUMNAT_userid + " TEXT,"
                     + COLUMN_STARTTIME + " TEXT,"
                     + COLUMN_ENDTIME + " TEXT )";
 

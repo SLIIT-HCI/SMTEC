@@ -94,8 +94,8 @@ public class questionnaire extends AppCompatActivity {
 
 
         //Calling the create hero API
-        PerformNetworkRequest request = new PerformNetworkRequest(QuestionnaireApi.URL_CREATE_QUESTIONNAIRE, params, CODE_POST_REQUEST);
-        request.execute();
+//        PerformNetworkRequest request = new PerformNetworkRequest(QuestionnaireApi.URL_CREATE_QUESTIONNAIRE, params, CODE_POST_REQUEST);
+//        request.execute();
     }
 
 

@@ -31,8 +31,8 @@ public class alertScreen extends AppCompatActivity {
     RadioButton start, oneMin, twoMin, fiveMin;
     String UserID;
     int session;
-    int totalSessions;
-    int runs = 1;
+//    int totalSessions;
+//    int runs = 1;
 
 //    private int lastCheck = 0;
 //    private SharedPreferences pref;
@@ -48,13 +48,13 @@ public class alertScreen extends AppCompatActivity {
         UserID = getIntent().getStringExtra("UserID");
         session = getIntent().getIntExtra("session",0);
 
-        System.out.println("total runs" + totalSessions);
-        if(totalSessions != 0){
-            runs = totalSessions;
-        }
+//        System.out.println("total runs" + totalSessions);
+//        if(totalSessions != 0){
+//            runs = totalSessions;
+//        }
 
-        System.out.println("Before" + runs);
-        runs = runs +1;
+//        System.out.println("Before" + runs);
+//        runs = runs +1;
 
 
 
@@ -87,7 +87,7 @@ public class alertScreen extends AppCompatActivity {
 
             /************************************************ implementing the option radio buttons ************************************************/
 
-           if(runs <= 10) {
+           //if(runs <= 10) {
                alertGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                    @Override
                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -183,7 +183,7 @@ public class alertScreen extends AppCompatActivity {
                        }
                    }
                });
-           }
+           //}
 
 
 ///******************************** appear alert screen per day impl*****************************************/
@@ -258,7 +258,7 @@ public class alertScreen extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, ia, 0);
 
         AlarmManager am = (AlarmManager)   this.getSystemService(Context.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 1000*60*3, pendingIntent);
+        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 1000*60*3, pendingIntent);
 
     }
 

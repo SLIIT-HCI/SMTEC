@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.example.wildusers.Database.LocalDB.DBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.format.DateTimeFormatter;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class ActiveTime_Selection extends AppCompatActivity {
 
     TextView timeStart, timeEnd;
@@ -21,10 +24,12 @@ public class ActiveTime_Selection extends AppCompatActivity {
     FloatingActionButton submit;
 
     String startTime, endTime;
-
+    String formatStartTime1, formatEndTime1;
     String UserID;
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("HH:mm:ss.S");
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+    //@RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,7 @@ public class ActiveTime_Selection extends AppCompatActivity {
 
                 int hourOfDay = simpleTimePicker.getHour();
                 int minute = simpleTimePicker.getMinute();
+
                 simpleTimePicker.setIs24HourView(false);
 
                 // display a toast with changed values of time picker
@@ -71,7 +77,10 @@ public class ActiveTime_Selection extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 startTime = timeStart.getText().toString();
+                //formatStartTime1 = startTime.format(formatDate);
+
                 endTime = timeEnd.getText().toString();
                 saveActiveTimeToDB(startTime,endTime );
             }

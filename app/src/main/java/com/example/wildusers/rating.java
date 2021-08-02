@@ -3,14 +3,16 @@ package com.example.wildusers;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,27 +24,29 @@ import android.widget.Toast;
 
 import com.example.wildusers.Database.LocalDB.DBHelper;
 import com.example.wildusers.Database.OnlineDB.Api.RatingApi;
-import com.example.wildusers.Database.OnlineDB.Model.User;
 import com.example.wildusers.Database.OnlineDB.Model.W_Rating;
 import com.example.wildusers.Database.OnlineDB.RequestHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class rating extends AppCompatActivity {
 
-
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
 
+    //array to store ratings data in aws server
     List<W_Rating> ratings;
+
 
     DBHelper dbHelper;
     RatingBar rb5_speed, rb6_accuracy, rb7_easeOfUse;
@@ -50,23 +54,32 @@ public class rating extends AppCompatActivity {
     RadioButton Type_radioBtn, TypeHandPosture;
     EditText OpenComment;
     TextView brk_timer;
-
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
+    LocalDateTime dateTime1,dateTime2;
     String UserID;
     String comment;
     float speed, accuracy, easeOfUse;
     String preference, HandPosture;
-    int totalSessions;
+    int lastCheck = 0;
+    int dayCount = 0;
     int session;
-    int runs = 1;
     Button submit;
+
+
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
 
-
         ratings = new ArrayList<>();
+
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        editor = pref.edit();
+
+        //SharedPreferences sharedPreferences = getActivity
 
         rb5_speed = (RatingBar) findViewById(R.id.ratingBar5);
         rb6_accuracy = (RatingBar) findViewById(R.id.ratingBar6);
@@ -79,121 +92,160 @@ public class rating extends AppCompatActivity {
 
 
         UserID = getIntent().getStringExtra("UserID");
-        //totalSessions = getIntent().getIntExtra("noOfRuns",0);
         session = getIntent().getIntExtra("session",0);
 
 
-        System.out.println("total runs" + totalSessions);
-        if(totalSessions != 0){
-            runs = totalSessions;
-        }
-
+        int x = 0;
 
         dbHelper = new DBHelper(this);
 
-        System.out.println("Before" + runs);
-        runs = runs + 1;
-        if(runs < 3) {
 
-            submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    int selectedIDPreference = type.getCheckedRadioButtonId();
-                    Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
-                    preference = (String) Type_radioBtn.getText().toString();
-                    Toast.makeText(getApplicationContext(), preference,Toast.LENGTH_SHORT).show();
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
 
+                lastCheck = pref.getInt("countValue", 0);
 
-                    int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
-                    TypeHandPosture = (RadioButton) findViewById(selectedIDHandPosture);
-                    HandPosture = (String) TypeHandPosture.getText().toString();
-                    Toast.makeText(getApplicationContext(), HandPosture,Toast.LENGTH_SHORT).show();
+                dayCount = pref.getInt("dayCount", 0);
 
+                lastCheck++;
 
-                    speed = rb5_speed.getRating();
-                    accuracy = rb6_accuracy.getRating();
-                    easeOfUse = rb7_easeOfUse.getRating();
-                    //String comment = OpenComment.getText().toString();
-                    comment = OpenComment.getText().toString();
+                System.out.println("incremented "+ lastCheck);
 
 
+                int selectedIDPreference = type.getCheckedRadioButtonId();
+                Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
+                preference = (String) Type_radioBtn.getText().toString();
+
+                int selectedIDHandPosture = postureRG.getCheckedRadioButtonId();
+                TypeHandPosture = (RadioButton) findViewById(selectedIDHandPosture);
+                HandPosture = (String) TypeHandPosture.getText().toString();
+
+                speed = rb5_speed.getRating();
+                accuracy = rb6_accuracy.getRating();
+                easeOfUse = rb7_easeOfUse.getRating();
+                comment = OpenComment.getText().toString();
+
+
+                saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
+                createRating();
+                //move the activity to background
+                moveTaskToBack(true);
+
+                if(lastCheck < 2){
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
 
+
+                            editor.putInt("countValue", lastCheck);
+                            editor.commit();
+
                             Intent intent = new Intent(rating.this, alertScreen.class);
                             intent.putExtra("UserID", UserID);
                             intent.putExtra("session", session);
                             startActivity(intent);
+
+
                         }
-                    }, 1000 * 10);
+                    }, 1000 * 5);
+                }else if (lastCheck == 2 && dayCount <= 10){
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                    String str = sdf.format(new Date());
+
+                    System.out.println("See you tomorrow!!! " + str);
+
+                    int secondsToGo = getSecondsToNextDay(3);
+
+                    System.out.println(secondsToGo);
+
+                    //no of times activity iterated
+                    lastCheck = 0;
+
+                    dayCount++;
+
+                    editor.putInt("countValue", lastCheck);
+                    editor.commit();
+
+                    editor.putInt("dayCount", dayCount);
+                    editor.commit();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                            String str = sdf.format(new Date());
+
+                            System.out.println("welcome back!!! " + str);
 
 
-                    createRating();
-                    saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
+                            Intent intent = new Intent(rating.this, alertScreen.class);
+                            intent.putExtra("UserID", UserID);
+                            intent.putExtra("session", session);
+                            startActivity(intent);
 
-                    System.out.println(speed);
-                    System.out.println(accuracy);
-                    System.out.println(preference);
-                    System.out.println(easeOfUse);
-                    System.out.println(HandPosture);
-                    System.out.println(comment);
 
-                    //move the activity to background
-                    moveTaskToBack(true);
+                            //move the activity to background
+//                            moveTaskToBack(true);
+//
+                        }
+                    }, 600000);
                 }
-            });
-        }else{
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
 
-                    Intent intent=new Intent(rating.this, questionnaire.class);
-                    intent.putExtra("UserID", UserID);
-                    startActivity(intent);
-                }
-            }, 1000*60);
 
-            createRating();
-            //saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
+            }
+        });
 
-            //move the activity to background
-            moveTaskToBack(true);
-        }
+
+
+
+
     }
 
-    /***************************** to xampp server ********************/
+    public int getSecondsToNextDay(int startHour){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH");
+        String str = sdf.format(new Date());
+
+        int hoursToGo = 0;
+        int secondsToGo = 0;
+
+        int currentHour = Integer.parseInt(str);
+        System.out.println(str);
+
+        if(currentHour > 0 && currentHour < 12){
+            hoursToGo = startHour - currentHour;
+        }else if(currentHour > 12){
+            hoursToGo = (startHour + 24) - currentHour;
+        }
+
+        secondsToGo = hoursToGo*3600;
+
+        return secondsToGo;
+    }
+
+    /***************************** to xampp server *****************************/
     private void createRating(){
 
         HashMap<String, String> params = new HashMap<>();
+
         params.put("user_id", UserID);
-        //System.out.println("data"+UserID);
-
         params.put("session", String.valueOf(session));
-        //System.out.println("data"+session);
-
         params.put("speed", String.valueOf(speed));
         params.put("accuracy", String.valueOf(accuracy));
         params.put("preference", String.valueOf(preference));
-
-        Toast.makeText(getApplicationContext(), preference,Toast.LENGTH_SHORT).show();
-
         params.put("easeOfUse", String.valueOf(easeOfUse));
         params.put("handPosture", String.valueOf(HandPosture));
-
         params.put("comment", comment);
 
 
-
-        System.out.println("data"+speed);
         //Calling the create hero API
-        PerformNetworkRequest request = new PerformNetworkRequest(RatingApi.URL_CREATE_RATING, params, CODE_POST_REQUEST);
-        request.execute();
+//        PerformNetworkRequest request = new PerformNetworkRequest(RatingApi.URL_CREATE_RATING, params, CODE_POST_REQUEST);
+//        request.execute();
     }
-
 
 
 
@@ -203,9 +255,6 @@ public class rating extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         dbHelper.saveToRatingsTable(UserID, session, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
     }
-
-
-
 
 
     /*********************************** class to perform network request - online db impl**************************/
@@ -271,7 +320,6 @@ public class rating extends AppCompatActivity {
             return null;
         }
     }
-
 
 
 }

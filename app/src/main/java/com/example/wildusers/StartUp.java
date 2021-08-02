@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +42,10 @@ public class StartUp extends AppCompatActivity {
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
 
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+
+
     //private Handler mHandler = new Handler();
     String UserID;
     Button start;
@@ -58,18 +63,15 @@ public class StartUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up);
 
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        editor = pref.edit();
+
         userList = new ArrayList<>();
 
         start = (Button)findViewById(R.id.startBtn);
         ID = (EditText)findViewById(R.id.uIDET);
         condition = (EditText)findViewById(R.id.ConditionET);
         rotationSequence = (EditText)findViewById(R.id.rotationSequenceET);
-
-
-        //calling alert screen every one hour
-        //activityRunnable.run();
-
-
 
 
         DB = new DBHelper(this);
@@ -99,11 +101,18 @@ public class StartUp extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        editor.putInt("countValue", 0);
+                        editor.commit();
+
+                        editor.putInt("dayCount", 0);
+                        editor.commit();
+
+
                         Intent i = new Intent(getApplicationContext(), alertScreen.class);
                         i.putExtra("UserID", UserID);
                         startActivity(i);
                         finish();
-                        Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
 
                         //destroy the app completely
                         //System.exit(0);
@@ -162,8 +171,8 @@ public class StartUp extends AppCompatActivity {
 
 
         //Calling the create hero API
-        PerformNetworkRequest request = new PerformNetworkRequest(UserApi.URL_CREATE_HERO, params, CODE_POST_REQUEST);
-        request.execute();
+//        PerformNetworkRequest request = new PerformNetworkRequest(UserApi.URL_CREATE_HERO, params, CODE_POST_REQUEST);
+//        request.execute();
     }
 
     public void SaveToLocalDB(String UserID, String Condition, String RS){

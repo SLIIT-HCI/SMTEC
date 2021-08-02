@@ -145,7 +145,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         nextBtn = (Button) findViewById(R.id.next);
         btn_play_pause = (Button) findViewById(R.id.play_pause1);
         input_phrase = (EditText) findViewById(R.id.typeText);
-        sessionNo = (EditText) findViewById(R.id.enterSessionNo);
+        sessionNo = (EditText) findViewById(R.id.SessionNo);
         submit = (Button) findViewById(R.id.sampleSubmit);
         Sentence_counter = (TextView) findViewById(R.id.count);
 
@@ -197,7 +197,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
 
                 //Display the sentence count
-                sentenceCount++;
+                //sentenceCount++;
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
 
@@ -207,6 +207,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
                 saveToLocalStorage(experiment);
                 createExperiment();
+                sentenceCount++;
             }
         });
 
@@ -219,10 +220,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 //intent.putExtra("noOfRuns", noOfRuns);
                 startActivity(intent);
 
-                //inserting experiment data to server
-                //createExperiment();
-                //saveToLocalStorage(experiment);
-                //createExperiment();
             }
         });
 
@@ -289,11 +286,14 @@ public class activity_sample_text1_3 extends AppCompatActivity {
             setPhrase(clickCount);
             input_phrase.setText("");
 
-        sentenceBegin++;
+
         if (sentenceLimit < sentenceBegin) {
             phrase.setText("");
             nextBtn.setEnabled(false);
+            Sentence_counter.setText("");
         }
+
+        sentenceBegin++;
     }
 
 
@@ -379,8 +379,8 @@ private void createExperiment(){
 
 
     //Calling the create hero API
-    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
-    request.execute();
+//    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
+//    request.execute();
     System.out.println("Executed!!");
 }
 
