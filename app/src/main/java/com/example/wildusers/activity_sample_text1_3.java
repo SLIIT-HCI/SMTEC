@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -71,7 +72,7 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class activity_sample_text1_3 extends AppCompatActivity {
 
-    //DBHandler dbHandler;
+
     DBHelper helper;
     Experiment experiment;
     TextView phrase, Sentence_counter;
@@ -92,12 +93,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     BroadcastReceiver broadcastReceiver;
     ArrayList phrases = new ArrayList<String>();
     String [] timestamps;
-    CountDownTimer countDown;
     private static final int PERMISSION_REQUEST_CODE = 100;
     private int request_code =1, FILE_SELECT_CODE =101;
     public String  actualfilepath="";
     private static int RESULT_LOAD_IMAGE = 100;
-
+    private SharedPreferences pref;
 
     //server impl request codes
     private static final int CODE_GET_REQUEST = 1024;
@@ -108,26 +108,17 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     private int sentenceBegin = 1;
 
     String newStamp;
-
-    ArrayList<String> userEmail = new ArrayList<>();
-    ArrayList<Integer> userSession = new ArrayList<>();
-    Cursor cursorSession;
-
     List<W_Experiment> w_experiments;
-
-    //Sample 3
-    //Sessions / no of runs in each session = 10
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
-
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         Log.d("I am coming here", "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text1_3);
 
         w_experiments = new ArrayList<>();
 
-        //helper = new DBHelper(this);
         helper = new DBHelper(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -149,15 +140,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         submit = (Button) findViewById(R.id.sampleSubmit);
         Sentence_counter = (TextView) findViewById(R.id.count);
 
-        /*retrieving values through intents*/
-        UserID = getIntent().getStringExtra("UserID");
-
-        //session = getIntent().getIntExtra("session",0);
-        //inputMethod = getIntent().getStringExtra("inputMethod");
+        //retrieving values through shared preferences
+        UserID = pref.getString("UserID","");
         session = getIntent().getIntExtra("session", 0);
-//        if (session != 0) {
-//            count = session;
-//        }
 
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
@@ -180,15 +165,12 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 timestamps[timestamps.length - 1] = formatDateTime2;
 
 
-
-                //session = Integer.parseInt(sessionNo.getText().toString());
                 session = Integer.parseInt(sessionNo.getText().toString());
-
-
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
                 editDistance = levenshteinDistance(input_phrase.getText().toString(), phrase.getText().toString());
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
+
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
 
@@ -196,12 +178,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 phraseArray_Iterator();
 
 
-                //Display the sentence count
-                //sentenceCount++;
+
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
-
-
 
                 newStamp = formatDateTime1 + " , "+ formatDateTime2;
 
@@ -217,7 +196,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), rating.class);
                 intent.putExtra("UserID", UserID);
                 intent.putExtra("session", session);
-                //intent.putExtra("noOfRuns", noOfRuns);
                 startActivity(intent);
 
             }
@@ -331,9 +309,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     }
 /****************************************************************************************************/
 
+
 /**************************************************Server Implementation*********************/
-
-
 private void createExperiment(){
 
 
@@ -379,8 +356,8 @@ private void createExperiment(){
 
 
     //Calling the create hero API
-//    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
-//    request.execute();
+    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
+    request.execute();
     System.out.println("Executed!!");
 }
 
@@ -407,7 +384,6 @@ private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
     }
 
 
@@ -420,10 +396,8 @@ private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
             JSONObject object = new JSONObject(s);
             if (!object.getBoolean("error")) {
                 Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                //refreshing the herolist after every operation
+                //refreshing the experiment list after every operation
                 //so we get an updated list
-                //we will create this method right now it is commented
-                //because we haven't created it yet
                 //refreshHeroList(object.getJSONArray("heroes"));
             }
         } catch (JSONException e) {

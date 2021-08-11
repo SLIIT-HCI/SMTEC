@@ -47,10 +47,10 @@ public class StartUp extends AppCompatActivity {
 
 
     //private Handler mHandler = new Handler();
-    String UserID;
+    String UserID, Condition, RS;
     Button start;
     EditText ID, condition, rotationSequence;
-
+    int T1, T2;
 
     List<User> userList;
 
@@ -73,7 +73,6 @@ public class StartUp extends AppCompatActivity {
         condition = (EditText)findViewById(R.id.ConditionET);
         rotationSequence = (EditText)findViewById(R.id.rotationSequenceET);
 
-
         DB = new DBHelper(this);
 
         //Store user details to DB and Navigating to the text entry interface
@@ -85,64 +84,62 @@ public class StartUp extends AppCompatActivity {
                 UserID = ID.getText().toString();
                 System.out.println(UserID);
 
-                String Condition = condition.getText().toString();
+                Condition = condition.getText().toString();
                 System.out.println(Condition);
 
-                String RS = rotationSequence.getText().toString();
+                RS = rotationSequence.getText().toString();
                 System.out.println(RS);
 
-
                 createUser();
-
                 SaveToLocalDB(UserID, Condition, RS);
 
+                T1 = pref.getInt("StartTime", T1);
+                T2 = pref.getInt("EndTime", T2);;
 
+
+                editor.putInt("countValue", 0);
+                editor.commit();
+
+                editor.putInt("dayCount", 0);
+                editor.commit();
+
+                editor.putString("UserID", UserID);
+                editor.commit();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        editor.putInt("countValue", 0);
-                        editor.commit();
-
-                        editor.putInt("dayCount", 0);
-                        editor.commit();
-
-
-                        Intent i = new Intent(getApplicationContext(), alertScreen.class);
-                        i.putExtra("UserID", UserID);
+                        Intent i = new Intent(getApplicationContext(), ActiveTime_Selection.class);
                         startActivity(i);
                         finish();
-                        //Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
-
-                        //destroy the app completely
-                        //System.exit(0);
                     }
                 }, 1000);
 
-
-
                 //move the activity to background
                 moveTaskToBack(true);
-
-                //Alarm to appear the screen
-//                int time = 1000*60;
-//                Intent intentAlarm = new Intent(ALARM_TO_SET);
-//
-//                AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                PendingIntent pIntent = PendingIntent.getBroadcast(StartUp.this, 0, intentAlarm, 0);
-//                alarm.setRepeating(AlarmManager.RTC_WAKEUP, time, time, pIntent);
-
             }
         });
 
+    }
+
+    private boolean validate(){
+        boolean valid = true;
+
+        if(UserID.isEmpty()){
+            ID.setError("Please Enter your ID");
+            valid = false;
+            return valid;
+        }
+        else{
+
+            return valid;
+        }
     }
 
     private void createUser(){
         String userID = ID.getText().toString().trim();
         String cond = condition.getText().toString().trim();
         String rs = rotationSequence.getText().toString().trim();
-
-
 
         //validating the inputs
         if (TextUtils.isEmpty(userID)) {
@@ -171,31 +168,16 @@ public class StartUp extends AppCompatActivity {
 
 
         //Calling the create hero API
-//        PerformNetworkRequest request = new PerformNetworkRequest(UserApi.URL_CREATE_HERO, params, CODE_POST_REQUEST);
-//        request.execute();
+        PerformNetworkRequest request = new PerformNetworkRequest(UserApi.URL_CREATE_HERO, params, CODE_POST_REQUEST);
+        request.execute();
     }
 
     public void SaveToLocalDB(String UserID, String Condition, String RS){
-        //DBHelper dbHelper = new DBHelper(this);
-        //DB.StoreUserDetails(User_ID, Condition, RS, database);
         SQLiteDatabase database = DB.getWritableDatabase();
         DB.StoreUserDetails(UserID, Condition, RS);
         Toast.makeText(StartUp.this,"Data Inserted", Toast.LENGTH_SHORT).show();
 
     }
-
-
-    /******************************************* repeating activity every one hour *********************************************/
-//    private Runnable activityRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            Toast.makeText(StartUp.this, "Repeating Activity Every One Hour", Toast.LENGTH_SHORT).show();
-//            mHandler.postDelayed(this, 1000*60);
-//            Intent i = new Intent(getApplicationContext(), alertScreen.class);
-//            startActivity(i);
-////            activityRunnable.run();
-//        }
-//    };
 
 
 
@@ -223,7 +205,6 @@ public class StartUp extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progressBar.setVisibility(View.VISIBLE);
         }
 
 
@@ -231,7 +212,6 @@ public class StartUp extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            //progressBar.setVisibility(GONE);
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
@@ -255,14 +235,11 @@ public class StartUp extends AppCompatActivity {
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
 
-
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
-
             return null;
         }
     }
-
 
 
 
@@ -278,12 +255,9 @@ public class StartUp extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-//            case R.id.activeTime:
-//                Intent i1 = new Intent(getApplicationContext(), ActiveTime_Selection.class);
-//                i1.putExtra("UserID", UserID);
-//                startActivity(i1);
-//                item.setEnabled(false);
-//                return true;
+            case R.id.activeTime:
+                Toast.makeText(this, "Currently Disabled!", Toast.LENGTH_SHORT).show();
+                return true;
 
             case R.id.Instructions:
                 Intent i2 = new Intent(getApplicationContext(), Instructions.class);

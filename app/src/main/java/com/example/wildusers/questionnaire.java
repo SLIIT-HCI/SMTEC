@@ -47,13 +47,12 @@ public class questionnaire extends AppCompatActivity {
         setContentView(R.layout.activity_questionnaire);
 
         questionnaires = new ArrayList<>();
+        UserID = getIntent().getStringExtra("UserID");
 
         rb_move = (RatingBar) findViewById(R.id.ratingBar);
         rb_walk = (RatingBar) findViewById(R.id.ratingBar2);
         rb_busy = (RatingBar) findViewById(R.id.ratingBar3);
         rb_tired = (RatingBar) findViewById(R.id.ratingBar4);
-
-        UserID = getIntent().getStringExtra("UserID");
 
         dbHelper = new DBHelper(this);
 
@@ -94,8 +93,8 @@ public class questionnaire extends AppCompatActivity {
 
 
         //Calling the create hero API
-//        PerformNetworkRequest request = new PerformNetworkRequest(QuestionnaireApi.URL_CREATE_QUESTIONNAIRE, params, CODE_POST_REQUEST);
-//        request.execute();
+        PerformNetworkRequest request = new PerformNetworkRequest(QuestionnaireApi.URL_CREATE_QUESTIONNAIRE, params, CODE_POST_REQUEST);
+        request.execute();
     }
 
 
@@ -132,7 +131,6 @@ public class questionnaire extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progressBar.setVisibility(View.VISIBLE);
         }
 
 
@@ -145,10 +143,8 @@ public class questionnaire extends AppCompatActivity {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    //refreshing the herolist after every operation
+                    //refreshing the questionnaire list after every operation
                     //so we get an updated list
-                    //we will create this method right now it is commented
-                    //because we haven't created it yet
                     //refreshHeroList(object.getJSONArray("heroes"));
                 }
             } catch (JSONException e) {

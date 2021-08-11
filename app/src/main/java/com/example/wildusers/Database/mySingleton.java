@@ -7,7 +7,6 @@ import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 
 
-
 public class mySingleton {
     private static mySingleton singleton;
     private RequestQueue requestQueue;

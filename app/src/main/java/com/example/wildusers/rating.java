@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,6 @@ public class rating extends AppCompatActivity {
     RadioGroup type, postureRG;
     RadioButton Type_radioBtn, TypeHandPosture;
     EditText OpenComment;
-    TextView brk_timer;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
     LocalDateTime dateTime1,dateTime2;
     String UserID;
@@ -64,6 +64,7 @@ public class rating extends AppCompatActivity {
     int dayCount = 0;
     int session;
     Button submit;
+    String roundHourString,roundMinuteString;
 
 
     private SharedPreferences pref;
@@ -79,40 +80,30 @@ public class rating extends AppCompatActivity {
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         editor = pref.edit();
 
-        //SharedPreferences sharedPreferences = getActivity
-
         rb5_speed = (RatingBar) findViewById(R.id.ratingBar5);
         rb6_accuracy = (RatingBar) findViewById(R.id.ratingBar6);
         rb7_easeOfUse = (RatingBar) findViewById(R.id.ratingBar7);
-
         type = (RadioGroup) findViewById(R.id.type);
         postureRG = (RadioGroup) findViewById(R.id.postureRG);
         OpenComment = findViewById(R.id.commentEdit);
         submit = (Button)findViewById(R.id.rate2SubmitBTN);
 
-
-        UserID = getIntent().getStringExtra("UserID");
+        UserID = pref.getString("UserID","");
         session = getIntent().getIntExtra("session",0);
 
-
-        int x = 0;
-
         dbHelper = new DBHelper(this);
-
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
                 lastCheck = pref.getInt("countValue", 0);
-
                 dayCount = pref.getInt("dayCount", 0);
 
                 lastCheck++;
 
-                System.out.println("incremented "+ lastCheck);
-
+                roundHourString = "HoursRound"+lastCheck;
+                roundMinuteString = "MinutesRound"+lastCheck;
 
                 int selectedIDPreference = type.getCheckedRadioButtonId();
                 Type_radioBtn = (RadioButton) findViewById(selectedIDPreference);
@@ -130,39 +121,25 @@ public class rating extends AppCompatActivity {
 
                 saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
                 createRating();
+
                 //move the activity to background
                 moveTaskToBack(true);
 
                 if(lastCheck < 2){
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                    int hourToStart = pref.getInt("HoursRound1",0);
+                    int minutesToStart = pref.getInt("MinutesRound1",0);
 
 
-                            editor.putInt("countValue", lastCheck);
-                            editor.commit();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, hourToStart);
+                    calendar.set(Calendar.MINUTE, minutesToStart);
+                    calendar.set(Calendar.SECOND, 0);
 
-                            Intent intent = new Intent(rating.this, alertScreen.class);
-                            intent.putExtra("UserID", UserID);
-                            intent.putExtra("session", session);
-                            startActivity(intent);
+                    Alarm.startAlarm(calendar,getApplicationContext());
 
-
-                        }
-                    }, 1000 * 5);
                 }else if (lastCheck == 2 && dayCount <= 10){
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                    String str = sdf.format(new Date());
-
-                    System.out.println("See you tomorrow!!! " + str);
-
-                    int secondsToGo = getSecondsToNextDay(3);
-
-                    System.out.println(secondsToGo);
-
-                    //no of times activity iterated
                     lastCheck = 0;
 
                     dayCount++;
@@ -173,36 +150,21 @@ public class rating extends AppCompatActivity {
                     editor.putInt("dayCount", dayCount);
                     editor.commit();
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
 
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                            String str = sdf.format(new Date());
-
-                            System.out.println("welcome back!!! " + str);
+                    int hourToStart = pref.getInt("HoursRound0",0);
+                    int minutesToStart = pref.getInt("MinutesRound0",0);
 
 
-                            Intent intent = new Intent(rating.this, alertScreen.class);
-                            intent.putExtra("UserID", UserID);
-                            intent.putExtra("session", session);
-                            startActivity(intent);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, hourToStart);
+                    calendar.set(Calendar.MINUTE, minutesToStart);
+                    calendar.set(Calendar.SECOND, 0);
 
+                    Alarm.startAlarm(calendar,getApplicationContext());
 
-                            //move the activity to background
-//                            moveTaskToBack(true);
-//
-                        }
-                    }, 600000);
                 }
-
-
             }
         });
-
-
-
-
 
     }
 
@@ -243,8 +205,8 @@ public class rating extends AppCompatActivity {
 
 
         //Calling the create hero API
-//        PerformNetworkRequest request = new PerformNetworkRequest(RatingApi.URL_CREATE_RATING, params, CODE_POST_REQUEST);
-//        request.execute();
+        PerformNetworkRequest request = new PerformNetworkRequest(RatingApi.URL_CREATE_RATING, params, CODE_POST_REQUEST);
+        request.execute();
     }
 
 
@@ -281,7 +243,6 @@ public class rating extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progressBar.setVisibility(View.VISIBLE);
         }
 
 
@@ -294,10 +255,8 @@ public class rating extends AppCompatActivity {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    //refreshing the herolist after every operation
+                    //refreshing the rating list after every operation
                     //so we get an updated list
-                    //we will create this method right now it is commented
-                    //because we haven't created it yet
                     //refreshHeroList(object.getJSONArray("heroes"));
                 }
             } catch (JSONException e) {
@@ -312,7 +271,6 @@ public class rating extends AppCompatActivity {
 
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
 
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
