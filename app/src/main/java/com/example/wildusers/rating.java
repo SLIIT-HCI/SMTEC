@@ -163,6 +163,11 @@ public class rating extends AppCompatActivity {
                     Alarm.startAlarm(calendar,getApplicationContext());
 
                 }
+                else{
+                    Intent i = new Intent(getApplicationContext(), questionnaire.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
 

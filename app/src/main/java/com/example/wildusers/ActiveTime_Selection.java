@@ -45,7 +45,7 @@ public class ActiveTime_Selection extends AppCompatActivity {
     String UserID;
     int StarthourOfDay,EndhourOfDay;
     int StartMinute, endMinute;
-    int S = 2;
+    int S = 10;
     int CurrentFormatedTime;
     int CurrentFormatedMinute;
     double timestamp;
