@@ -166,7 +166,7 @@ public class rating extends AppCompatActivity {
                 else{
                     Intent i = new Intent(getApplicationContext(), questionnaire.class);
                     startActivity(i);
-                    finish();
+
                 }
             }
         });
