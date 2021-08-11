@@ -41,7 +41,7 @@
         android:layout_height="200dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="99dp"
+        android:layout_marginTop="97dp"
         android:timePickerMode="spinner" />
 
     <TextView
@@ -65,11 +65,8 @@
         android:layout_width="240dp"
         android:layout_height="200dp"
         android:layout_below="@+id/simpleTimePicker"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="57dp"
-        android:layout_marginEnd="101dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="71dp"
         android:timePickerMode="spinner" />
 
     <TextView
@@ -103,13 +100,11 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/submitTime"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_height="66dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="325dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="71dp"
         android:clickable="true"
         app:backgroundTint="#0E9709"
         app:srcCompat="@drawable/icon_check2" />

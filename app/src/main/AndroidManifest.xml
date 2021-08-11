@@ -47,9 +47,11 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
 
-        <receiver
-            android:name=".ReminderBroadcast"
-            android:enabled="true" />
+<!--        <receiver-->
+<!--            android:name=".ReminderBroadcast"-->
+<!--            android:enabled="true" />-->
+
+        <receiver android:name=".AlertReceiver" />
     </application>
 
 </manifest>

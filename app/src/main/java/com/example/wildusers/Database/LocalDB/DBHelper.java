@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 75;
+    private static final int DATABASE_VERSION = 76;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -23,19 +23,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN1_NAME = "ID";
     private static final String COLUMN2_NAME = "ActualPhrase";
 
-
-    /********************** WILD USER details **************************/
-    //User Details Storing
+    //Storing User Details
     private static final String WILD_USER_DETAIL_TABLE_NAME = "WildUser";
     private static final String COLUMN_NAME_ID = "User_ID";
     private static final String COLUMN_NAME_CONDITION = "Condition";
     private static final String COLUMN_NAME_RS = "Rotational_Sequence";
-   /**************************************************************************/
 
+    //Storing Wild Experiment Details
     public static final String TABLE2_NAME = "WildExperiment";
     public static final String COLUMN1_id = "UserID";
     public static final String COLUMN2_session = "session";
-    //public static final String COLUMN2_attempt = "noOfRuns";
     public static final String COLUMN3_dateTime = "dateTime";
     public static final String COLUMN4_S1 = "stimulusPhrase";
     public static final String COLUMN5_S2 = "responsePhrase";
@@ -43,11 +40,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN7_sample = "sample";
     public static final String COLUMN8_duration = "duration";
 
+    //Storing Rating Details
     private static final String TABLE3_NAME = "Rating";
     private static final String COLUMN2_userId = "UID";
     private static final String COLUMN_userSession = "userSession";
-//    private static final String COLUMN_dateTime = "FinishedTime";
-//    private static final String COLUMN_userNoOfruns = "runs";
     private static final String COLUMN_speed = "Speed";
     private static final String COLUMN_accuracy = "Accuracy";
     private static final String COLUMN_preference = "preference";
@@ -55,11 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_handPosture1 = "handPosture1";
     private static final String COLUMN_commentR = "commentOfTest";
 
-//    private static final String TABLE4_NAME = "User";
-//    private static final String COLUMN1_userEmail = "Email";
-//    private static final String COLUMN2_Session = "ExperimentSession";
-
-
+    //Storing Questionnaire Details
     private static final String TABLE_QUESTIONNAIRE = "Questionnaire";
     private static final String COLUMNQ_userid = "ID";
     private static final String COLUMN_move = "Move";
@@ -67,6 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_busy = "Busy";
     private static final String COLUMN_tired = "Tired";
 
+    //Storing Active Time Details
     private static final String TABLE_ACTIVE_TIME = "ActiveTimeSelection";
     private static final String COLUMNAT_userid = "U_ID";
     private static final String COLUMN_STARTTIME = "StartTime";
@@ -104,8 +97,6 @@ public class DBHelper extends SQLiteOpenHelper {
             String TABLE_RATING = "CREATE TABLE " + TABLE3_NAME + "("
                     + COLUMN2_userId + " TEXT,"
                     + COLUMN_userSession + " INTEGER NOT NULL,"
-//                    + COLUMN_dateTime + " TEXT NOT NULL,"
-                   // + COLUMN_userNoOfruns + " INTEGER NOT NULL,"
                     + COLUMN_speed + " INTEGER NOT NULL,"
                     + COLUMN_accuracy + " INTEGER NOT NULL,"
                     + COLUMN_preference + " TEXT NOT NULL,"
@@ -125,14 +116,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL(TABLE_QUESTION);
 
-
-//            String TABLE_ACTIVE_TIME1 = "CREATE TABLE " + TABLE_ACTIVETIME + "("
-//                    + COLUMNA_userid + " TEXT PRIMARY KEY,"
-//                    + COLUMN_ACTIVETIME + " TEXT )";
-//
-//            sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME1);
-
-
             String TABLE_ACTIVE_TIME_SELECTOR = "CREATE TABLE " + TABLE_ACTIVE_TIME + "("
                     + COLUMNAT_userid + " TEXT,"
                     + COLUMN_STARTTIME + " TEXT,"
@@ -141,17 +124,12 @@ public class DBHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME_SELECTOR);
 
 
-            /****************** WILD USER DETAILS *************************************/
             String TABLE_WILDUSER = "CREATE TABLE " + WILD_USER_DETAIL_TABLE_NAME + "("
                     + COLUMN_NAME_ID + " TEXT NOT NULL,"
                     + COLUMN_NAME_CONDITION + " TEXT NOT NULL,"
                     + COLUMN_NAME_RS + " TEXT NOT NULL)";
 
             sqLiteDatabase.execSQL(TABLE_WILDUSER);
-
-            /**************************************************************************/
-
-
 
         } catch (Exception e) {
             Log.d("1", e.toString());
@@ -163,9 +141,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE1_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE2_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE3_NAME);
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE4_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONNAIRE);
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVETIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVE_TIME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WILD_USER_DETAIL_TABLE_NAME);
 
@@ -216,13 +192,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void saveToLocalDatabase(String UserID, int sample, int session, Experiment ex, SQLiteDatabase database){
 
-        //SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN1_id, UserID);
         contentValues.put(COLUMN7_sample, sample);
         contentValues.put(COLUMN2_session, session);
-        //contentValues.put(COLUMN2_attempt, attempt);
         contentValues.put(COLUMN3_dateTime, Arrays.toString(ex.getDurationTimeStamps()));
         contentValues.put(COLUMN4_S1, ex.getStimulus());
         contentValues.put(COLUMN5_S2, ex.getResponse());
@@ -239,8 +213,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         contentValues.put(COLUMN2_userId, ID);
         contentValues.put(COLUMN_userSession, session);
-//        contentValues.put(COLUMN_dateTime, datetime);
-//        contentValues.put(COLUMN_userNoOfruns,runs);
         contentValues.put(COLUMN_speed, speed);
         contentValues.put(COLUMN_accuracy, accuracy);
         contentValues.put(COLUMN_preference, preference);
@@ -267,7 +239,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void StoreUserDetails(String UID, String Condition, String RotationalSequence){
 
-        //SQLiteDatabase database = new SQLiteDatabase();
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -277,20 +248,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_NAME_RS, RotationalSequence);
 
         database.insert(WILD_USER_DETAIL_TABLE_NAME,null,contentValues);
-        //return true;
     }
-
-//    public void StoreActiveTime(String UID, String time, SQLiteDatabase database){
-//        ContentValues contentValues = new ContentValues();
-//
-//        contentValues.put(COLUMNA_userid, UID);
-//        contentValues.put(COLUMN_ACTIVETIME, time);
-//
-//        database.insert(TABLE_ACTIVETIME,null,contentValues);
-//    }
-
-
-
 
     public void StoreActiveTimeSelector(String UID, String start, String end, SQLiteDatabase database){
         ContentValues contentValues = new ContentValues();
@@ -301,54 +259,4 @@ public class DBHelper extends SQLiteOpenHelper {
 
         database.insert(TABLE_ACTIVE_TIME,null,contentValues);
     }
-
-
-//    public Cursor readFromLocalDatabase(String UserEmail) {
-//
-//        String query = ("SELECT * FROM " + TABLE2_NAME + " WHERE " + COLUMN1_id + "='" + UserEmail + "'");
-//        SQLiteDatabase database = this.getReadableDatabase();
-//
-//        Cursor cursor = null;
-//        if(database != null){
-//           cursor = database.rawQuery(query, null);
-//        }
-//        return cursor;
-//    }
-
-//    public Cursor getCommentInfo(String UserEmail) {
-//
-//        String query = ("SELECT * FROM " + TABLE5_NAME + " WHERE " + COLUMN_Email + "='" + UserEmail + "'");
-//        SQLiteDatabase database = this.getReadableDatabase();
-//
-//        Cursor cursor = null;
-//        if(database != null){
-//            cursor = database.rawQuery(query, null);
-//        }
-//        return cursor;
-//    }
-
-//    public Cursor getRatingInfo(String UserEmail) {
-//
-//        String query = ("SELECT * FROM " + TABLE3_NAME + " WHERE " + COLUMN2_userId + "='" + UserEmail + "'");
-//        SQLiteDatabase database = this.getReadableDatabase();
-//
-//        Cursor cursor = null;
-//        if(database != null){
-//            cursor = database.rawQuery(query, null);
-//        }
-//        return cursor;
-//    }
-
-
-//    public Cursor getSessionValidationInfo() {
-//
-//        String query = ("select email, sessionNo from LabExperiment");
-//        SQLiteDatabase database = this.getReadableDatabase();
-//
-//        Cursor cursor = null;
-//        if(database != null){
-//            cursor = database.rawQuery(query, null);
-//        }
-//        return cursor;
-//    }
 }

@@ -29,7 +29,6 @@ public class webViewPlayStore extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 
     @Override
