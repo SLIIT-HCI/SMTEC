@@ -107,7 +107,7 @@ public class alertScreen extends AppCompatActivity {
                            startActivity(intent);
                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
                        }
-                   }, 1000 * 10);
+                   }, 1000 * 60);
 
                    moveTaskToBack(true);
 
@@ -123,7 +123,7 @@ public class alertScreen extends AppCompatActivity {
                            startActivity(intent);
                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
                        }
-                   }, 1000 * 60);
+                   }, 1000 * 60 * 2);
 
                    //move the activity to background
                    moveTaskToBack(true);
@@ -140,7 +140,7 @@ public class alertScreen extends AppCompatActivity {
                            startActivity(intent);
                            Toast.makeText(alertScreen.this, "Starting Experiment!", Toast.LENGTH_SHORT).show();
                        }
-                   }, 1000 * 60);
+                   }, 1000 * 60 * 5);
 
                    //move the activity to background
                    moveTaskToBack(true);

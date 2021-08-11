@@ -125,7 +125,7 @@ public class rating extends AppCompatActivity {
                 //move the activity to background
                 moveTaskToBack(true);
 
-                if(lastCheck < 2){
+                if(lastCheck < 10){
 
                     int hourToStart = pref.getInt("HoursRound1",0);
                     int minutesToStart = pref.getInt("MinutesRound1",0);
@@ -138,7 +138,7 @@ public class rating extends AppCompatActivity {
 
                     Alarm.startAlarm(calendar,getApplicationContext());
 
-                }else if (lastCheck == 2 && dayCount <= 10){
+                }else if (lastCheck == 10 && dayCount <= 2){
 
                     lastCheck = 0;
 
