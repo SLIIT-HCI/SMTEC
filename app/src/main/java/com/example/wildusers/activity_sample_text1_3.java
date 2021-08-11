@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -71,7 +72,7 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class activity_sample_text1_3 extends AppCompatActivity {
 
-    //DBHandler dbHandler;
+
     DBHelper helper;
     Experiment experiment;
     TextView phrase, Sentence_counter;
@@ -92,12 +93,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     BroadcastReceiver broadcastReceiver;
     ArrayList phrases = new ArrayList<String>();
     String [] timestamps;
-    CountDownTimer countDown;
     private static final int PERMISSION_REQUEST_CODE = 100;
     private int request_code =1, FILE_SELECT_CODE =101;
     public String  actualfilepath="";
     private static int RESULT_LOAD_IMAGE = 100;
-
+    private SharedPreferences pref;
 
     //server impl request codes
     private static final int CODE_GET_REQUEST = 1024;
@@ -108,26 +108,17 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     private int sentenceBegin = 1;
 
     String newStamp;
-
-    ArrayList<String> userEmail = new ArrayList<>();
-    ArrayList<Integer> userSession = new ArrayList<>();
-    Cursor cursorSession;
-
     List<W_Experiment> w_experiments;
-
-    //Sample 3
-    //Sessions / no of runs in each session = 10
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
-
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         Log.d("I am coming here", "1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_text1_3);
 
         w_experiments = new ArrayList<>();
 
-        //helper = new DBHelper(this);
         helper = new DBHelper(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -149,15 +140,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         submit = (Button) findViewById(R.id.sampleSubmit);
         Sentence_counter = (TextView) findViewById(R.id.count);
 
-        /*retrieving values through intents*/
-        UserID = getIntent().getStringExtra("UserID");
-
-        //session = getIntent().getIntExtra("session",0);
-        //inputMethod = getIntent().getStringExtra("inputMethod");
+        //retrieving values through shared preferences
+        UserID = pref.getString("UserID","");
         session = getIntent().getIntExtra("session", 0);
-//        if (session != 0) {
-//            count = session;
-//        }
 
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
@@ -180,15 +165,12 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 timestamps[timestamps.length - 1] = formatDateTime2;
 
 
-
-                //session = Integer.parseInt(sessionNo.getText().toString());
                 session = Integer.parseInt(sessionNo.getText().toString());
-
-
                 response = input_phrase.getText().toString();
                 stimulus = phrase.getText().toString();
                 editDistance = levenshteinDistance(input_phrase.getText().toString(), phrase.getText().toString());
                 duration = Duration.between(dateTime1, dateTime2).toNanos();
+
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
 
@@ -196,12 +178,9 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 phraseArray_Iterator();
 
 
-                //Display the sentence count
-                //sentenceCount++;
+
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
-
-
 
                 newStamp = formatDateTime1 + " , "+ formatDateTime2;
 
@@ -217,7 +196,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), rating.class);
                 intent.putExtra("UserID", UserID);
                 intent.putExtra("session", session);
-                //intent.putExtra("noOfRuns", noOfRuns);
                 startActivity(intent);
 
             }
@@ -276,15 +254,15 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     }
 
     public void phraseArray_Iterator(){
-            Random rand = new Random();
+        Random rand = new Random();
+        clickCount = rand.nextInt(randomMax);
+        while (generated.contains(clickCount) && generated.size() < randomMax) {
             clickCount = rand.nextInt(randomMax);
-            while (generated.contains(clickCount) && generated.size() < randomMax) {
-                clickCount = rand.nextInt(randomMax);
-            }
-            generated.add(clickCount);
-            clickCount += 1;
-            setPhrase(clickCount);
-            input_phrase.setText("");
+        }
+        generated.add(clickCount);
+        clickCount += 1;
+        setPhrase(clickCount);
+        input_phrase.setText("");
 
 
         if (sentenceLimit < sentenceBegin) {
@@ -331,121 +309,117 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     }
 /****************************************************************************************************/
 
-/**************************************************Server Implementation*********************/
+
+    /**************************************************Server Implementation*********************/
+    private void createExperiment(){
 
 
-private void createExperiment(){
+        //validating the inputs
+        if (TextUtils.isEmpty(String.valueOf(session))) {
+            sessionNo.setError("Please enter session");
+            sessionNo.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(response)) {
+            input_phrase.setError("Please enter response");
+            input_phrase.requestFocus();
+            return;
+        }
+
+        //if validation passes
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", UserID);
 
 
-    //validating the inputs
-    if (TextUtils.isEmpty(String.valueOf(session))) {
-        sessionNo.setError("Please enter session");
-        sessionNo.requestFocus();
-        return;
+        params.put("session", String.valueOf(session));
+        System.out.println("Checking................."+session);
+
+        params.put("date", newStamp);
+        System.out.println("Time Stamps................."+newStamp);
+
+        params.put("stimulus", stimulus);
+        System.out.println("stimulus................."+stimulus);
+
+        params.put("response", response);
+        System.out.println("Checking................." + response);
+
+        params.put("edit_distance", String.valueOf(editDistance));
+        System.out.println("Checking................." + editDistance);
+
+        params.put("sentenceNo", String.valueOf(sentenceCount));
+        System.out.println("Checking................."+sentenceCount);
+
+        params.put("duration", String.valueOf(duration));
+        System.out.println("Checking................."+duration);
+
+
+        //Calling the create hero API
+        PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
+        request.execute();
+        System.out.println("Executed!!");
     }
 
-    if (TextUtils.isEmpty(response)) {
-        input_phrase.setError("Please enter response");
-        input_phrase.requestFocus();
-        return;
-    }
+    //inner class to perform network request extending an AsyncTask
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
-    //if validation passes
+        //the url where we need to send the request
+        String url;
 
-    HashMap<String, String> params = new HashMap<>();
-    params.put("user_id", UserID);
+        //the parameters
+        HashMap<String, String> params;
 
+        //the request code to define whether it is a GET or POST
+        int requestCode;
 
-    params.put("session", String.valueOf(session));
-    System.out.println("Checking................."+session);
+        //constructor to initialize values
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
 
-    params.put("date", newStamp);
-    System.out.println("Time Stamps................."+newStamp);
-
-    params.put("stimulus", stimulus);
-    System.out.println("stimulus................."+stimulus);
-
-    params.put("response", response);
-    System.out.println("Checking................." + response);
-
-    params.put("edit_distance", String.valueOf(editDistance));
-    System.out.println("Checking................." + editDistance);
-
-    params.put("sentenceNo", String.valueOf(sentenceCount));
-    System.out.println("Checking................."+sentenceCount);
-
-    params.put("duration", String.valueOf(duration));
-    System.out.println("Checking................."+duration);
+        //when the task started displaying a progressbar
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
 
-    //Calling the create hero API
-//    PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
-//    request.execute();
-    System.out.println("Executed!!");
-}
+        //this method will give the response from the request
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
 
-//inner class to perform network request extending an AsyncTask
-private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
-
-    //the url where we need to send the request
-    String url;
-
-    //the parameters
-    HashMap<String, String> params;
-
-    //the request code to define whether it is a GET or POST
-    int requestCode;
-
-    //constructor to initialize values
-    PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
-        this.url = url;
-        this.params = params;
-        this.requestCode = requestCode;
-    }
-
-    //when the task started displaying a progressbar
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-    }
-
-
-    //this method will give the response from the request
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-
-        try {
-            JSONObject object = new JSONObject(s);
-            if (!object.getBoolean("error")) {
-                Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                //refreshing the herolist after every operation
-                //so we get an updated list
-                //we will create this method right now it is commented
-                //because we haven't created it yet
-                //refreshHeroList(object.getJSONArray("heroes"));
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    //refreshing the experiment list after every operation
+                    //so we get an updated list
+                    //refreshHeroList(object.getJSONArray("heroes"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        }
+
+        //the network operation will be performed in background
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
         }
     }
-
-    //the network operation will be performed in background
-    @Override
-    protected String doInBackground(Void... voids) {
-        RequestHandler requestHandler = new RequestHandler();
-
-        if (requestCode == CODE_POST_REQUEST)
-            return requestHandler.sendPostRequest(url, params);
-
-
-        if (requestCode == CODE_GET_REQUEST)
-            return requestHandler.sendGetRequest(url);
-
-        return null;
-    }
-}
 
 
 }
