@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 76;
+    private static final int DATABASE_VERSION = 78;
 
     // Database Name
     private static final String DATABASE_NAME = "SmtecWildMobileApp6.db";
@@ -80,7 +80,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL(TABLE_PHRASE);
 
-
             String TABLE_EXPERIMENT = "CREATE TABLE " + TABLE2_NAME + "("
                     + COLUMN1_id + " TEXT NOT NULL,"
                     + COLUMN2_session + " INTEGER NOT NULL,"
@@ -106,7 +105,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL(TABLE_RATING);
 
-
             String TABLE_QUESTION = "CREATE TABLE " + TABLE_QUESTIONNAIRE + "("
                     + COLUMNQ_userid + " TEXT,"
                     + COLUMN_move + " INTEGER NOT NULL,"
@@ -122,7 +120,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     + COLUMN_ENDTIME + " TEXT )";
 
             sqLiteDatabase.execSQL(TABLE_ACTIVE_TIME_SELECTOR);
-
 
             String TABLE_WILDUSER = "CREATE TABLE " + WILD_USER_DETAIL_TABLE_NAME + "("
                     + COLUMN_NAME_ID + " TEXT NOT NULL,"
@@ -164,7 +161,6 @@ public class DBHelper extends SQLiteOpenHelper {
             return  false;
         else
             return  true;
-
     }
 
     public ArrayList<String> getPhrases() {
@@ -193,7 +189,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void saveToLocalDatabase(String UserID, int sample, int session, Experiment ex, SQLiteDatabase database){
 
         ContentValues contentValues = new ContentValues();
-
         contentValues.put(COLUMN1_id, UserID);
         contentValues.put(COLUMN7_sample, sample);
         contentValues.put(COLUMN2_session, session);
@@ -210,7 +205,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void saveToRatingsTable(String ID, int session, float speed, float accuracy, String preference, float easeOfUse,  String HandPosture, String comment,  SQLiteDatabase database) {
 
         ContentValues contentValues = new ContentValues();
-
         contentValues.put(COLUMN2_userId, ID);
         contentValues.put(COLUMN_userSession, session);
         contentValues.put(COLUMN_speed, speed);
@@ -225,8 +219,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void saveToQuestionnaireTable(String ID, float move, float walk, float busy, float tired, SQLiteDatabase database){
-        ContentValues contentValues = new ContentValues();
 
+        ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMNQ_userid, ID);
         contentValues.put(COLUMN_move, move);
         contentValues.put(COLUMN_walk, walk);
@@ -237,12 +231,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public void StoreUserDetails(String UID, String Condition, String RotationalSequence){
-
-        SQLiteDatabase database = this.getWritableDatabase();
+    public void StoreUserDetails(String UID, String Condition, String RotationalSequence, SQLiteDatabase database){
 
         ContentValues contentValues = new ContentValues();
-
         contentValues.put(COLUMN_NAME_ID, UID);
         contentValues.put(COLUMN_NAME_CONDITION, Condition);
         contentValues.put(COLUMN_NAME_RS, RotationalSequence);
@@ -251,12 +242,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void StoreActiveTimeSelector(String UID, String start, String end, SQLiteDatabase database){
-        ContentValues contentValues = new ContentValues();
 
+        ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMNAT_userid, UID);
         contentValues.put(COLUMN_STARTTIME, start);
         contentValues.put(COLUMN_ENDTIME, end);
-
         database.insert(TABLE_ACTIVE_TIME,null,contentValues);
     }
 }

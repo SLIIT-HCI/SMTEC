@@ -30,7 +30,6 @@ public class webViewPlayStore extends AppCompatActivity {
             }
         });
     }
-
     @Override
     public void onBackPressed() {
         if(webView.canGoBack()){

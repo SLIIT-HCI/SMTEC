@@ -17,7 +17,6 @@ public class Alarm {
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
 
     }

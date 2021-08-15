@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.core.app.NotificationCompat;
+
 public class AlertReceiver extends BroadcastReceiver {
     private SharedPreferences pref;
 
@@ -13,11 +15,14 @@ public class AlertReceiver extends BroadcastReceiver {
 
         System.out.println("________________________Alert Received___________________________________");
 
-        pref = context.getSharedPreferences("Pref", 0);
+        pref = context.getSharedPreferences("MyPref", 0);
 
         Intent i = new Intent(context, alertScreen.class);
-        i.putExtra("UserID", pref.getString("UserID",""));
+        //i.putExtra("UserID", pref.getString("UserID",""));
         context.startActivity(i);
 
+        NotificationHelper notificationHelper = new NotificationHelper(context);
+        NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
+        notificationHelper.getManager().notify(1, nb.build());
     }
 }

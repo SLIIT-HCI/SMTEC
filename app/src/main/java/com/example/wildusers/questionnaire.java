@@ -31,14 +31,10 @@ public class questionnaire extends AppCompatActivity {
     DBHelper dbHelper;
     RatingBar rb_move, rb_walk, rb_busy, rb_tired;
     Button SubmitQuestionnaire;
-
     String UserID;
     float move, walk, busy, tired;
-
-
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
-
     List<W_Questionnaire> questionnaires;
 
     @Override
@@ -72,12 +68,10 @@ public class questionnaire extends AppCompatActivity {
                     @Override
                     public void run() {
                         finish();
-
                         //destroy the app completely
                         System.exit(0);
                     }
-                }, 1000*60);
-
+                }, 1000);
             }
         });
     }
@@ -91,21 +85,19 @@ public class questionnaire extends AppCompatActivity {
         params.put("busy", String.valueOf(busy));
         params.put("tired", String.valueOf(tired));
 
-
-        //Calling the create hero API
+        //Calling the create questionnaire API
         PerformNetworkRequest request = new PerformNetworkRequest(QuestionnaireApi.URL_CREATE_QUESTIONNAIRE, params, CODE_POST_REQUEST);
         request.execute();
     }
 
-
-
-
+/**
+ * Storing Questionnaire Data to SQLite Database
+ * */
     public void saveToDatabase(float move,float walk, float busy, float tired){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         dbHelper.saveToQuestionnaireTable(UserID, move, walk, busy,tired, database);
     }
-
 
     /*********************************** class to perform network request - online db impl**************************/
     //inner class to perform network request extending an AsyncTask
@@ -133,19 +125,14 @@ public class questionnaire extends AppCompatActivity {
             super.onPreExecute();
         }
 
-
         //this method will give the response from the request
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            //progressBar.setVisibility(GONE);
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    //refreshing the questionnaire list after every operation
-                    //so we get an updated list
-                    //refreshHeroList(object.getJSONArray("heroes"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -159,11 +146,8 @@ public class questionnaire extends AppCompatActivity {
 
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
-
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
-
             return null;
         }
     }

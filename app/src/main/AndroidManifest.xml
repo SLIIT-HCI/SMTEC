@@ -21,9 +21,7 @@
         android:theme="@style/Theme.WildUsers">
         <activity android:name=".AccelerometerDetection"></activity>
         <activity android:name=".ActiveTime_Selection" />
-
         <receiver android:name=".AlarmReceiver" />
-
         <activity android:name=".webViewPlayStore" />
         <activity android:name=".settings" />
         <activity android:name=".Instructions" />

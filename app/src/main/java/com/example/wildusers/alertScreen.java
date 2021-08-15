@@ -8,8 +8,10 @@ import android.app.KeyguardManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +36,11 @@ public class alertScreen extends AppCompatActivity {
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        }
+    };
 
 
     @Override
@@ -41,13 +48,13 @@ public class alertScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_screen);
 
-        pref = getApplicationContext().getSharedPreferences("Pref", 0);
-        editor = pref.edit();
+        registerReceiver(broadcastReceiver, new IntentFilter("INTERNET_LOST"));
 
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        editor = pref.edit();
         setupAlarm();
         UserID = pref.getString("UserID","");
         session = getIntent().getIntExtra("session",0);
-
 
         /***************  Waking up alert screen even when the app is closed / screen is locked / screen is offed *************/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -55,27 +62,19 @@ public class alertScreen extends AppCompatActivity {
             setTurnScreenOn(true);
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(this.KEYGUARD_SERVICE);
             keyguardManager.requestDismissKeyguard(this, null);
-
-            System.out.println("test 1");
+            System.out.println("test Alarm");
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                     WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
             System.out.println("Appears even phone is locked");
         }
-
-
         alertGroup = (RadioGroup) findViewById(R.id.alertTime);
         start = (RadioButton) findViewById(R.id.startRB);
         oneMin = (RadioButton) findViewById(R.id.oneMinRB);
         twoMin = (RadioButton) findViewById(R.id.twoMinRB);
         fiveMin = (RadioButton) findViewById(R.id.fiveMinRB);
-
-
-/************************************************ implementing the option radio buttons ************************************************/
-
 
         alertGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -94,13 +93,11 @@ public class alertScreen extends AppCompatActivity {
                     Intent i1 = new Intent(getApplicationContext(), ReminderBroadcast.class);
                     i1.putExtra("UserID", UserID);
                     i1.putExtra("session", session);
-
                     Toast.makeText(alertScreen.this, "Starting Experiment in 1 Minutes!", Toast.LENGTH_SHORT).show();
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             Intent intent = new Intent(alertScreen.this, alertScreen.class);
                             intent.putExtra("UserID", UserID);
                             intent.putExtra("session", session);
@@ -116,7 +113,6 @@ public class alertScreen extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             Intent intent = new Intent(alertScreen.this, alertScreen.class);
                             intent.putExtra("UserID", UserID);
                             intent.putExtra("session", session);
@@ -133,7 +129,6 @@ public class alertScreen extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             Intent intent = new Intent(alertScreen.this, alertScreen.class);
                             intent.putExtra("UserID", UserID);
                             intent.putExtra("session", session);
@@ -173,11 +168,9 @@ public class alertScreen extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, ia, 0);
 
         AlarmManager am = (AlarmManager)   this.getSystemService(Context.ALARM_SERVICE);
-        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 1000*60*3, pendingIntent);
+        //am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+ 1000*60, pendingIntent);
 
     }
-
-
 
     /******************************** mini menu **********************************************/
     @Override

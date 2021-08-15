@@ -46,7 +46,6 @@ public class AccelerometerDetection extends AppCompatActivity implements SensorE
                 //impl storing to db part
             }
         });
-
     }
 
     @Override

@@ -132,11 +132,8 @@
         android:layout_height="35dp"
         android:layout_below="@+id/handPosture"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="6dp"
-        android:layout_marginEnd="11dp"
         android:orientation="horizontal">
 
         <RadioButton

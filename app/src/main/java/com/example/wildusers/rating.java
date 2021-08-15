@@ -47,8 +47,6 @@ public class rating extends AppCompatActivity {
 
     //array to store ratings data in aws server
     List<W_Rating> ratings;
-
-
     DBHelper dbHelper;
     RatingBar rb5_speed, rb6_accuracy, rb7_easeOfUse;
     RadioGroup type, postureRG;
@@ -65,8 +63,7 @@ public class rating extends AppCompatActivity {
     int session;
     Button submit;
     String roundHourString,roundMinuteString;
-
-
+    boolean isAllFieldsChecked = false;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
@@ -97,11 +94,9 @@ public class rating extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                lastCheck = pref.getInt("countValue", 0);
-                dayCount = pref.getInt("dayCount", 0);
-
+                lastCheck = pref.getInt("countValue", 999);
+                dayCount = pref.getInt("dayCount", 999);
                 lastCheck++;
-
                 roundHourString = "HoursRound"+lastCheck;
                 roundMinuteString = "MinutesRound"+lastCheck;
 
@@ -118,85 +113,72 @@ public class rating extends AppCompatActivity {
                 easeOfUse = rb7_easeOfUse.getRating();
                 comment = OpenComment.getText().toString();
 
-
                 saveToDatabase(speed, accuracy, preference, easeOfUse, HandPosture, comment);
                 createRating();
 
-                //move the activity to background
-                moveTaskToBack(true);
+                isAllFieldsChecked = validate();
+                if(isAllFieldsChecked){
+                    //move the activity to background
+                    moveTaskToBack(true);
+                }
 
-                if(lastCheck < 10){
 
-                    int hourToStart = pref.getInt("HoursRound1",0);
-                    int minutesToStart = pref.getInt("MinutesRound1",0);
+                if(lastCheck < 11){
 
+                    int hourToStart = pref.getInt(roundHourString,0);
+                    int minutesToStart = pref.getInt(roundMinuteString,0);
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, hourToStart);
                     calendar.set(Calendar.MINUTE, minutesToStart);
                     calendar.set(Calendar.SECOND, 0);
-
-                    Alarm.startAlarm(calendar,getApplicationContext());
-
-                }else if (lastCheck == 10 && dayCount <= 2){
-
-                    lastCheck = 0;
-
-                    dayCount++;
 
                     editor.putInt("countValue", lastCheck);
                     editor.commit();
 
+                    Alarm.startAlarm(calendar,getApplicationContext());
+                    finish();
+                }else if (lastCheck == 11 && dayCount <= 2){
+
+                    lastCheck = 0;
+                    dayCount++;
+                    editor.putInt("countValue", lastCheck);
+                    editor.commit();
                     editor.putInt("dayCount", dayCount);
                     editor.commit();
 
-
-                    int hourToStart = pref.getInt("HoursRound0",0);
-                    int minutesToStart = pref.getInt("MinutesRound0",0);
-
+                    int hourToStart = pref.getInt(roundHourString,0);
+                    int minutesToStart = pref.getInt(roundMinuteString,0);
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, hourToStart);
                     calendar.set(Calendar.MINUTE, minutesToStart);
                     calendar.set(Calendar.SECOND, 0);
 
+                    int daysCount = pref.getInt("dayCount", 999);
+                    System.out.println(daysCount);
                     Alarm.startAlarm(calendar,getApplicationContext());
-
                 }
                 else{
                     Intent i = new Intent(getApplicationContext(), questionnaire.class);
                     startActivity(i);
-
                 }
             }
         });
-
     }
 
-    public int getSecondsToNextDay(int startHour){
-        SimpleDateFormat sdf = new SimpleDateFormat("HH");
-        String str = sdf.format(new Date());
-
-        int hoursToGo = 0;
-        int secondsToGo = 0;
-
-        int currentHour = Integer.parseInt(str);
-        System.out.println(str);
-
-        if(currentHour > 0 && currentHour < 12){
-            hoursToGo = startHour - currentHour;
-        }else if(currentHour > 12){
-            hoursToGo = (startHour + 24) - currentHour;
+    private boolean validate(){
+        if(comment.length() == 0){
+            OpenComment.setError("Please add a Comment");
+            return false;
         }
-
-        secondsToGo = hoursToGo*3600;
-
-        return secondsToGo;
+        else{
+            return true;
+        }
     }
 
-    /***************************** to xampp server *****************************/
+    /***************************** To xampp server and AWS server*****************************/
     private void createRating(){
-
         HashMap<String, String> params = new HashMap<>();
 
         params.put("user_id", UserID);
@@ -208,21 +190,19 @@ public class rating extends AppCompatActivity {
         params.put("handPosture", String.valueOf(HandPosture));
         params.put("comment", comment);
 
-
         //Calling the create hero API
         PerformNetworkRequest request = new PerformNetworkRequest(RatingApi.URL_CREATE_RATING, params, CODE_POST_REQUEST);
         request.execute();
     }
 
-
-
-
+/**
+ * Store Rating data to SQLite Database
+ * */
     public void saveToDatabase(float speed,float accuracy, String preference,float easeOfUse, String HandPosture, String comment){
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         dbHelper.saveToRatingsTable(UserID, session, speed,accuracy,preference,easeOfUse, HandPosture, comment, database);
     }
-
 
     /*********************************** class to perform network request - online db impl**************************/
     //inner class to perform network request extending an AsyncTask
@@ -250,7 +230,6 @@ public class rating extends AppCompatActivity {
             super.onPreExecute();
         }
 
-
         //this method will give the response from the request
         @Override
         protected void onPostExecute(String s) {
@@ -260,9 +239,6 @@ public class rating extends AppCompatActivity {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    //refreshing the rating list after every operation
-                    //so we get an updated list
-                    //refreshHeroList(object.getJSONArray("heroes"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -276,13 +252,9 @@ public class rating extends AppCompatActivity {
 
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
-
             return null;
         }
     }
-
-
 }

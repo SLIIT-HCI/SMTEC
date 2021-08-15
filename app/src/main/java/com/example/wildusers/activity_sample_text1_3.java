@@ -2,52 +2,30 @@ package com.example.wildusers;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.example.wildusers.Database.DBContract;
 import com.example.wildusers.Database.LocalDB.DBHelper;
 import com.example.wildusers.Database.OnlineDB.Api.ExperimentApi;
-import com.example.wildusers.Database.OnlineDB.Model.User;
 import com.example.wildusers.Database.OnlineDB.Model.W_Experiment;
 import com.example.wildusers.Database.OnlineDB.RequestHandler;
-import com.example.wildusers.Database.mySingleton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,21 +35,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class activity_sample_text1_3 extends AppCompatActivity {
-
 
     DBHelper helper;
     Experiment experiment;
@@ -90,25 +63,18 @@ public class activity_sample_text1_3 extends AppCompatActivity {
     int randomMax = 80;
     LocalDateTime dateTime1,dateTime2;
     DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S");
-    BroadcastReceiver broadcastReceiver;
     ArrayList phrases = new ArrayList<String>();
     String [] timestamps;
-    private static final int PERMISSION_REQUEST_CODE = 100;
-    private int request_code =1, FILE_SELECT_CODE =101;
-    public String  actualfilepath="";
-    private static int RESULT_LOAD_IMAGE = 100;
     private SharedPreferences pref;
+    private int sentenceLimit = 3;
+    private int sentenceBegin = 1;
+    boolean isAllFieldsChecked = false;
+    String newStamp;
+    List<W_Experiment> w_experiments;
 
     //server impl request codes
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
-
-    //limiting sentence count declaration
-    private int sentenceLimit = 3;
-    private int sentenceBegin = 1;
-
-    String newStamp;
-    List<W_Experiment> w_experiments;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
@@ -125,13 +91,11 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 requestPermissions(new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE
                 }, 10);
-
             }
         }
 
         displayText();
 
-        //timer = (TextView) findViewById(R.id.timer);
         phrase = (TextView) findViewById(R.id.viewPhrase);
         nextBtn = (Button) findViewById(R.id.next);
         btn_play_pause = (Button) findViewById(R.id.play_pause1);
@@ -140,10 +104,8 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         submit = (Button) findViewById(R.id.sampleSubmit);
         Sentence_counter = (TextView) findViewById(R.id.count);
 
-        //retrieving values through shared preferences
         UserID = pref.getString("UserID","");
         session = getIntent().getIntExtra("session", 0);
-
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +117,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
             }
         });
 
-
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
@@ -163,7 +124,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 dateTime2 = LocalDateTime.now();
                 formatDateTime2 = dateTime2.format(formatDate);
                 timestamps[timestamps.length - 1] = formatDateTime2;
-
 
                 session = Integer.parseInt(sessionNo.getText().toString());
                 response = input_phrase.getText().toString();
@@ -174,39 +134,37 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 /*create an object to store the data using 'Experiment ' class*/
                 experiment = new Experiment(timestamps, duration, stimulus, response, editDistance);
 
-
                 phraseArray_Iterator();
-
-
 
                 Sentence_counter.setText(Integer.toString(sentenceCount));
                 sentenceCount = Integer.parseInt(Sentence_counter.getText().toString());
-
                 newStamp = formatDateTime1 + " , "+ formatDateTime2;
-
                 saveToLocalStorage(experiment);
                 createExperiment();
                 sentenceCount++;
+
             }
         });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), rating.class);
-                intent.putExtra("UserID", UserID);
-                intent.putExtra("session", session);
-                startActivity(intent);
 
+                isAllFieldsChecked = validate();
+                if(isAllFieldsChecked){
+                    Intent intent = new Intent(getApplicationContext(), rating.class);
+                    intent.putExtra("UserID", UserID);
+                    intent.putExtra("session", session);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
-
 
         /*getting timestamp for the first character entered*/
         final TextWatcher noOfTaps = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 timestamps = new String[2];
                 for (int i = 0; i < s.length(); i++) {
@@ -221,6 +179,19 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         };
         input_phrase.addTextChangedListener(noOfTaps);
 
+    }
+/**
+ * Validating the session number field in the activity
+ * */
+    private boolean validate(){
+        //boolean valid = true;
+        if(sessionNo.toString().length() == 0){
+            sessionNo.setError("Please Enter Session Number");
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public void displayText() {
@@ -264,24 +235,26 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         setPhrase(clickCount);
         input_phrase.setText("");
 
-
         if (sentenceLimit < sentenceBegin) {
             phrase.setText("");
             nextBtn.setEnabled(false);
             Sentence_counter.setText("");
         }
-
         sentenceBegin++;
     }
 
-
+/**
+ * Store Experiment data to SQLite Database
+ */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveToLocalStorage(Experiment experimentList){
         SQLiteDatabase database = helper.getWritableDatabase();
         helper.saveToLocalDatabase(UserID, sentenceCount, session, experimentList, database);
     }
 
-    /* calculating edit distance */
+/**
+ * Levenshtein Distance to calculate the edit distance
+ * */
     public static int levenshteinDistance( String s1, String s2 ) {
         return dist( s1.toCharArray(), s2.toCharArray() );
     }
@@ -307,31 +280,25 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         }
         return d[ s1.length ][ s2.length ];
     }
-/****************************************************************************************************/
 
-
-    /**************************************************Server Implementation*********************/
+/**
+ * Server implementation to upload the data to AWS server
+ * */
     private void createExperiment(){
-
-
         //validating the inputs
         if (TextUtils.isEmpty(String.valueOf(session))) {
             sessionNo.setError("Please enter session");
             sessionNo.requestFocus();
             return;
         }
-
         if (TextUtils.isEmpty(response)) {
             input_phrase.setError("Please enter response");
             input_phrase.requestFocus();
             return;
         }
-
         //if validation passes
-
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", UserID);
-
 
         params.put("session", String.valueOf(session));
         System.out.println("Checking................."+session);
@@ -354,8 +321,7 @@ public class activity_sample_text1_3 extends AppCompatActivity {
         params.put("duration", String.valueOf(duration));
         System.out.println("Checking................."+duration);
 
-
-        //Calling the create hero API
+        //Calling the create experiment API
         PerformNetworkRequest request = new PerformNetworkRequest(ExperimentApi.URL_CREATE_EXPERIMENT, params, CODE_POST_REQUEST);
         request.execute();
         System.out.println("Executed!!");
@@ -386,7 +352,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
             super.onPreExecute();
         }
 
-
         //this method will give the response from the request
         @Override
         protected void onPostExecute(String s) {
@@ -396,9 +361,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    //refreshing the experiment list after every operation
-                    //so we get an updated list
-                    //refreshHeroList(object.getJSONArray("heroes"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -412,7 +374,6 @@ public class activity_sample_text1_3 extends AppCompatActivity {
 
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
 
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
