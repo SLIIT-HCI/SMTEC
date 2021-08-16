@@ -19,6 +19,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
         Intent i = new Intent(context, alertScreen.class);
         //i.putExtra("UserID", pref.getString("UserID",""));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
